@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface MusicMapper {
 
-    @Mapping(target = "cdMusic", ignore = true)
+
     Music toMusic(MusicRequestDto musicRequestDto);
 
     MusicResponseDto toMusicResponseDto(Music music);

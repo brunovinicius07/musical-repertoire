@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 public class MusicResponseDto {
 
     @NotBlank
+    private Long cdMusic;
+
+    @NotBlank
     private String nmMusic;
 
     @NotBlank
