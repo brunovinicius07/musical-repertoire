@@ -10,5 +10,5 @@ public interface MusicService {
 
     List<MusicResponseDto> getAllMusic();
 
-//    MusicResponseDto getMusicById(Long cdMusic);
+    MusicResponseDto getMusicById(Long cdMusic);
 }

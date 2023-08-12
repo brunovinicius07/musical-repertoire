@@ -27,10 +27,10 @@ public class MusicController {
         return ResponseEntity.ok(musicService.getAllMusic());
     }
 
-//    @GetMapping("/{cdMusic}")
-//    public ResponseEntity<Object> getMusicById(@PathVariable Long cdMusic){
-//        return ResponseEntity.ok(musicService.getMusicById(cdMusic));
-//    }
+    @GetMapping("/{cdMusic}")
+    public ResponseEntity<Object> getMusicById(@PathVariable Long cdMusic){
+        return ResponseEntity.ok(musicService.getMusicById(cdMusic));
+    }
 
 
 
