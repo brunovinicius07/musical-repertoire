@@ -32,6 +32,15 @@ public class MusicController {
         return ResponseEntity.ok(musicService.getMusicById(cdMusic));
     }
 
+    @PutMapping("/{cdMusic}")
+    public ResponseEntity<Object> updateMusic(@PathVariable Long cdMusic, @RequestBody @Valid MusicRequestDto musicRequestDto){
+        return ResponseEntity.ok(musicService.updateMusic(cdMusic, musicRequestDto));
+    }
+
+    @DeleteMapping("/{cdMusic}")
+    public ResponseEntity<Object> deleteMusic(@PathVariable Long cdMusic){
+        return ResponseEntity.ok(musicService.deleteMusic(cdMusic));
+    }
 
 
 }

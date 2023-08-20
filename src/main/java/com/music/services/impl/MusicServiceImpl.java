@@ -71,5 +71,33 @@ public class MusicServiceImpl implements MusicService {
         return musicMapper.toMusicResponseDto(musicOptional.get());
     }
 
+    @Override
+    public  MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto){
+        Optional<Music> music = musicRepository.findById(cdMusic);
+
+        if(music.isEmpty()){
+            throw new AlertException(
+                    "warn",
+                    String.format("Música com id %S não existe!", cdMusic),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        music.get().setNmMusic(musicRequestDto.getNmMusic() != null ? musicRequestDto.getNmMusic() : music.get().getNmMusic());
+        music.get().setSinger(musicRequestDto.getSinger() != null ? musicRequestDto.getSinger() : music.get().getSinger());
+
+        return musicMapper.toMusicResponseDto(musicRepository.save(music.get()));
+    }
+
+    public String deleteMusic(Long cdMusic){
+        Music existingMusic = musicRepository.findById(cdMusic)
+                .orElseThrow(()-> new AlertException(
+                        "warn",
+                        String.format("Music com id %S não encontrado!", cdMusic),
+                        HttpStatus.NOT_FOUND
+                ));
+        musicRepository.delete(existingMusic);
+        return "Musica com ID " + cdMusic + " excluído com sucesso!";
+    }
+
 
 }

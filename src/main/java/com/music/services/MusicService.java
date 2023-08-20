@@ -11,4 +11,8 @@ public interface MusicService {
     List<MusicResponseDto> getAllMusic();
 
     MusicResponseDto getMusicById(Long cdMusic);
+
+    MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto);
+
+    Object deleteMusic(Long cdMusic);
 }
