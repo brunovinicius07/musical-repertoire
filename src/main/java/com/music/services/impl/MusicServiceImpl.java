@@ -7,6 +7,7 @@ import com.music.model.entity.Music;
 import com.music.model.mapper.MusicMapper;
 import com.music.repositories.MusicRepository;
 import com.music.services.MusicService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,11 @@ import java.util.stream.Collectors;
 @Service
 public class MusicServiceImpl implements MusicService {
 
-    private final MusicMapper musicMapper;
+    @Autowired
+    private MusicMapper musicMapper;
 
-    private final MusicRepository musicRepository;
+    @Autowired
+    private MusicRepository musicRepository;
 
 
     public MusicServiceImpl(MusicMapper musicMapper, MusicRepository musicRepository) {

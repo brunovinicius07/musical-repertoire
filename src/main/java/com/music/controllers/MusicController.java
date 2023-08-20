@@ -3,6 +3,7 @@ package com.music.controllers;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.services.MusicService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "v1/music/musics")
 public class MusicController {
 
-    private final MusicService musicService;
+    @Autowired
+    private MusicService musicService;
 
-    public MusicController(MusicService musicService) {
-        this.musicService = musicService;
-    }
 
     @PostMapping
     public ResponseEntity<Object> registerMusic(@RequestBody @Valid MusicRequestDto musicRequestDto){
