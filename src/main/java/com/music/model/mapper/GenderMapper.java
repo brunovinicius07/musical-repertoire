@@ -8,7 +8,11 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface GenderMapper {
 
+
     Gender toGender(GenderRequestDto genderRequestDto);
 
+    //@Mapping(target = "musics", ignore = true)
     GenderResponseDto toGenderResponseDto(Gender gender);
+
+
 }

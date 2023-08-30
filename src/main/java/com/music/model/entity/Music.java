@@ -24,6 +24,10 @@ public class Music {
 
         private String singer;
 
+        @ManyToOne
+        @JoinColumn(name = "gender")
+        private Gender gender;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

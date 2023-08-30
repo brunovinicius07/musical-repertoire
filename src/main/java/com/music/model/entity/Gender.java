@@ -1,10 +1,11 @@
 package com.music.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Builder
@@ -22,6 +23,9 @@ public class Gender {
     private Long cdGender;
 
     private String nmGender;
+
+    @OneToMany(mappedBy = "gender", cascade = CascadeType.ALL)
+    private List<Music> musics =  new ArrayList<>();
 
     @Override
     public final boolean equals(Object o) {

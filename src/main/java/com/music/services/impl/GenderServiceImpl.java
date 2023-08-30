@@ -36,4 +36,17 @@ public class GenderServiceImpl implements GenderService {
         }
         return genderMapper.toGenderResponseDto(genderRepository.save(genderMapper.toGender(genderRequestDto)));
     }
+
+    public Gender validateGender(Long cdGender){
+        Optional<Gender> optionalGender = genderRepository.findById(cdGender);
+
+        if(optionalGender.isEmpty()){
+            throw new AlertException(
+                    "warn",
+                    String.format("Genênero com id %S não cadastrado!" , cdGender),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        return optionalGender.get();
+    }
 }

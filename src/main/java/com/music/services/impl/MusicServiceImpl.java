@@ -3,11 +3,11 @@ package com.music.services.impl;
 import com.music.exception.AlertException;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.model.dto.response.MusicResponseDto;
+import com.music.model.entity.Gender;
 import com.music.model.entity.Music;
 import com.music.model.mapper.MusicMapper;
 import com.music.repositories.MusicRepository;
 import com.music.services.MusicService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,31 +18,40 @@ import java.util.stream.Collectors;
 @Service
 public class MusicServiceImpl implements MusicService {
 
-    @Autowired
     private MusicMapper musicMapper;
 
-    @Autowired
     private MusicRepository musicRepository;
 
 
-    public MusicServiceImpl(MusicMapper musicMapper, MusicRepository musicRepository) {
+    private GenderServiceImpl genderServiceImp;
+
+    public MusicServiceImpl(MusicMapper musicMapper, MusicRepository musicRepository, GenderServiceImpl genderServiceImp) {
         this.musicMapper = musicMapper;
         this.musicRepository = musicRepository;
+        this.genderServiceImp = genderServiceImp;
     }
 
     @Override
     public MusicResponseDto registerMusic(MusicRequestDto musicRequestDto){
 
-        Optional<Music> musicOptional = musicRepository.findByNmMusicAndSinger(musicRequestDto.getNmMusic(), musicRequestDto.getSinger());
+        existingMusic(musicRequestDto.getNmMusic(), musicRequestDto.getSinger());
+        Gender gender = genderServiceImp.validateGender(musicRequestDto.getCdGender());
 
-        if (musicOptional.isPresent()){
+        Music music = musicMapper.toMusic(musicRequestDto);
+        music.setGender(gender);
+        return musicMapper.toMusicResponseDtoRegister(musicRepository.save(music));
+    }
+
+    public void existingMusic(String nmMusic, String singer){
+        Optional<Music> optionalMusic = musicRepository.findByNmMusicAndSinger(nmMusic, singer);
+
+        if (optionalMusic.isPresent()){
             throw new AlertException(
                     "warn",
-                    String.format("Musica com o nome %S já está cadastrada!", musicRequestDto.getNmMusic()),
+                    String.format("Música %S já está cadastrada!", nmMusic,singer ),
                     HttpStatus.CONFLICT
             );
         }
-        return musicMapper.toMusicResponseDto(musicRepository.save(musicMapper.toMusic(musicRequestDto)));
     }
 
     @Override
