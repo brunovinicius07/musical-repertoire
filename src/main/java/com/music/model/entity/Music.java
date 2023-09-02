@@ -43,4 +43,5 @@ public class Music {
     public final int hashCode() {
         return getClass().hashCode();
     }
+
 }
