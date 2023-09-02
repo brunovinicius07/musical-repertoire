@@ -20,6 +20,28 @@ public class GenderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(genderService.registerGender(genderRequestDto));
     }
 
+    @GetMapping
+    public ResponseEntity<Object> getAllGender(){
+        return ResponseEntity.ok(genderService.getAllGender());
+    }
+
+    @GetMapping("/{cdGender}")
+    public ResponseEntity<Object> getGenderById(@PathVariable Long cdGender){
+        return ResponseEntity.ok(genderService.getGenderById(cdGender));
+    }
+
+    @PutMapping("/{cdGender}")
+    public ResponseEntity<Object> updateGender(@PathVariable Long cdGender, @RequestBody @Valid GenderRequestDto genderRequestDto){
+        return ResponseEntity.ok(genderService.updateGender(cdGender, genderRequestDto));
+    }
+
+    @DeleteMapping("/{cdGender}")
+    public ResponseEntity<Object> deleteGender(@PathVariable Long cdGender){
+        return ResponseEntity.ok(genderService.deleteGender(cdGender));
+    }
+
+
+
 
 
 }

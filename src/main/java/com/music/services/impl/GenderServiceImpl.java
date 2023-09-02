@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class GenderServiceImpl implements GenderService {
@@ -48,5 +50,56 @@ public class GenderServiceImpl implements GenderService {
             );
         }
         return optionalGender.get();
+    }
+
+    public List<GenderResponseDto> getAllGender(){
+        List<Gender> musicList = genderRepository.findAll();
+
+        if (musicList.isEmpty()){
+            throw new AlertException(
+                    "warn",
+                    String.format("Nenhuma música encontrada!"),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        return musicList.stream().map((x) -> genderMapper.toGenderResponseDto(x)).collect(Collectors.toList());
+    }
+
+    public GenderResponseDto getGenderById(Long cdGender){
+        Optional<Gender> genderOptional = genderRepository.findById(cdGender);
+
+        if(genderOptional.isEmpty()){
+            throw new AlertException(
+                    "warn",
+                    String.format("Gênero com id %S nào existe!", cdGender),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        return genderMapper.toGenderResponseDto(genderOptional.get());
+    }
+
+    public GenderResponseDto updateGender(Long cdGender, GenderRequestDto genderRequestDto){
+        Optional<Gender> gender = genderRepository.findById(cdGender);
+
+        if(gender.isEmpty()){
+            throw new AlertException(
+                    "warn",
+                    String.format("Gênero com id %S não existe!", cdGender),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        gender.get().setNmGender(genderRequestDto.getNmGender() != null ? genderRequestDto.getNmGender() : gender.get().getNmGender());
+        return genderMapper.toGenderResponseDto(genderRepository.save(gender.get()));
+    }
+
+    public String deleteGender(Long cdGender){
+        Gender existingGender = genderRepository.findById(cdGender)
+                .orElseThrow(()-> new AlertException(
+                        "warn",
+                        String.format("Gênero com id %S não encontrado!", cdGender),
+                        HttpStatus.NOT_FOUND
+                ));
+        genderRepository.delete(existingGender);
+        return "Genêro com ID " + cdGender + " excluído com sucesso!";
     }
 }

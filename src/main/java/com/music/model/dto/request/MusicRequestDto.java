@@ -1,6 +1,5 @@
 package com.music.model.dto.request;
 
-import com.music.model.entity.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

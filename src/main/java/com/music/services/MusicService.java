@@ -6,6 +6,7 @@ import com.music.model.dto.response.MusicResponseDto;
 import java.util.List;
 
 public interface MusicService {
+
     MusicResponseDto registerMusic(MusicRequestDto musicRequestDto);
 
     List<MusicResponseDto> getAllMusic();

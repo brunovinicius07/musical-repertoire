@@ -54,6 +54,19 @@ public class MusicServiceImpl implements MusicService {
         }
     }
 
+    public Music validateMusic(Long cdMusic){
+        Optional<Music> optionalMusic = musicRepository.findById(cdMusic);
+
+        if(optionalMusic.isEmpty()){
+            throw new AlertException(
+                    "warn",
+                    String.format("Música com id %S não cadastrado!" , cdMusic),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        return optionalMusic.get();
+    }
+
     @Override
     public List<MusicResponseDto> getAllMusic(){
 
