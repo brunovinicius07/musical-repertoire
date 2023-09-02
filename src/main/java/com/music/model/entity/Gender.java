@@ -1,5 +1,6 @@
 package com.music.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -24,7 +25,8 @@ public class Gender {
 
     private String nmGender;
 
-    @OneToMany(mappedBy = "gender", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "gender", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Music> musics =  new ArrayList<>();
 
     @Override

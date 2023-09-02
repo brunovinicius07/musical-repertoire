@@ -1,5 +1,6 @@
 package com.music.controllers;
 
+import com.music.model.dto.request.MusicPutRequestDto;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.services.MusicService;
 import jakarta.validation.Valid;
@@ -32,8 +33,8 @@ public class MusicController {
     }
 
     @PutMapping("/{cdMusic}")
-    public ResponseEntity<Object> updateMusic(@PathVariable Long cdMusic, @RequestBody @Valid MusicRequestDto musicRequestDto){
-        return ResponseEntity.ok(musicService.updateMusic(cdMusic, musicRequestDto));
+    public ResponseEntity<Object> updateMusic(@PathVariable Long cdMusic, @RequestBody @Valid MusicPutRequestDto musicPutRequestDto){
+        return ResponseEntity.ok(musicService.updateMusic(cdMusic, musicPutRequestDto));
     }
 
     @DeleteMapping("/{cdMusic}")

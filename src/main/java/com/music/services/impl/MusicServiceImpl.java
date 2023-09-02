@@ -1,6 +1,7 @@
 package com.music.services.impl;
 
 import com.music.exception.AlertException;
+import com.music.model.dto.request.MusicPutRequestDto;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.model.dto.response.MusicResponseDto;
 import com.music.model.entity.Gender;
@@ -39,7 +40,7 @@ public class MusicServiceImpl implements MusicService {
         Music music = musicMapper.toMusic(musicRequestDto);
         music.setGender(gender);
 
-        return musicMapper.toMusicResponseDtoRegister(musicRepository.save(music));
+        return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
 
     @Override
@@ -57,10 +58,10 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public  MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto){
+    public  MusicResponseDto updateMusic(Long cdMusic, MusicPutRequestDto musicPutRequestDto){
         Music music = validateMusic(cdMusic);
-        music.setNmMusic(musicRequestDto.getNmMusic() != null ? musicRequestDto.getNmMusic() : music.getNmMusic());
-        music.setSinger(musicRequestDto.getSinger() != null ? musicRequestDto.getSinger() : music.getSinger());
+        music.setNmMusic(musicPutRequestDto.getNmMusic() != null ? musicPutRequestDto.getNmMusic() : music.getNmMusic());
+        music.setSinger(musicPutRequestDto.getSinger() != null ? musicPutRequestDto.getSinger() : music.getSinger());
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
@@ -96,6 +97,7 @@ public class MusicServiceImpl implements MusicService {
         }
         return optionalMusic.get();
     }
+
 
     public List<Music> validateListMusic(){
         List<Music>musicList = musicRepository.findAll();

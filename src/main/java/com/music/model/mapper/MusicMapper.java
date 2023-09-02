@@ -13,9 +13,7 @@ public interface MusicMapper {
     Music toMusic(MusicRequestDto musicRequestDto);
 
 
-    MusicResponseDto toMusicResponseDto(Music music);
-
     @Mapping(source = "gender.nmGender", target = "nmGender")
-    MusicResponseDto toMusicResponseDtoRegister(Music music);
+    MusicResponseDto toMusicResponseDto(Music music);
 
 }

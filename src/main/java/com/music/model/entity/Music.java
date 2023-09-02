@@ -1,5 +1,6 @@
 package com.music.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -24,6 +25,7 @@ public class Music {
 
         private String singer;
 
+        @JsonBackReference
         @ManyToOne
         @JoinColumn(name = "gender")
         private Gender gender;
