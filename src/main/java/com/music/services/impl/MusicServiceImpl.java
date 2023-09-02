@@ -38,12 +38,14 @@ public class MusicServiceImpl implements MusicService {
 
         Music music = musicMapper.toMusic(musicRequestDto);
         music.setGender(gender);
+
         return musicMapper.toMusicResponseDtoRegister(musicRepository.save(music));
     }
 
     @Override
     public List<MusicResponseDto> getAllMusic(){
         List<Music> musicList = validateListMusic();
+
         return musicList.stream().map((x) -> musicMapper.toMusicResponseDto(x)).collect(Collectors.toList());
     }
 
