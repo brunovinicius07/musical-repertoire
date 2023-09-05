@@ -3,7 +3,6 @@ package com.music.services.impl;
 import com.music.exception.AlertException;
 import com.music.model.dto.request.GenderRequestDto;
 import com.music.model.dto.response.GenderResponseDto;
-import com.music.model.dto.response.MusicResponseDto;
 import com.music.model.entity.Gender;
 import com.music.model.mapper.GenderMapper;
 import com.music.repositories.GenderRepository;

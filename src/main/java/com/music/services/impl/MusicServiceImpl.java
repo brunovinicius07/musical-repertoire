@@ -1,7 +1,6 @@
 package com.music.services.impl;
 
 import com.music.exception.AlertException;
-import com.music.model.dto.request.MusicPutRequestDto;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.model.dto.response.MusicResponseDto;
 import com.music.model.entity.Gender;
@@ -22,7 +21,6 @@ public class MusicServiceImpl implements MusicService {
     private MusicMapper musicMapper;
 
     private MusicRepository musicRepository;
-
 
     private GenderServiceImpl genderServiceImp;
 
@@ -58,10 +56,10 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public  MusicResponseDto updateMusic(Long cdMusic, MusicPutRequestDto musicPutRequestDto){
+    public  MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto){
         Music music = validateMusic(cdMusic);
-        music.setNmMusic(musicPutRequestDto.getNmMusic() != null ? musicPutRequestDto.getNmMusic() : music.getNmMusic());
-        music.setSinger(musicPutRequestDto.getSinger() != null ? musicPutRequestDto.getSinger() : music.getSinger());
+        music.setNmMusic(musicRequestDto.getNmMusic() != null ? musicRequestDto.getNmMusic() : music.getNmMusic());
+        music.setSinger(musicRequestDto.getSinger() != null ? musicRequestDto.getSinger() : music.getSinger());
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }

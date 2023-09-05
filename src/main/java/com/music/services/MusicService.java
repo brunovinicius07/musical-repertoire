@@ -1,6 +1,5 @@
 package com.music.services;
 
-import com.music.model.dto.request.MusicPutRequestDto;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.model.dto.response.MusicResponseDto;
 
@@ -14,7 +13,7 @@ public interface MusicService {
 
     MusicResponseDto getMusicById(Long cdMusic);
 
-    MusicResponseDto updateMusic(Long cdMusic, MusicPutRequestDto musicPutRequestDto);
+    MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto);
 
     Object deleteMusic(Long cdMusic);
 }
