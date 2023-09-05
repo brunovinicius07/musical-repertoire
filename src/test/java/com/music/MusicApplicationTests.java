@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class MusicApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void main() {
+		MusicApplication.main(new String[] {});
 	}
 
 }
