@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "v1/music/genders")
 public class GenderController {
 
-    @Autowired
-    private GenderService genderService;
+    private final GenderService genderService;
+
+    public GenderController(GenderService genderService) {
+        this.genderService = genderService;
+    }
 
     @PostMapping
     public ResponseEntity<Object> registerGender(@RequestBody @Valid GenderRequestDto genderRequestDto){

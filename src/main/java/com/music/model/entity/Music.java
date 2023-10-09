@@ -1,7 +1,9 @@
 package com.music.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -25,9 +27,10 @@ public class Music {
 
         private String singer;
 
-        @JsonBackReference
+        @JsonIgnore
         @ManyToOne
-        @JoinColumn(name = "gender")
+        @JoinColumn(name = "cd_gender")
+        @NotNull
         private Gender gender;
 
     @Override

@@ -10,6 +10,7 @@ import com.music.repositories.MusicRepository;
 import com.music.services.MusicService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,10 +61,13 @@ public class MusicServiceImpl implements MusicService {
         Music music = validateMusic(cdMusic);
         music.setNmMusic(musicRequestDto.getNmMusic() != null ? musicRequestDto.getNmMusic() : music.getNmMusic());
         music.setSinger(musicRequestDto.getSinger() != null ? musicRequestDto.getSinger() : music.getSinger());
+        music.getGender().setCdGender(musicRequestDto.getCdGender());
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
 
+    @Override
+    @Transactional(readOnly = false)
     public String deleteMusic(Long cdMusic){
         Music music = validateMusic(cdMusic);
         musicRepository.delete(music);

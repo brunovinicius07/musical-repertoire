@@ -25,8 +25,8 @@ public class Gender {
 
     private String nmGender;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "gender", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "gender", fetch = FetchType.EAGER)
     private List<Music> musics =  new ArrayList<>();
 
     @Override
