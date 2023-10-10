@@ -7,9 +7,9 @@ import com.music.model.entity.Gender;
 import com.music.model.mapper.GenderMapper;
 import com.music.repositories.GenderRepository;
 import com.music.services.GenderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,72 +18,50 @@ import java.util.stream.Collectors;
 @Service
 public class GenderServiceImpl implements GenderService {
 
-    @Autowired
-    private GenderRepository genderRepository;
+    private final GenderRepository genderRepository;
 
-    @Autowired
-    private GenderMapper genderMapper;
+
+    private final GenderMapper genderMapper;
+
+    public GenderServiceImpl(GenderRepository genderRepository, GenderMapper genderMapper) {
+        this.genderRepository = genderRepository;
+        this.genderMapper = genderMapper;
+    }
 
     @Override
-    public GenderResponseDto registerGender(GenderRequestDto genderRequestDto){
+    @Transactional(readOnly = false)
+    public GenderResponseDto registerGender(GenderRequestDto genderRequestDto) {
         existingGender(genderRequestDto.getNmGender());
 
         return genderMapper.toGenderResponseDto(genderRepository.save(genderMapper.toGender(genderRequestDto)));
     }
 
-    public List<GenderResponseDto> getAllGender(){
-        List<Gender> genderList = validateListGender();
-
-        return genderList.stream().map((x) -> genderMapper.toGenderResponseDto(x)).collect(Collectors.toList());
-    }
-
-    public GenderResponseDto getGenderById(Long cdGender){
-        var gender = validateGender(cdGender);
-
-        return genderMapper.toGenderResponseDto(gender);
-    }
-
-    public GenderResponseDto updateGender(Long cdGender, GenderRequestDto genderRequestDto){
-        Gender gender = validateGender(cdGender);
-        gender.setNmGender(genderRequestDto.getNmGender() != null ? genderRequestDto.getNmGender() : gender.getNmGender());
-        return genderMapper.toGenderResponseDto(genderRepository.save(gender));
-    }
-
-    public String deleteGender(Long cdGender){
-        Gender gender = validateGender(cdGender);
-        genderRepository.delete(gender);
-        return "Genêro com ID " + cdGender + " excluído com sucesso!";
-    }
-
-    public void existingGender(String nmGender){
+    @Transactional(readOnly = true)
+    public void existingGender(String nmGender) {
         Optional<Gender> optionalGender = genderRepository.findByNmGender(nmGender);
 
-        if (optionalGender.isPresent()){
+        if (optionalGender.isPresent()) {
             throw new AlertException(
                     "warn",
-                    String.format("Gênero %S já está cadastrado!", nmGender ),
+                    String.format("Gênero %S já está cadastrado!", nmGender),
                     HttpStatus.CONFLICT
             );
         }
     }
 
-    public Gender validateGender(Long cdGender){
-        Optional<Gender> optionalGender = genderRepository.findById(cdGender);
+    @Override
+    @Transactional(readOnly = true)
+    public List<GenderResponseDto> getAllGender() {
+        List<Gender> genderList = validateListGender();
 
-        if(optionalGender.isEmpty()){
-            throw new AlertException(
-                    "warn",
-                    String.format("Genênero com id %S não cadastrado!" , cdGender),
-                    HttpStatus.NOT_FOUND
-            );
-        }
-        return optionalGender.get();
+        return genderList.stream().map((x) -> genderMapper.toGenderResponseDto(x)).collect(Collectors.toList());
     }
 
-    public List<Gender> validateListGender(){
-        List<Gender>genderList = genderRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<Gender> validateListGender() {
+        List<Gender> genderList = genderRepository.findAll();
 
-        if (genderList.isEmpty()){
+        if (genderList.isEmpty()) {
             throw new AlertException(
                     "warn",
                     String.format("Nenhum gênero encontrado!"),
@@ -92,4 +70,44 @@ public class GenderServiceImpl implements GenderService {
         }
         return genderList;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public GenderResponseDto getGenderById(Long cdGender) {
+        var gender = validateGender(cdGender);
+
+        return genderMapper.toGenderResponseDto(gender);
+    }
+
+    @Transactional(readOnly = true)
+    public Gender validateGender(Long cdGender) {
+        Optional<Gender> optionalGender = genderRepository.findById(cdGender);
+
+        if (optionalGender.isEmpty()) {
+            throw new AlertException(
+                    "warn",
+                    String.format("Genênero com id %S não cadastrado!", cdGender),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        return optionalGender.get();
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public GenderResponseDto updateGender(Long cdGender, GenderRequestDto genderRequestDto) {
+        Gender gender = validateGender(cdGender);
+        gender.setNmGender(genderRequestDto.getNmGender() != null ? genderRequestDto.getNmGender() : gender.getNmGender());
+        return genderMapper.toGenderResponseDto(genderRepository.save(gender));
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public String deleteGender(Long cdGender) {
+        Gender gender = validateGender(cdGender);
+        genderRepository.delete(gender);
+        return "Genêro com ID " + cdGender + " excluído com sucesso!";
+    }
+
+
 }
