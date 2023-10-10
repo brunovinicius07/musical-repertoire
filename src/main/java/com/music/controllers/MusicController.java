@@ -3,7 +3,6 @@ package com.music.controllers;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.services.MusicService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,34 +11,35 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "v1/music/musics")
 public class MusicController {
 
-    @Autowired
-    private MusicService musicService;
+    private final MusicService musicService;
+
+    public MusicController(MusicService musicService) {
+        this.musicService = musicService;
+    }
 
 
     @PostMapping
-    public ResponseEntity<Object> registerMusic(@RequestBody @Valid MusicRequestDto musicRequestDto){
+    public ResponseEntity<Object> registerMusic(@RequestBody @Valid MusicRequestDto musicRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(musicService.registerMusic(musicRequestDto));
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllMusic(){
+    public ResponseEntity<Object> getAllMusic() {
         return ResponseEntity.ok(musicService.getAllMusic());
     }
 
     @GetMapping("/{cdMusic}")
-    public ResponseEntity<Object> getMusicById(@PathVariable Long cdMusic){
+    public ResponseEntity<Object> getMusicById(@PathVariable Long cdMusic) {
         return ResponseEntity.ok(musicService.getMusicById(cdMusic));
     }
 
     @PutMapping("/{cdMusic}")
-    public ResponseEntity<Object> updateMusic(@PathVariable Long cdMusic, @RequestBody @Valid MusicRequestDto musicRequestDto){
+    public ResponseEntity<Object> updateMusic(@PathVariable Long cdMusic, @RequestBody @Valid MusicRequestDto musicRequestDto) {
         return ResponseEntity.ok(musicService.updateMusic(cdMusic, musicRequestDto));
     }
 
     @DeleteMapping("/{cdMusic}")
-    public ResponseEntity<Object> deleteMusic(@PathVariable Long cdMusic){
+    public ResponseEntity<Object> deleteMusic(@PathVariable Long cdMusic) {
         return ResponseEntity.ok(musicService.deleteMusic(cdMusic));
     }
-
-
 }
