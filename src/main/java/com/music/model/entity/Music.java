@@ -3,7 +3,9 @@ package com.music.model.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -23,8 +25,12 @@ public class Music {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long cdMusic;
 
+        @Size(max = 30)
+        @NotBlank
         private String nmMusic;
 
+        @Size(max = 30)
+        @NotBlank
         private String singer;
 
         @JsonIgnore

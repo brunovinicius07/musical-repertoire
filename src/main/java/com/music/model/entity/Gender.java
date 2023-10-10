@@ -2,6 +2,9 @@ package com.music.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -23,6 +26,8 @@ public class Gender {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cdGender;
 
+    @Size(max = 25)
+    @NotBlank
     private String nmGender;
 
 
