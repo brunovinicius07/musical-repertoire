@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 @Service
 public class MusicServiceImpl implements MusicService {
 
-    private MusicMapper musicMapper;
+    private final MusicMapper musicMapper;
 
-    private MusicRepository musicRepository;
+    private final MusicRepository musicRepository;
 
-    private GenderServiceImpl genderServiceImp;
+    private final GenderServiceImpl genderServiceImp;
 
     public MusicServiceImpl(MusicMapper musicMapper, MusicRepository musicRepository, GenderServiceImpl genderServiceImp) {
         this.musicMapper = musicMapper;
@@ -61,7 +61,7 @@ public class MusicServiceImpl implements MusicService {
     public List<MusicResponseDto> getAllMusic() {
         List<Music> musicList = validateListMusic();
 
-        return musicList.stream().map(x -> musicMapper.toMusicResponseDto(x)).collect(Collectors.toList());
+        return musicList.stream().map(musicMapper::toMusicResponseDto).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +71,7 @@ public class MusicServiceImpl implements MusicService {
         if (musicList.isEmpty()) {
             throw new AlertException(
                     "warn",
-                    String.format("Nenhuma música encontrada!"),
+                    ("Nenhuma música encontrada!"),
                     HttpStatus.NOT_FOUND
             );
         }

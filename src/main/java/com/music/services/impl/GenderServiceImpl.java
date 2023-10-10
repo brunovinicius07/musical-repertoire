@@ -54,7 +54,7 @@ public class GenderServiceImpl implements GenderService {
     public List<GenderResponseDto> getAllGender() {
         List<Gender> genderList = validateListGender();
 
-        return genderList.stream().map((x) -> genderMapper.toGenderResponseDto(x)).collect(Collectors.toList());
+        return genderList.stream().map(genderMapper::toGenderResponseDto).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -64,7 +64,7 @@ public class GenderServiceImpl implements GenderService {
         if (genderList.isEmpty()) {
             throw new AlertException(
                     "warn",
-                    String.format("Nenhum gênero encontrado!"),
+                    "Nenhum gênero encontrado!",
                     HttpStatus.NOT_FOUND
             );
         }
