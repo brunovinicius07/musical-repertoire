@@ -17,9 +17,9 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Entity
-@Table(name = "table_gender")
 @AllArgsConstructor
+@Entity
+@Table(name = "tb_gender")
 public class Gender {
 
     @Id

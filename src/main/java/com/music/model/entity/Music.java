@@ -18,7 +18,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "table_music")
+@Table(name = "tb_music")
 public class Music {
 
         @Id

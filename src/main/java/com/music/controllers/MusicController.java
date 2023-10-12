@@ -18,12 +18,12 @@ public class MusicController {
     }
 
 
-    @PostMapping
+    @PostMapping("/post")
     public ResponseEntity<Object> registerMusic(@RequestBody @Valid MusicRequestDto musicRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(musicService.registerMusic(musicRequestDto));
     }
 
-    @GetMapping
+    @GetMapping("/get")
     public ResponseEntity<Object> getAllMusic() {
         return ResponseEntity.ok(musicService.getAllMusic());
     }
@@ -33,12 +33,12 @@ public class MusicController {
         return ResponseEntity.ok(musicService.getMusicById(cdMusic));
     }
 
-    @PutMapping("/{cdMusic}")
+    @PutMapping("/put/{cdMusic}")
     public ResponseEntity<Object> updateMusic(@PathVariable Long cdMusic, @RequestBody @Valid MusicRequestDto musicRequestDto) {
         return ResponseEntity.ok(musicService.updateMusic(cdMusic, musicRequestDto));
     }
 
-    @DeleteMapping("/{cdMusic}")
+    @DeleteMapping("/delete/{cdMusic}")
     public ResponseEntity<Object> deleteMusic(@PathVariable Long cdMusic) {
         return ResponseEntity.ok(musicService.deleteMusic(cdMusic));
     }
