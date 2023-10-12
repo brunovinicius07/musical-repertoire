@@ -7,6 +7,7 @@ import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
 import com.music.role.UserRole;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -73,11 +74,18 @@ public class AuthenticationService {
     }
 
     @Transactional(readOnly = true)
-    public boolean userIsInvalid(RegisterRequest requestWithUser) {
+    public Optional<User> userIsInvalid(String email) {
+        Optional<User> newUser = this.userRepository.findByEmail(email);
 
-        Optional<User> newUser = this.userRepository.findByEmail(requestWithUser.getEmail());
+        if (newUser.isPresent()) {
+            throw new AlertException(
+                    "warn",
+                    String.format("Email já cadastrado", email),
+                    HttpStatus.CONFLICT
+            );
+        }
 
-        return newUser.isPresent();
+        return newUser;
     }
 
     @Transactional(readOnly = true)

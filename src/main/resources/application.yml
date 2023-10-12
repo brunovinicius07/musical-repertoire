@@ -1,11 +1,6 @@
 server:
   port: 80
 
-api:
-  security:
-    token:
-      secret: ${JWT_SECRET:my-secret-key}
-
 ## H2 Connection
 spring:
   datasource:
