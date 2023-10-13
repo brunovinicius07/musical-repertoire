@@ -86,7 +86,7 @@ public class GenderServiceImpl implements GenderService {
         if (optionalGender.isEmpty()) {
             throw new AlertException(
                     "warn",
-                    String.format("Genênero com id %S não cadastrado!", cdGender),
+                    String.format("Genêro com id %S não cadastrado!", cdGender),
                     HttpStatus.NOT_FOUND
             );
         }
