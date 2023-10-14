@@ -124,9 +124,43 @@ class GenderServiceImplTest {
     }
 
     @Test
-    void getAllGender() {
+    void getAllGender_success() {
+        when(genderRepository.findAll()).thenReturn(List.of(gender));
+        when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
+
+        List<GenderResponseDto> response = genderServiceImpl.getAllGender();
+
+        verify(genderRepository, times(1)).findAll();
+        verify(genderMapper, times(1)).toGenderResponseDto(any());
+        verifyNoMoreInteractions(genderRepository, genderMapper);
+
+        assertNotNull(response);
+        assertEquals(CD_GENDER, response.get(0).getCdGender());
+        assertEquals(NM_GENDER, response.get(0).getNmGender());
+        assertEquals(MUSICS, response.get(0).getMusics());
     }
 
+    @Test
+    void getAllGender_failure() {
+        when(genderRepository.findAll()).thenReturn(List.of());
+        when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
+
+
+        AlertException exception = assertThrows(AlertException.class, () -> {
+            genderServiceImpl.getAllGender();
+        });
+
+        verify(genderRepository, times(1)).findAll();
+        verify(genderMapper, never()).toGenderResponseDto(any());
+        verify(genderRepository).findAll();
+        verify(genderMapper, never()).toGenderResponseDto(any());
+
+        assertNotNull(exception.getMessage());
+        assertEquals("Nenhum gênero encontrado!", exception.getMessage());
+        assertThrows(AlertException.class, () -> genderServiceImpl.getAllGender());
+
+
+    }
     @Test
     void findByIdGender_success() {
         when(genderRepository.findById(anyLong())).thenReturn(genderOptional);
