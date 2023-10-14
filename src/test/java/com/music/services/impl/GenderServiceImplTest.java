@@ -79,7 +79,7 @@ class GenderServiceImplTest {
     void registerGender_failure() {
         when(genderRepository.findByNmGender(anyString())).thenReturn(genderOptional);
 
-        Exception exception = assertThrows(AlertException.class, () -> {
+        AlertException exception = assertThrows(AlertException.class, () -> {
             GenderRequestDto resquest = new GenderRequestDto(NM_GENDER);
             genderServiceImpl.registerGender(resquest);
         });
@@ -109,7 +109,7 @@ class GenderServiceImplTest {
     void existingGender_failure() {
         when(genderRepository.findByNmGender(NM_GENDER)).thenReturn(genderOptional);
 
-        Exception exception = assertThrows(AlertException.class, () -> {
+        AlertException exception = assertThrows(AlertException.class, () -> {
             genderServiceImpl.existingGender(NM_GENDER);
         });
         verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
@@ -155,7 +155,7 @@ class GenderServiceImplTest {
     void findByIdGender_failure() {
         when(genderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(AlertException.class, () -> {
+        AlertException exception = assertThrows(AlertException.class, () -> {
             genderServiceImpl.getGenderById(CD_GENDER);
         });
 
@@ -168,6 +168,47 @@ class GenderServiceImplTest {
         assertEquals("Gênero com id 1 não cadastrado!", exception.getMessage());
         assertThrows(AlertException.class, () -> genderServiceImpl.getGenderById(CD_GENDER));
     }
+
+    @Test
+    void validateGender_success() {
+        when(genderRepository.findById(anyLong())).thenReturn(genderOptional);
+        when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
+        when(genderMapper.toGender(any())).thenReturn(gender);
+
+        Gender result = genderServiceImpl.validateGender(CD_GENDER);
+
+        verify(genderRepository, times(1)).findById(CD_GENDER);
+        verifyNoMoreInteractions(genderRepository, genderMapper);
+        verify(genderMapper, never()).toGenderResponseDto(any());
+        verify(genderRepository).findById(CD_GENDER);
+
+        assertNotNull(result);
+        assertEquals(gender, result);
+        assertEquals(CD_GENDER, result.getCdGender());
+        assertEquals(NM_GENDER, result.getNmGender());
+        assertEquals(MUSICS, result.getMusics());
+        assertDoesNotThrow(() -> genderServiceImpl.getGenderById(CD_GENDER));
+        assertDoesNotThrow(() -> genderServiceImpl.validateGender(CD_GENDER));
+    }
+
+    @Test
+    void validateGender_failure() {
+        when(genderRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        AlertException exception = assertThrows(AlertException.class, () -> {
+            genderServiceImpl.validateGender(CD_GENDER);
+        });
+
+        verify(genderRepository, times(1)).findById(CD_GENDER);
+        verify(genderMapper, never()).toGenderResponseDto(any());
+        verify(genderRepository).findById(CD_GENDER);
+        verify(genderMapper, never()).toGenderResponseDto(any());
+
+        assertNotNull(exception.getMessage());
+        assertEquals("Gênero com id 1 não cadastrado!", exception.getMessage());
+        assertThrows(AlertException.class, () -> genderServiceImpl.validateGender(CD_GENDER));
+    }
+
 
     @Test
     void updateGender() {
