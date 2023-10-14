@@ -7,23 +7,20 @@ import com.music.model.entity.Gender;
 import com.music.model.entity.Music;
 import com.music.model.mapper.GenderMapper;
 import com.music.repositories.GenderRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 @SpringBootTest
 class GenderServiceImplTest {
@@ -52,7 +49,7 @@ class GenderServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        openMocks(this);
         startGender();
     }
 
@@ -71,7 +68,6 @@ class GenderServiceImplTest {
         verifyNoMoreInteractions(genderMapper);
         verify(genderMapper).toGenderResponseDto(eq(gender));
 
-        assertTrue(response instanceof GenderResponseDto);
         assertNotNull(response);
         assertEquals(genderResponseDto, response);
         assertEquals(CD_GENDER, response.getCdGender());
@@ -83,13 +79,45 @@ class GenderServiceImplTest {
     void registerGender_failure() {
         when(genderRepository.findByNmGender(anyString())).thenReturn(genderOptional);
 
-        Exception exception = Assertions.assertThrows(AlertException.class, () -> {
+        Exception exception = assertThrows(AlertException.class, () -> {
             GenderRequestDto resquest = new GenderRequestDto(NM_GENDER);
             genderServiceImpl.registerGender(resquest);
         });
 
-        verify(genderRepository, Mockito.times(1)).findByNmGender(NM_GENDER);
-        verify(genderMapper, Mockito.never()).toGenderResponseDto(any());
+        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verify(genderMapper, never()).toGenderResponseDto(any());
+
+        assertNotNull(exception.getMessage());
+        assertEquals("Gênero MPB já está cadastrado!", exception.getMessage());
+    }
+
+    @Test
+    void existingGender_success() {
+        when(genderRepository.findByNmGender(anyString())).thenReturn(Optional.empty());
+
+        genderServiceImpl.existingGender(NM_GENDER);
+
+        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verifyNoMoreInteractions(genderRepository, genderMapper);
+        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verify(genderMapper, never()).toGenderResponseDto(any());
+        verifyNoMoreInteractions(genderRepository);
+        verifyNoMoreInteractions(genderMapper);
+    }
+
+    @Test
+    void existingGender_failure() {
+        when(genderRepository.findByNmGender(NM_GENDER)).thenReturn(genderOptional);
+
+        Exception exception = assertThrows(AlertException.class, () -> {
+            genderServiceImpl.existingGender(NM_GENDER);
+        });
+        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verifyNoMoreInteractions(genderRepository, genderMapper);
+        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verify(genderMapper, never()).toGenderResponseDto(any());
+        verifyNoMoreInteractions(genderRepository);
+        verifyNoMoreInteractions(genderMapper);
 
         assertNotNull(exception.getMessage());
         assertEquals("Gênero MPB já está cadastrado!", exception.getMessage());
@@ -101,21 +129,19 @@ class GenderServiceImplTest {
 
     @Test
     void findByIdGender_success() {
-        when(genderRepository.findById(Mockito.anyLong())).thenReturn(genderOptional);
+        when(genderRepository.findById(anyLong())).thenReturn(genderOptional);
         when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
         when(genderMapper.toGender(any())).thenReturn(gender);
 
         GenderResponseDto result = genderServiceImpl.getGenderById(CD_GENDER);
 
-        verify(genderRepository, Mockito.times(1)).findById(CD_GENDER);
-        verify(genderMapper, Mockito.times(1)).toGenderResponseDto(gender);
+        verify(genderRepository, times(1)).findById(CD_GENDER);
+        verify(genderMapper, times(1)).toGenderResponseDto(gender);
         verifyNoMoreInteractions(genderRepository, genderMapper);
         verifyNoMoreInteractions(genderMapper);
-        verify(genderRepository).findById(eq(CD_GENDER));
-        verify(genderMapper).toGenderResponseDto(eq(gender));
+        verify(genderRepository).findById(CD_GENDER);
+        verify(genderMapper).toGenderResponseDto(gender);
 
-
-        assertTrue(result instanceof GenderResponseDto);
         assertNotNull(result);
         assertEquals(genderResponseDto, result);
         assertEquals(GenderResponseDto.class, result.getClass());
@@ -127,15 +153,15 @@ class GenderServiceImplTest {
 
     @Test
     void findByIdGender_failure() {
-        when(genderRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+        when(genderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Exception exception = Assertions.assertThrows(AlertException.class, () -> {
+        Exception exception = assertThrows(AlertException.class, () -> {
             genderServiceImpl.getGenderById(CD_GENDER);
         });
 
-        verify(genderRepository, Mockito.times(1)).findById(CD_GENDER);
-        verify(genderMapper, Mockito.never()).toGenderResponseDto(any());
-        verify(genderRepository).findById(eq(CD_GENDER));
+        verify(genderRepository, times(1)).findById(CD_GENDER);
+        verify(genderMapper, never()).toGenderResponseDto(any());
+        verify(genderRepository).findById(CD_GENDER);
         verify(genderMapper, never()).toGenderResponseDto(any());
 
         assertNotNull(exception.getMessage());
@@ -167,6 +193,6 @@ class GenderServiceImplTest {
         //listMusic.add(new Music(1L, "show", "Teste", new Gender()));
         gender = new Gender(CD_GENDER, NM_GENDER, MUSICS);
         genderResponseDto = new GenderResponseDto(CD_GENDER, NM_GENDER, MUSICS);
-        genderOptional = Optional.of(new Gender(CD_GENDER, NM_GENDER,MUSICS));
+        genderOptional = Optional.of(new Gender(CD_GENDER, NM_GENDER, MUSICS));
     }
 }
