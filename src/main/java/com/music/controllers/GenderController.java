@@ -1,7 +1,6 @@
 package com.music.controllers;
 
 import com.music.model.dto.request.GenderRequestDto;
-import com.music.model.dto.response.GenderResponseDto;
 import com.music.services.GenderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

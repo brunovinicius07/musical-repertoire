@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +81,9 @@ class GenderServiceImplTest {
         when(genderRepository.findByNmGender(anyString())).thenReturn(genderOptional);
         when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
 
+        GenderRequestDto resquest = new GenderRequestDto(NM_GENDER);
+
         AlertException exception = assertThrows(AlertException.class, () -> {
-            GenderRequestDto resquest = new GenderRequestDto(NM_GENDER);
             genderServiceImpl.registerGender(resquest);
         });
 
@@ -90,6 +92,8 @@ class GenderServiceImplTest {
 
         assertNotNull(exception.getMessage());
         assertEquals("Gênero MPB já está cadastrado!", exception.getMessage());
+        assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
     }
 
     @Test
@@ -124,6 +128,9 @@ class GenderServiceImplTest {
 
         assertNotNull(exception.getMessage());
         assertEquals("Gênero MPB já está cadastrado!", exception.getMessage());
+        assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
+        assertThrows(AlertException.class, () -> genderServiceImpl.existingGender(NM_GENDER));
     }
 
     @Test
@@ -160,6 +167,8 @@ class GenderServiceImplTest {
 
         assertNotNull(exception.getMessage());
         assertEquals("Nenhum gênero encontrado!", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
         assertThrows(AlertException.class, () -> genderServiceImpl.getAllGender());
     }
 
@@ -194,6 +203,8 @@ class GenderServiceImplTest {
         verify(genderMapper, never()).toGenderResponseDto(any());
         assertNotNull(exception.getMessage());
         assertEquals("Nenhum gênero encontrado!", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
         assertThrows(AlertException.class, () -> genderServiceImpl.getAllGender());
     }
 
@@ -236,6 +247,8 @@ class GenderServiceImplTest {
 
         assertNotNull(exception.getMessage());
         assertEquals("Gênero com id 1 não cadastrado!", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
         assertThrows(AlertException.class, () -> genderServiceImpl.getGenderById(CD_GENDER));
     }
 
@@ -276,6 +289,8 @@ class GenderServiceImplTest {
 
         assertNotNull(exception.getMessage());
         assertEquals("Gênero com id 1 não cadastrado!", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
         assertThrows(AlertException.class, () -> genderServiceImpl.validateGender(CD_GENDER));
     }
 
@@ -311,12 +326,35 @@ class GenderServiceImplTest {
 
         assertNotNull(exception.getMessage());
         assertEquals("Gênero com id 1 não cadastrado!", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
         assertThrows(AlertException.class, () -> genderServiceImpl.updateGender(CD_GENDER, genderRequestDto));
     }
 
+    @Test
+    void deleteGender_success() {
+        when(genderRepository.findById(anyLong())).thenReturn(genderOptional);
+
+        String result = genderServiceImpl.deleteGender(CD_GENDER);
+
+        assertNotNull(result);
+        assertEquals("Genêro com ID 1 excluído com sucesso!", result);
+        assertEquals(String.class, result.getClass());
+    }
 
     @Test
-    void deleteGender() {
+    void deleteGender_failure() {
+        when(genderRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        AlertException exception = assertThrows(AlertException.class, () -> {
+            genderServiceImpl.deleteGender(CD_GENDER);
+        });
+
+        assertNotNull(exception.getMessage());
+        assertEquals("Gênero com id 1 não cadastrado!", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
+        assertThrows(AlertException.class, () -> genderServiceImpl.validateGender(CD_GENDER));
     }
 
     private void startGender() {
