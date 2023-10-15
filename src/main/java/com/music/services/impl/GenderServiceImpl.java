@@ -97,7 +97,7 @@ public class GenderServiceImpl implements GenderService {
     @Transactional(readOnly = false)
     public GenderResponseDto updateGender(Long cdGender, GenderRequestDto genderRequestDto) {
         Gender gender = validateGender(cdGender);
-        gender.setNmGender(genderRequestDto.getNmGender() != null ? genderRequestDto.getNmGender() : gender.getNmGender());
+        gender.setNmGender(genderRequestDto.getNmGender());
         return genderMapper.toGenderResponseDto(genderRepository.save(gender));
     }
 

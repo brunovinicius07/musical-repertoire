@@ -279,29 +279,47 @@ class GenderServiceImplTest {
         assertThrows(AlertException.class, () -> genderServiceImpl.validateGender(CD_GENDER));
     }
 
+    @Test
+    void updateGender_success() {
+        when(genderRepository.save(any())).thenReturn(gender);
+        when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
+        when(genderRepository.findById(anyLong())).thenReturn(genderOptional);
+
+        GenderResponseDto result = genderServiceImpl.updateGender(CD_GENDER, genderRequestDto);
+
+        verify(genderRepository, times(1)).findById(CD_GENDER);
+        verify(genderRepository, times(1)).save(any());
+        verify(genderMapper, times(1)).toGenderResponseDto(any(Gender.class));
+        verifyNoMoreInteractions(genderRepository, genderMapper);
+
+        assertNotNull(result);
+        assertEquals(NM_GENDER, result.getNmGender());
+    }
 
     @Test
-    void updateGender() {
+    void updateGender_failure() {
+        when(genderRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
+
+        AlertException exception = assertThrows(AlertException.class, () -> {
+            genderServiceImpl.updateGender(CD_GENDER, genderRequestDto);
+        });
+
+        verify(genderRepository, times(1)).findById(CD_GENDER);
+        verify(genderMapper, never()).toGenderResponseDto(any(Gender.class));
+        verifyNoMoreInteractions(genderRepository, genderMapper);
+
+        assertNotNull(exception.getMessage());
+        assertEquals("Gênero com id 1 não cadastrado!", exception.getMessage());
+        assertThrows(AlertException.class, () -> genderServiceImpl.updateGender(CD_GENDER, genderRequestDto));
     }
+
 
     @Test
     void deleteGender() {
     }
 
-    @Test
-    void existingGender() {
-    }
-
-    @Test
-    void validateGender() {
-    }
-
-    @Test
-    void validateListGender() {
-    }
-
     private void startGender() {
-        //listMusic.add(new Music(1L, "show", "Teste", new Gender()));
         gender = new Gender(CD_GENDER, NM_GENDER, MUSICS);
         genderResponseDto = new GenderResponseDto(CD_GENDER, NM_GENDER, MUSICS);
         genderOptional = Optional.of(new Gender(CD_GENDER, NM_GENDER, MUSICS));
