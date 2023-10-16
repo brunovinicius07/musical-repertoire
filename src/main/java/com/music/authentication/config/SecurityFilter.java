@@ -1,6 +1,5 @@
 package com.music.authentication.config;
 
-import com.music.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,12 +21,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
-    private final UserRepository userRepository;
-
-    public SecurityFilter(JwtService jwtService, UserDetailsService userDetailsService, UserRepository userRepository) {
+    public SecurityFilter(JwtService jwtService, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
-        this.userRepository = userRepository;
     }
 
     @Override

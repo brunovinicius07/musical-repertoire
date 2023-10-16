@@ -16,6 +16,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableMethodSecurity(jsr250Enabled = true)
 public class SecurityConfiguration {
 
+    public static final String ADMIN = "ADMIN";
     private final SecurityFilter securityFilter;
 
     public SecurityConfiguration(SecurityFilter securityFilter) {
@@ -31,12 +32,12 @@ public class SecurityConfiguration {
                          .requestMatchers(antMatcher("/h2-console/**")).permitAll()
                          .requestMatchers(antMatcher("/v1/music/auth/register")).permitAll()
                          .requestMatchers(antMatcher("/v1/music/auth/login")).permitAll()
-                         .requestMatchers(antMatcher("/v1/music/genders/post")).hasRole("ADMIN")
-                         .requestMatchers(antMatcher("/v1/music/genders/put/{cdGender}")).hasRole("ADMIN")
-                         .requestMatchers(antMatcher("/v1/music/genders/delete/{cdGender}")).hasRole("ADMIN")
-                         .requestMatchers(antMatcher("/v1/music/musics/post")).hasRole("ADMIN")
-                         .requestMatchers(antMatcher("/v1/music/musics/put/{cdGender}")).hasRole("ADMIN")
-                         .requestMatchers(antMatcher("/v1/music/musics/delete/{cdGender}")).hasRole("ADMIN")
+                         .requestMatchers(antMatcher("/v1/music/genders/post")).hasRole(ADMIN)
+                         .requestMatchers(antMatcher("/v1/music/genders/put/{cdGender}")).hasRole(ADMIN)
+                         .requestMatchers(antMatcher("/v1/music/genders/delete/{cdGender}")).hasRole(ADMIN)
+                         .requestMatchers(antMatcher("/v1/music/musics/post")).hasRole(ADMIN)
+                         .requestMatchers(antMatcher("/v1/music/musics/put/{cdGender}")).hasRole(ADMIN)
+                         .requestMatchers(antMatcher("/v1/music/musics/delete/{cdGender}")).hasRole(ADMIN)
                         .anyRequest().authenticated())
                  .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                  .headers(headers -> headers.frameOptions().disable());

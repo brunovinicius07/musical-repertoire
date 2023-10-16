@@ -7,7 +7,6 @@ import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
 import com.music.role.UserRole;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,7 +34,7 @@ public class AuthenticationService {
     }
 
 
-    @Transactional(readOnly = false)
+    @Transactional()
     public AuthenticationResponse register(RegisterRequest request) {
 
         User user = this.userMapper.registerDtoToUser(request);
@@ -74,7 +73,7 @@ public class AuthenticationService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> userIsInvalid(String email) {
+    public void userIsInvalid(String email) {
         Optional<User> newUser = this.userRepository.findByEmail(email);
 
         if (newUser.isPresent()) {
@@ -84,26 +83,9 @@ public class AuthenticationService {
                     HttpStatus.CONFLICT
             );
         }
-
-        return newUser;
     }
 
-    @Transactional(readOnly = true)
-    public User validateEmailUser(String email) {
-
-        Optional<User> optionalUser = this.userRepository.findByEmail(email);
-
-        if (optionalUser.isEmpty()) {
-            throw new AlertException(
-                    "warn",
-                    String.format("Esse email %S está inválido ou não está cadastrado!", email),
-                    HttpStatus.NOT_FOUND
-            );
-        }
-        return optionalUser.get();
-    }
-
-    @Transactional(readOnly = false)
+    @Transactional()
     public void saveEntity(User user) {
         var role = user.getAuthorities().stream().toList().get(0).toString();
 
