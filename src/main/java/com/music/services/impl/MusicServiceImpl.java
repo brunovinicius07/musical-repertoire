@@ -93,7 +93,7 @@ public class MusicServiceImpl implements MusicService {
         if (optionalMusic.isEmpty()) {
             throw new AlertException(
                     "warn",
-                    String.format("Música com id %S não cadastrado!", cdMusic),
+                    String.format("Música com id %S não cadastrada!", cdMusic),
                     HttpStatus.NOT_FOUND
             );
         }
@@ -117,6 +117,6 @@ public class MusicServiceImpl implements MusicService {
         Music music = validateMusic(cdMusic);
         musicRepository.delete(music);
 
-        return "Musica com ID " + cdMusic + " excluído com sucesso!";
+        return "Musica com ID " + cdMusic + " excluída com sucesso!";
     }
 }
