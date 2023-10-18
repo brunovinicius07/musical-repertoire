@@ -121,6 +121,48 @@ class MusicServiceImplTest {
     }
 
     @Test
+    void validateMusic_success() {
+        when(musicRepository.findById(anyLong())).thenReturn(optionalMusic);
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
+        when(musicMapper.toMusic(any())).thenReturn(music);
+
+        Music result = musicService.validateMusic(CD_MUSIC);
+
+        verify(musicRepository, times(1)).findById(CD_MUSIC);
+        verifyNoMoreInteractions(musicRepository, musicMapper);
+        verify(musicMapper, never()).toMusicResponseDto(any());
+        verify(musicRepository).findById(CD_MUSIC);
+
+        assertNotNull(result);
+        assertEquals(music, result);
+        assertEquals(CD_MUSIC, result.getCdMusic());
+        assertEquals(NM_MUSIC, result.getNmMusic());
+        assertEquals(SINGER, result.getSinger());
+        assertDoesNotThrow(() -> musicService.getMusicById(CD_MUSIC));
+        assertDoesNotThrow(() -> musicService.validateMusic(CD_MUSIC));
+    }
+
+    @Test
+    void validateMusic_failure() {
+        when(musicRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        AlertException exception = assertThrows(AlertException.class, () -> {
+            musicService.validateMusic(CD_MUSIC);
+        });
+
+        verify(musicRepository, times(1)).findById(CD_GENDER);
+        verify(musicMapper, never()).toMusicResponseDto(any());
+        verify(musicRepository).findById(CD_MUSIC);
+        verify(musicMapper, never()).toMusicResponseDto(any());
+
+        assertNotNull(exception.getMessage());
+        assertEquals("Música com id 1 não cadastrada!", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
+        assertThrows(AlertException.class, () -> musicService.validateMusic(CD_MUSIC));
+    }
+
+    @Test
     void validateMusic() {
     }
 
