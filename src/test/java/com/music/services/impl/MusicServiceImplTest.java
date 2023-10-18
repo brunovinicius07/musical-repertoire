@@ -110,7 +110,39 @@ class MusicServiceImplTest {
     }
 
     @Test
-    void validateListMusic() {
+    void validateListMusic_success() {
+        when(musicRepository.findAll()).thenReturn(List.of(music));
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
+
+        List<Music> response = musicService.validateListMusic();
+
+        verify(musicRepository, times(1)).findAll();
+        verifyNoMoreInteractions(musicRepository, musicMapper);
+
+        assertNotNull(response);
+        assertEquals(CD_MUSIC, response.get(0).getCdMusic());
+        assertEquals(NM_MUSIC, response.get(0).getNmMusic());
+        assertEquals(SINGER, response.get(0).getSinger());
+    }
+
+    @Test
+    void validateListMusic_failure() {
+        when(musicRepository.findAll()).thenReturn(List.of());
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
+
+        AlertException exception = assertThrows(AlertException.class, () -> {
+            musicService.validateListMusic();
+        });
+
+        verify(musicRepository, times(1)).findAll();
+        verify(musicMapper, never()).toMusicResponseDto(any());
+        verify(musicRepository).findAll();
+        verify(musicMapper, never()).toMusicResponseDto(any());
+        assertNotNull(exception.getMessage());
+        assertEquals("Nenhuma música encontrada!", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
+        assertThrows(AlertException.class, () -> musicService.validateListMusic());
     }
 
     @Test
