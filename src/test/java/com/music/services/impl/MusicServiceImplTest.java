@@ -1,6 +1,7 @@
 package com.music.services.impl;
 
 import com.music.exception.AlertException;
+import com.music.model.dto.request.GenderRequestDto;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.model.dto.response.GenderResponseDto;
 import com.music.model.dto.response.MusicResponseDto;
@@ -41,6 +42,7 @@ class MusicServiceImplTest {
     @Autowired
     private GenderServiceImpl genderService;
 
+
     @MockBean
     private MusicRepository musicRepository;
 
@@ -50,11 +52,18 @@ class MusicServiceImplTest {
     @MockBean
     private GenderRepository genderRepository;
 
+    @MockBean
+    private Optional<Gender> optionalGender;
+
     private Music music;
 
     private MusicResponseDto musicResponseDto;
 
+    private MusicRequestDto musicRequestDto;
+
     private Optional<Music> optionalMusic;
+
+    private Gender gender;
 
     @BeforeEach
     void setUp() {
@@ -63,11 +72,82 @@ class MusicServiceImplTest {
     }
 
     @Test
-    void registerMusic() {
+    void registerMusic_success() {
+        when(genderRepository.findById(anyLong())).thenReturn(Optional.of(gender));
+        when(musicMapper.toMusic(any())).thenReturn(music);
+        when(musicRepository.save(any())).thenReturn(music);
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
+
+        MusicResponseDto response = musicService.registerMusic(musicRequestDto);
+
+        verify(musicRepository, times(1)).save(any());
+        verify(musicMapper, times(1)).toMusicResponseDto(any());
+        verify(musicMapper, times(1)).toMusicResponseDto(any(Music.class));
+        verify(musicMapper, times(1)).toMusic(any());
+        verify(musicMapper, times(1)).toMusicResponseDto(any());
+        verify(musicMapper).toMusicResponseDto(music);
+        verifyNoMoreInteractions(musicMapper);
+        assertNotNull(response);
+        assertEquals(musicResponseDto, response);
+        assertEquals(CD_MUSIC, response.getCdMusic());
+        assertEquals(NM_MUSIC, response.getNmMusic());
+        assertEquals(SINGER, response.getSinger());
+        assertEquals(NM_GENDER, response.getNmGender());
     }
 
     @Test
-    void existingMusic() {
+    void registerMusic_failure() {
+        when(genderRepository.findById(anyLong())).thenReturn(Optional.of(gender));
+        when(musicMapper.toMusic(any())).thenReturn(music);
+        when(musicRepository.save(any())).thenReturn(music);
+        when(musicRepository.findByNmMusicAndSinger(NM_MUSIC, SINGER)).thenReturn(optionalMusic);
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
+
+        MusicRequestDto resquest = musicRequestDto;
+
+        AlertException exception = assertThrows(AlertException.class, () -> {
+            musicService.registerMusic(resquest);
+        });
+
+        verify(musicMapper, never()).toMusicResponseDto(any());
+
+        assertNotNull(exception.getMessage());
+        assertEquals("Música OCEANO já está cadastrada!", exception.getMessage());
+        assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
+    }
+
+    @Test
+    void existingMusic_success() {
+        when(musicRepository.findByNmMusicAndSinger(NM_MUSIC, SINGER)).thenReturn(Optional.empty());
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
+
+        musicService.existingMusic(NM_MUSIC,SINGER);
+
+        verify(musicRepository, times(1)).findByNmMusicAndSinger(NM_MUSIC, SINGER);
+        verifyNoMoreInteractions(musicRepository, musicMapper);
+        verify(musicMapper, never()).toMusicResponseDto(any());
+        verifyNoMoreInteractions(musicRepository);
+        verifyNoMoreInteractions(musicMapper);
+    }
+
+    @Test
+    void existingGender_failure() {
+        when(musicRepository.findByNmMusicAndSinger(NM_MUSIC, SINGER)).thenReturn(optionalMusic);
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
+
+        AlertException exception = assertThrows(AlertException.class, () -> {
+            musicService.existingMusic(NM_MUSIC, SINGER);
+        });
+        verify(musicRepository, times(1)).findByNmMusicAndSinger(NM_MUSIC,SINGER);
+        verifyNoMoreInteractions(musicRepository, musicMapper);
+        verify(musicMapper, never()).toMusicResponseDto(any());
+
+        assertNotNull(exception.getMessage());
+        assertEquals("Música OCEANO já está cadastrada!", exception.getMessage());
+        assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
+        assertThrows(AlertException.class, () -> musicService.existingMusic(NM_MUSIC,SINGER));
     }
 
     @Test
@@ -91,7 +171,6 @@ class MusicServiceImplTest {
     void getAllMusic_failure() {
         when(musicRepository.findAll()).thenReturn(List.of());
         when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
-
 
         AlertException exception = assertThrows(AlertException.class, () -> {
             musicService.getAllMusic();
@@ -174,7 +253,7 @@ class MusicServiceImplTest {
 
         AlertException exception = assertThrows(AlertException.class, () -> {
             musicService.getMusicById(CD_MUSIC);
-        });
+       });
 
         verify(musicRepository, times(1)).findById(CD_MUSIC);
         verify(musicMapper, never()).toMusicResponseDto(any());
@@ -231,10 +310,6 @@ class MusicServiceImplTest {
     }
 
     @Test
-    void validateMusic() {
-    }
-
-    @Test
     void updateMusic() {
     }
 
@@ -243,12 +318,12 @@ class MusicServiceImplTest {
     }
 
     private void startMusic() {
-        Gender gender = new Gender(CD_GENDER, NM_GENDER, MUSICS);
+        gender = new Gender(CD_GENDER, NM_GENDER, MUSICS);
         music = new Music(CD_MUSIC, NM_MUSIC, SINGER, gender);
-        musicResponseDto = new MusicResponseDto(CD_MUSIC, NM_MUSIC, SINGER, gender.getNmGender());
-        MusicRequestDto musicRequestDto = new MusicRequestDto(NM_MUSIC, SINGER, gender.getCdGender());
+        musicResponseDto = new MusicResponseDto(CD_MUSIC, NM_MUSIC, SINGER, NM_GENDER);
+        musicRequestDto = new MusicRequestDto(NM_MUSIC, SINGER, CD_GENDER);
         optionalMusic = Optional.of(new Music(CD_MUSIC, NM_MUSIC, SINGER, gender));
-        Optional<Gender> optionalGender = Optional.of(gender);
+        optionalGender = Optional.of(new Gender(CD_GENDER, NM_GENDER, MUSICS));
     }
 
 
