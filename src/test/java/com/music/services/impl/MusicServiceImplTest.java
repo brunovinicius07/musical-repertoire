@@ -310,7 +310,40 @@ class MusicServiceImplTest {
     }
 
     @Test
-    void updateMusic() {
+    void updateMusic_success() {
+        when(musicRepository.save(any())).thenReturn(music);
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
+        when(musicRepository.findById(anyLong())).thenReturn(optionalMusic);
+
+        MusicResponseDto result = musicService.updateMusic(CD_MUSIC, musicRequestDto);
+
+        verify(musicRepository, times(1)).findById(CD_MUSIC);
+        verify(musicRepository, times(1)).save(any());
+        verify(musicMapper, times(1)).toMusicResponseDto(any(Music.class));
+        verifyNoMoreInteractions(musicRepository, musicMapper);
+
+        assertNotNull(result);
+        assertEquals(NM_MUSIC, result.getNmMusic());
+    }
+
+    @Test
+    void updateMusic_failure() {
+        when(musicRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
+
+        AlertException exception = assertThrows(AlertException.class, () -> {
+            musicService.updateMusic(CD_GENDER, musicRequestDto);
+        });
+
+        verify(musicRepository, times(1)).findById(CD_MUSIC);
+        verify(musicMapper, never()).toMusicResponseDto(any(Music.class));
+        verifyNoMoreInteractions(musicRepository, musicMapper);
+
+        assertNotNull(exception.getMessage());
+        assertEquals("Música com id 1 não cadastrada!", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertEquals("warn", exception.getErrorCode());
+        assertThrows(AlertException.class, () -> musicService.updateMusic(CD_MUSIC, musicRequestDto));
     }
 
     @Test
