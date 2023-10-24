@@ -27,10 +27,7 @@ spring:
           google:
             clientId: ${GOOGLE_CLI}
             clientSecret: ${GOOGLE_SEC}
-
-          facebook:
-            clientId: ${FACEBOOK_CLI}
-            clientSecret: ${FACEBOOK_SEC}
-
-
+      resourceserver:
+        jwt:
+          issuer-uri: https://accounts.google.com
 
