@@ -7,6 +7,8 @@
 ### ⚙️Features Implemented :
 
 -   Mapper / Request / Response
+-   Spring Security / JWT
+-   JUnit 5
 -   Spring Validation
 -   Custom Exception
 -   Service Implement
@@ -42,6 +44,11 @@
     -   Consult Music
     -   Edit Music
     -   Delete Music
+
+#### 🧑🏽User :
+    
+    -   Register User
+    -   Login User
 ---
 
 
@@ -77,8 +84,16 @@
 - updateMusic
 #### DELETE
 - deleteMusic
+  
 ---
 
+### 🧑🏽User Controller :
+
+#### POST:
+- registerUser
+- loginUser
+
+---
 
 
 ### [URL Local :](http://localhost/swagger-ui/index.html#/)
