@@ -9,8 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(target = "cdUser", ignore = true)
+    @Mapping(target = "nmUser", source = "nmUser")
     User registerDtoToUser(RegisterRequest registerDto);
+
 
     UserResponseDto userToDto(User user);
 }

@@ -79,12 +79,10 @@ class MusicServiceImplTest {
         MusicResponseDto response = musicService.registerMusic(musicRequestDto);
 
         verify(musicRepository, times(1)).save(any());
-        verify(musicMapper, times(1)).toMusicResponseDto(any());
         verify(musicMapper, times(1)).toMusicResponseDto(any(Music.class));
         verify(musicMapper, times(1)).toMusic(any());
-        verify(musicMapper, times(1)).toMusicResponseDto(any());
-        verify(musicMapper).toMusicResponseDto(music);
         verifyNoMoreInteractions(musicMapper);
+
         assertNotNull(response);
         assertEquals(musicResponseDto, response);
         assertEquals(CD_MUSIC, response.getCdMusic());

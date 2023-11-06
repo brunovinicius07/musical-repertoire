@@ -32,8 +32,6 @@ public class SecurityConfiguration {
                          .requestMatchers(antMatcher("/h2-console/**")).permitAll()
                          .requestMatchers(antMatcher("/v1/music/auth/register")).permitAll()
                          .requestMatchers(antMatcher("/v1/music/auth/login")).permitAll()
-                         .requestMatchers(antMatcher("/public")).permitAll()
-                         .requestMatchers(antMatcher("/logout")).permitAll()
                          .requestMatchers(antMatcher("/v1/music/genders/post")).hasRole(ADMIN)
                          .requestMatchers(antMatcher("/v1/music/genders/put/{cdGender}")).hasRole(ADMIN)
                          .requestMatchers(antMatcher("/v1/music/genders/delete/{cdGender}")).hasRole(ADMIN)

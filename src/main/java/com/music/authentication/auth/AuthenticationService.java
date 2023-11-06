@@ -50,6 +50,8 @@ public class AuthenticationService {
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         authenticationResponse.setCdUser(user.getCdUser());
         authenticationResponse.setToken(token);
+        authenticationResponse.setNmUser(user.getNmUser());
+
         return authenticationResponse;
     }
 
@@ -68,6 +70,7 @@ public class AuthenticationService {
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         authenticationResponse.setToken(token);
         authenticationResponse.setCdUser(user.getCdUser());
+        authenticationResponse.setNmUser(user.getNmUser());
 
         return authenticationResponse;
     }
