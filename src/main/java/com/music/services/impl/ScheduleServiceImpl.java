@@ -67,7 +67,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (schedule.isEmpty()) {
             throw new AlertException(
                     "warn",
-                    String.format("Evento com id %S não cadastrado!", cdSchedule),
+                    String.format("Nenhuma agenda encontrada!", cdSchedule),
                     HttpStatus.NOT_FOUND
             );
         }
@@ -80,6 +80,14 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Schedule> scheduleList = validateListSchedule();
 
         return scheduleList.stream().map(scheduleMapper::toScheduleResponseDto).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ScheduleResponseDto getScheduleByCdSchedule(Long cdSchedule) {
+        Schedule schedule = validateSchedule(cdSchedule);
+
+        return scheduleMapper.toScheduleResponseDto(schedule);
     }
 
     @Transactional(readOnly = true)

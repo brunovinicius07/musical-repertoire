@@ -26,4 +26,9 @@ public class ScheduleController {
     public ResponseEntity<Object> getAllEvent(){
         return ResponseEntity.ok(scheduleService.getAllEvent());
     }
+
+    @GetMapping("/{cdSchedule}")
+    public ResponseEntity<Object> getScheduleByCdSchedule(@PathVariable Long cdSchedule){
+        return ResponseEntity.ok(scheduleService.getScheduleByCdSchedule(cdSchedule));
+    }
 }

@@ -9,4 +9,6 @@ public interface ScheduleService {
     ScheduleResponseDto createSchedule(ScheduleRequestDto scheduleRequestDto);
 
     List<ScheduleResponseDto> getAllEvent();
+
+    ScheduleResponseDto getScheduleByCdSchedule(Long cdSchedule);
 }
