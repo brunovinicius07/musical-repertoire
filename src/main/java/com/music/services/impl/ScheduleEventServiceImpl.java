@@ -3,6 +3,7 @@ package com.music.services.impl;
 import com.music.exception.AlertException;
 import com.music.model.dto.request.ScheduleEventRequestDto;
 import com.music.model.dto.response.ScheduleEventResponseDto;
+import com.music.model.entity.Music;
 import com.music.model.entity.Schedule;
 import com.music.model.entity.ScheduleEvent;
 import com.music.model.mapper.ScheduleEventMapper;
@@ -59,4 +60,42 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
             );
         }
     }
+
+    @Override
+    @Transactional(readOnly = false)
+    public ScheduleEventResponseDto updateSheduleEvent(Long cdScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto) {
+        ScheduleEvent scheduleEvent = validateScheduleEvent(cdScheduleEvent);
+        scheduleEvent.setDay(scheduleEventRequestDto.getDay());
+        scheduleEvent.setOpening(scheduleEventRequestDto.getOpening());
+        scheduleEvent.setClosure(scheduleEventRequestDto.getClosure());
+        scheduleEvent.setTitle(scheduleEventRequestDto.getTitle());
+        scheduleEvent.setDescription(scheduleEventRequestDto.getDescription());
+
+        return scheduleEventMapper.toScheduleEventResponseDto(scheduleEventRepository.save(scheduleEvent));
+    }
+
+    @Transactional(readOnly = true)
+    public ScheduleEvent validateScheduleEvent(Long cdScheduleEvent) {
+        Optional<ScheduleEvent> scheduleEvent = scheduleEventRepository.findById(cdScheduleEvent);
+
+        if (scheduleEvent.isEmpty()) {
+            throw new AlertException(
+                    "warn",
+                    String.format("Evento com id %S não cadastrada!", cdScheduleEvent),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        return scheduleEvent.get();
+    }
+
+    @Override
+    public String deleteScheduleEvent(Long cdScheduleEvent) {
+
+        ScheduleEvent scheduleEvent = validateScheduleEvent(cdScheduleEvent);
+        scheduleEventRepository.delete(scheduleEvent);
+
+        return "Evento com o id " + cdScheduleEvent + " apagado com sucesso!";
+    }
+
+
 }

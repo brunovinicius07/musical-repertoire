@@ -104,8 +104,8 @@ public class MusicServiceImpl implements MusicService {
     @Transactional(readOnly = false)
     public MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto) {
         Music music = validateMusic(cdMusic);
-        music.setNmMusic(musicRequestDto.getNmMusic() != null ? musicRequestDto.getNmMusic() : music.getNmMusic());
-        music.setSinger(musicRequestDto.getSinger() != null ? musicRequestDto.getSinger() : music.getSinger());
+        music.setNmMusic(musicRequestDto.getNmMusic());
+        music.setSinger(musicRequestDto.getSinger());
         music.getGender().setCdGender(musicRequestDto.getCdGender());
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));

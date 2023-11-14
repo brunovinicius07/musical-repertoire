@@ -6,4 +6,8 @@ import com.music.model.dto.response.ScheduleEventResponseDto;
 public interface ScheduleEventService {
 
     ScheduleEventResponseDto registerEvent(ScheduleEventRequestDto scheduleEventRequestDto);
+
+    ScheduleEventResponseDto updateSheduleEvent(Long cdScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto);
+
+    Object deleteScheduleEvent(Long cdScheduleEvent);
 }
