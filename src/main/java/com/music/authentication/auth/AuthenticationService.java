@@ -2,6 +2,7 @@ package com.music.authentication.auth;
 
 import com.music.authentication.config.JwtService;
 import com.music.exception.AlertException;
+import com.music.model.entity.Gender;
 import com.music.model.entity.User;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
@@ -73,6 +74,20 @@ public class AuthenticationService {
         authenticationResponse.setNmUser(user.getNmUser());
 
         return authenticationResponse;
+    }
+
+    @Transactional(readOnly = true)
+    public User validateUser(Long cdUser) {
+        Optional<User> optionalUser = userRepository.findById(cdUser);
+
+        if (optionalUser.isEmpty()) {
+            throw new AlertException(
+                    "warn",
+                    String.format("Usuário com id %S não cadastrado!", cdUser),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        return optionalUser.get();
     }
 
     @Transactional(readOnly = true)

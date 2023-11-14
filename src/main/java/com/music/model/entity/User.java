@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +43,9 @@ public class User implements UserDetails, Serializable {
     @Enumerated(EnumType.STRING)
     @NotNull
     private UserRole role;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<ScheduleEvent> events = new ArrayList<>();
 
     public User(String nmUser, String email, String password, UserRole role) {
         this.nmUser = nmUser;
