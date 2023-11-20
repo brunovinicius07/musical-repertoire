@@ -10,10 +10,12 @@ import org.mapstruct.Mapping;
 public interface MusicMapper {
 
     @Mapping(source = "cdGender", target = "gender.nmGender")
+    @Mapping(source = "cdUser", target = "gender.user.cdUser")
     Music toMusic(MusicRequestDto musicRequestDto);
 
 
     @Mapping(source = "gender.nmGender", target = "nmGender")
+    @Mapping(source = "gender.user.cdUser", target = "cdUser")
     MusicResponseDto toMusicResponseDto(Music music);
 
 }

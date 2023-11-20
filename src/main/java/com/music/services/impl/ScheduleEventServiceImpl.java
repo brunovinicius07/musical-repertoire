@@ -96,6 +96,4 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
 
         return "Evento com o id " + cdScheduleEvent + " apagado com sucesso!";
     }
-
-
 }

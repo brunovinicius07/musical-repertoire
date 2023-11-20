@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GenderRequestDto {
 
+    private Long cdUser;
+
     private String nmGender;
 }

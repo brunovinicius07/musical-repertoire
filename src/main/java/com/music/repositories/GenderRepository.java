@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface GenderRepository extends JpaRepository<Gender, Long> {
 
-    Optional<Gender> findByNmGender(String nmGender);
+    Optional<Gender> findByNmGenderAndUserCdUser(String nmGender, Long cdUser);
 }

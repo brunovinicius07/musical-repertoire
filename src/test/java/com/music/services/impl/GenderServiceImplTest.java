@@ -5,6 +5,7 @@ import com.music.model.dto.request.GenderRequestDto;
 import com.music.model.dto.response.GenderResponseDto;
 import com.music.model.entity.Gender;
 import com.music.model.entity.Music;
+import com.music.model.entity.User;
 import com.music.model.mapper.GenderMapper;
 import com.music.repositories.GenderRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,8 @@ class GenderServiceImplTest {
 
     public static final List<Music> MUSICS = new ArrayList<>();
 
+    public static final long CD_USER = 1L;
+
     @Autowired
     private GenderServiceImpl genderServiceImpl;
 
@@ -47,6 +50,8 @@ class GenderServiceImplTest {
 
     private Optional<Gender> genderOptional;
     private Gender gender;
+
+    private User user;
 
     @BeforeEach
     void setUp() {
@@ -78,16 +83,16 @@ class GenderServiceImplTest {
 
     @Test
     void registerGender_failure() {
-        when(genderRepository.findByNmGender(anyString())).thenReturn(genderOptional);
+        when(genderRepository.findByNmGenderAndUserCdUser(anyString(), anyLong())).thenReturn(genderOptional);
         when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
 
-        GenderRequestDto resquest = new GenderRequestDto(NM_GENDER);
+        GenderRequestDto resquest = new GenderRequestDto(CD_USER, NM_GENDER);
 
         AlertException exception = assertThrows(AlertException.class, () -> {
             genderServiceImpl.registerGender(resquest);
         });
 
-        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verify(genderRepository, times(1)).findByNmGenderAndUserCdUser(NM_GENDER, CD_USER);
         verify(genderMapper, never()).toGenderResponseDto(any());
 
         assertNotNull(exception.getMessage());
@@ -98,14 +103,14 @@ class GenderServiceImplTest {
 
     @Test
     void existingGender_success() {
-        when(genderRepository.findByNmGender(anyString())).thenReturn(Optional.empty());
+        when(genderRepository.findByNmGenderAndUserCdUser(anyString(), anyLong())).thenReturn(Optional.empty());
         when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
 
-        genderServiceImpl.existingGender(NM_GENDER);
+        genderServiceImpl.existingGender(NM_GENDER, CD_USER);
 
-        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verify(genderRepository, times(1)).findByNmGenderAndUserCdUser(NM_GENDER, CD_USER);
         verifyNoMoreInteractions(genderRepository, genderMapper);
-        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verify(genderRepository, times(1)).findByNmGenderAndUserCdUser(NM_GENDER, CD_USER);
         verify(genderMapper, never()).toGenderResponseDto(any());
         verifyNoMoreInteractions(genderRepository);
         verifyNoMoreInteractions(genderMapper);
@@ -113,15 +118,15 @@ class GenderServiceImplTest {
 
     @Test
     void existingGender_failure() {
-        when(genderRepository.findByNmGender(NM_GENDER)).thenReturn(genderOptional);
+        when(genderRepository.findByNmGenderAndUserCdUser(NM_GENDER, CD_USER)).thenReturn(genderOptional);
         when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
 
         AlertException exception = assertThrows(AlertException.class, () -> {
-            genderServiceImpl.existingGender(NM_GENDER);
+            genderServiceImpl.existingGender(NM_GENDER, CD_USER);
         });
-        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verify(genderRepository, times(1)).findByNmGenderAndUserCdUser(NM_GENDER, CD_USER);
         verifyNoMoreInteractions(genderRepository, genderMapper);
-        verify(genderRepository, times(1)).findByNmGender(NM_GENDER);
+        verify(genderRepository, times(1)).findByNmGenderAndUserCdUser(NM_GENDER, CD_USER);
         verify(genderMapper, never()).toGenderResponseDto(any());
         verifyNoMoreInteractions(genderRepository);
         verifyNoMoreInteractions(genderMapper);
@@ -130,7 +135,7 @@ class GenderServiceImplTest {
         assertEquals("Gênero MPB já está cadastrado!", exception.getMessage());
         assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
         assertEquals("warn", exception.getErrorCode());
-        assertThrows(AlertException.class, () -> genderServiceImpl.existingGender(NM_GENDER));
+        assertThrows(AlertException.class, () -> genderServiceImpl.existingGender(NM_GENDER, CD_USER));
     }
 
     @Test
@@ -358,8 +363,8 @@ class GenderServiceImplTest {
     }
 
     private void startGender() {
-        gender = new Gender(CD_GENDER, NM_GENDER, MUSICS);
-        genderResponseDto = new GenderResponseDto(CD_GENDER, NM_GENDER, MUSICS);
-        genderOptional = Optional.of(new Gender(CD_GENDER, NM_GENDER, MUSICS));
+        gender = new Gender(CD_GENDER, NM_GENDER, MUSICS, user);
+        genderResponseDto = new GenderResponseDto(CD_GENDER,CD_USER, NM_GENDER, MUSICS );
+        genderOptional = Optional.of(new Gender(CD_GENDER, NM_GENDER, MUSICS, user));
     }
 }

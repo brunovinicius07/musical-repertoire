@@ -1,5 +1,6 @@
 package com.music.services.impl;
 
+import com.music.authentication.auth.AuthenticationService;
 import com.music.exception.AlertException;
 import com.music.model.dto.request.GenderRequestDto;
 import com.music.model.dto.response.GenderResponseDto;
@@ -20,25 +21,32 @@ public class GenderServiceImpl implements GenderService {
 
     private final GenderRepository genderRepository;
 
-
     private final GenderMapper genderMapper;
 
-    public GenderServiceImpl(GenderRepository genderRepository, GenderMapper genderMapper) {
+    private final AuthenticationService authenticationService;
+
+    public GenderServiceImpl(GenderRepository genderRepository, GenderMapper genderMapper, AuthenticationService authenticationService) {
         this.genderRepository = genderRepository;
         this.genderMapper = genderMapper;
+        this.authenticationService = authenticationService;
     }
 
     @Override
     @Transactional(readOnly = false)
     public GenderResponseDto registerGender(GenderRequestDto genderRequestDto) {
-        existingGender(genderRequestDto.getNmGender());
 
-        return genderMapper.toGenderResponseDto(genderRepository.save(genderMapper.toGender(genderRequestDto)));
+        existingGender(genderRequestDto.getNmGender(), genderRequestDto.getCdUser());
+        var user = authenticationService.validateUser(genderRequestDto.getCdUser());
+
+        Gender gender = genderMapper.toGender(genderRequestDto);
+        gender.setUser(user);
+
+        return genderMapper.toGenderResponseDto(genderRepository.save(gender));
     }
 
     @Transactional(readOnly = true)
-    public void existingGender(String nmGender) {
-        Optional<Gender> optionalGender = genderRepository.findByNmGender(nmGender);
+    public void existingGender(String nmGender, Long cdUser) {
+        Optional<Gender> optionalGender = genderRepository.findByNmGenderAndUserCdUser(nmGender, cdUser);
 
         if (optionalGender.isPresent()) {
             throw new AlertException(

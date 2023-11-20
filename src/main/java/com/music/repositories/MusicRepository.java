@@ -6,9 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-
 @Repository
 public interface MusicRepository extends JpaRepository<Music, Long> {
 
-    Optional<Music> findByNmMusicAndSinger(String nmMusic, String singer);
+    Optional<Music> findByNmMusicAndSingerAndGenderUserCdUser(String nmMusic, String singer, Long cdUser);
 }

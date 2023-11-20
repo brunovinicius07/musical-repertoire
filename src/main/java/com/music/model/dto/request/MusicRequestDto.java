@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MusicRequestDto {
 
+    private long cdUser;
+
     private String nmMusic;
 
     private String singer;

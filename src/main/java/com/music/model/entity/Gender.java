@@ -1,5 +1,6 @@
 package com.music.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -33,6 +34,11 @@ public class Gender {
 
     @OneToMany(mappedBy = "gender", fetch = FetchType.EAGER)
     private List<Music> musics =  new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "cd_user")
+    private User user;
 
     @Override
     public final boolean equals(Object o) {

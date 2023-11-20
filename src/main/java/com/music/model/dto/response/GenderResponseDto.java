@@ -15,6 +15,8 @@ public class GenderResponseDto {
 
     private Long cdGender;
 
+    private Long cdUser;
+
     private String nmGender;
 
     private List<Music> musics = new ArrayList<>();

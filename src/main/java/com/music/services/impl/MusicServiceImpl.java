@@ -34,7 +34,7 @@ public class MusicServiceImpl implements MusicService {
     @Override
     @Transactional(readOnly = false)
     public MusicResponseDto registerMusic(MusicRequestDto musicRequestDto) {
-        existingMusic(musicRequestDto.getNmMusic(), musicRequestDto.getSinger());
+        existingMusic(musicRequestDto.getNmMusic(), musicRequestDto.getSinger(), musicRequestDto.getCdUser());
         Gender gender = genderServiceImp.validateGender(musicRequestDto.getCdGender());
 
         Music music = musicMapper.toMusic(musicRequestDto);
@@ -44,8 +44,8 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Transactional(readOnly = true)
-    public void existingMusic(String nmMusic, String singer) {
-        Optional<Music> optionalMusic = musicRepository.findByNmMusicAndSinger(nmMusic, singer);
+    public void existingMusic(String nmMusic, String singer, Long cdUser) {
+        Optional<Music> optionalMusic = musicRepository.findByNmMusicAndSingerAndGenderUserCdUser(nmMusic, singer, cdUser);
 
         if (optionalMusic.isPresent()) {
             throw new AlertException(

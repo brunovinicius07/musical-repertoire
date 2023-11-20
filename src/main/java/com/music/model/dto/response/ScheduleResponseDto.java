@@ -13,9 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ScheduleResponseDto {
 
-    private long cdSchedule;
-
     private long cdUser;
+
+    private long cdSchedule;
 
     private List<ScheduleEvent> events = new ArrayList<>();
 }

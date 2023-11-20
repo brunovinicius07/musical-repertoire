@@ -11,6 +11,8 @@ public class MusicResponseDto {
 
     private Long cdMusic;
 
+    private long cdUser;
+
     private String nmMusic;
 
     private String singer;
