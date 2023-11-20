@@ -16,7 +16,7 @@
 
 ### 🛠️Technologies and Tool :
 
--   Java 11
+-   Java 17
 -   Spring
 -   JPA Hibernate
 -   H2
