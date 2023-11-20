@@ -1,5 +1,6 @@
 package com.music.services.impl;
 
+import com.music.authentication.auth.AuthenticationService;
 import com.music.exception.AlertException;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.model.dto.response.MusicResponseDto;
@@ -23,22 +24,28 @@ public class MusicServiceImpl implements MusicService {
 
     private final MusicRepository musicRepository;
 
+    private final AuthenticationService authenticationService;
+
     private final GenderServiceImpl genderServiceImp;
 
-    public MusicServiceImpl(MusicMapper musicMapper, MusicRepository musicRepository, GenderServiceImpl genderServiceImp) {
+    public MusicServiceImpl(MusicMapper musicMapper, MusicRepository musicRepository, AuthenticationService authenticationService, GenderServiceImpl genderServiceImp) {
         this.musicMapper = musicMapper;
         this.musicRepository = musicRepository;
+        this.authenticationService = authenticationService;
         this.genderServiceImp = genderServiceImp;
     }
 
     @Override
     @Transactional(readOnly = false)
     public MusicResponseDto registerMusic(MusicRequestDto musicRequestDto) {
+
         existingMusic(musicRequestDto.getNmMusic(), musicRequestDto.getSinger(), musicRequestDto.getCdUser());
+        var user = authenticationService.validateUser(musicRequestDto.getCdUser());
         Gender gender = genderServiceImp.validateGender(musicRequestDto.getCdGender());
 
         Music music = musicMapper.toMusic(musicRequestDto);
         music.setGender(gender);
+        music.getGender().setUser(user);
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
