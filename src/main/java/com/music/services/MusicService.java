@@ -9,7 +9,7 @@ public interface MusicService {
 
     MusicResponseDto registerMusic(MusicRequestDto musicRequestDto);
 
-    List<MusicResponseDto> getAllMusic();
+    List<MusicResponseDto> getAllMusic(Long cdGender);
 
     MusicResponseDto getMusicById(Long cdMusic);
 

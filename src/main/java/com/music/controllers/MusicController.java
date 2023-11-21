@@ -18,14 +18,14 @@ public class MusicController {
     }
 
 
-    @PostMapping("/post")
+    @PostMapping()
     public ResponseEntity<Object> registerMusic(@RequestBody @Valid MusicRequestDto musicRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(musicService.registerMusic(musicRequestDto));
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<Object> getAllMusic() {
-        return ResponseEntity.ok(musicService.getAllMusic());
+    @PostMapping("/{cdGender}")
+    public ResponseEntity<Object> getAllMusic(@PathVariable Long cdGender) {
+        return ResponseEntity.ok(musicService.getAllMusic(cdGender));
     }
 
     @GetMapping("/{cdMusic}")

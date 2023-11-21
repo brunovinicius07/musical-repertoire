@@ -8,7 +8,7 @@ import java.util.List;
 public interface GenderService {
     GenderResponseDto registerGender(GenderRequestDto genderRequestDto);
 
-    List<GenderResponseDto> getAllGender();
+    List<GenderResponseDto> getAllGender(Long cdGender);
 
     GenderResponseDto getGenderById(Long cdGender);
 

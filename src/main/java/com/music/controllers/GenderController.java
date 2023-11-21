@@ -17,14 +17,14 @@ public class GenderController {
         this.genderService = genderService;
     }
 
-    @PostMapping("/post")
+    @PostMapping()
     public ResponseEntity<Object> registerGender(@RequestBody @Valid GenderRequestDto genderRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(genderService.registerGender(genderRequestDto));
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<Object> getAllGender() {
-        return ResponseEntity.ok(genderService.getAllGender());
+    @PostMapping("/{cdUser}")
+    public ResponseEntity<Object> getAllGender(@PathVariable Long cdUser) {
+        return ResponseEntity.ok(genderService.getAllGender(cdUser));
     }
 
     @GetMapping("/{cdGender}")
@@ -32,12 +32,12 @@ public class GenderController {
         return ResponseEntity.ok(genderService.getGenderById(cdGender));
     }
 
-    @PutMapping("/put/{cdGender}")
+    @PutMapping("{cdGender}")
     public ResponseEntity<Object> updateGender(@PathVariable Long cdGender, @RequestBody @Valid GenderRequestDto genderRequestDto) {
         return ResponseEntity.ok(genderService.updateGender(cdGender, genderRequestDto));
     }
 
-    @DeleteMapping("/delete/{cdGender}")
+    @DeleteMapping("{cdGender}")
     public ResponseEntity<Object> deleteGender(@PathVariable Long cdGender) {
         return ResponseEntity.ok(genderService.deleteGender(cdGender));
     }

@@ -156,7 +156,7 @@ class MusicServiceImplTest {
         when(musicRepository.findAll()).thenReturn(List.of(music));
         when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
 
-        List<MusicResponseDto> response = musicService.getAllMusic();
+        List<MusicResponseDto> response = musicService.getAllMusic(CD_GENDER);
 
         verify(musicRepository, times(1)).findAll();
         verify(musicMapper, times(1)).toMusicResponseDto(any());
@@ -174,7 +174,7 @@ class MusicServiceImplTest {
         when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
 
         AlertException exception = assertThrows(AlertException.class, () -> {
-            musicService.getAllMusic();
+            musicService.getAllMusic(CD_GENDER);
         });
 
         verify(musicRepository, times(1)).findAll();
@@ -186,7 +186,7 @@ class MusicServiceImplTest {
         assertEquals("Nenhuma música encontrada!", exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         assertEquals("warn", exception.getErrorCode());
-        assertThrows(AlertException.class, () -> musicService.getAllMusic());
+        assertThrows(AlertException.class, () -> musicService.getAllMusic(CD_GENDER));
     }
 
     @Test
@@ -194,7 +194,7 @@ class MusicServiceImplTest {
         when(musicRepository.findAll()).thenReturn(List.of(music));
         when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
 
-        List<Music> response = musicService.validateListMusic();
+        List<Music> response = musicService.validateListMusic(CD_GENDER);
 
         verify(musicRepository, times(1)).findAll();
         verifyNoMoreInteractions(musicRepository, musicMapper);
@@ -211,7 +211,7 @@ class MusicServiceImplTest {
         when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
 
         AlertException exception = assertThrows(AlertException.class, () -> {
-            musicService.validateListMusic();
+            musicService.validateListMusic(CD_GENDER);
         });
 
         verify(musicRepository, times(1)).findAll();
@@ -222,7 +222,7 @@ class MusicServiceImplTest {
         assertEquals("Nenhuma música encontrada!", exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         assertEquals("warn", exception.getErrorCode());
-        assertThrows(AlertException.class, () -> musicService.validateListMusic());
+        assertThrows(AlertException.class, () -> musicService.validateListMusic(CD_GENDER));
     }
 
     @Test

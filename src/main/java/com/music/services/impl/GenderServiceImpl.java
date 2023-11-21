@@ -59,15 +59,15 @@ public class GenderServiceImpl implements GenderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GenderResponseDto> getAllGender() {
-        List<Gender> genderList = validateListGender();
+    public List<GenderResponseDto> getAllGender(Long cdUser) {
+        List<Gender> genderList = validateListGender(cdUser);
 
         return genderList.stream().map(genderMapper::toGenderResponseDto).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<Gender> validateListGender() {
-        List<Gender> genderList = genderRepository.findAll();
+    public List<Gender> validateListGender(Long cdUser) {
+        List<Gender> genderList = genderRepository.findAllGenderByUserCdUser(cdUser);
 
         if (genderList.isEmpty()) {
             throw new AlertException(

@@ -65,15 +65,15 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MusicResponseDto> getAllMusic() {
-        List<Music> musicList = validateListMusic();
+    public List<MusicResponseDto> getAllMusic(Long cdGender) {
+        List<Music> musicList = validateListMusic(cdGender);
 
         return musicList.stream().map(musicMapper::toMusicResponseDto).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<Music> validateListMusic() {
-        List<Music> musicList = musicRepository.findAll();
+    public List<Music> validateListMusic(Long cdGender) {
+        List<Music> musicList = musicRepository.findAllMusicByGenderCdGender(cdGender);
 
         if (musicList.isEmpty()) {
             throw new AlertException(

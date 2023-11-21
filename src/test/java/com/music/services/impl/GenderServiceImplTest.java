@@ -143,7 +143,7 @@ class GenderServiceImplTest {
         when(genderRepository.findAll()).thenReturn(List.of(gender));
         when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
 
-        List<GenderResponseDto> response = genderServiceImpl.getAllGender();
+        List<GenderResponseDto> response = genderServiceImpl.getAllGender(CD_USER);
 
         verify(genderRepository, times(1)).findAll();
         verify(genderMapper, times(1)).toGenderResponseDto(any());
@@ -162,7 +162,7 @@ class GenderServiceImplTest {
 
 
         AlertException exception = assertThrows(AlertException.class, () -> {
-            genderServiceImpl.getAllGender();
+            genderServiceImpl.getAllGender(CD_USER);
         });
 
         verify(genderRepository, times(1)).findAll();
@@ -174,7 +174,7 @@ class GenderServiceImplTest {
         assertEquals("Nenhum gênero encontrado!", exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         assertEquals("warn", exception.getErrorCode());
-        assertThrows(AlertException.class, () -> genderServiceImpl.getAllGender());
+        assertThrows(AlertException.class, () -> genderServiceImpl.getAllGender(CD_USER));
     }
 
     @Test
@@ -182,7 +182,7 @@ class GenderServiceImplTest {
         when(genderRepository.findAll()).thenReturn(List.of(gender));
         when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
 
-        List<Gender> response = genderServiceImpl.validateListGender();
+        List<Gender> response = genderServiceImpl.validateListGender(CD_USER);
 
         verify(genderRepository, times(1)).findAll();
         verifyNoMoreInteractions(genderRepository, genderMapper);
@@ -199,7 +199,7 @@ class GenderServiceImplTest {
         when(genderMapper.toGenderResponseDto(any())).thenReturn(genderResponseDto);
 
         AlertException exception = assertThrows(AlertException.class, () -> {
-            genderServiceImpl.validateListGender();
+            genderServiceImpl.validateListGender(CD_USER);
         });
 
         verify(genderRepository, times(1)).findAll();
@@ -210,7 +210,7 @@ class GenderServiceImplTest {
         assertEquals("Nenhum gênero encontrado!", exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         assertEquals("warn", exception.getErrorCode());
-        assertThrows(AlertException.class, () -> genderServiceImpl.getAllGender());
+        assertThrows(AlertException.class, () -> genderServiceImpl.getAllGender(CD_USER));
     }
 
     @Test
