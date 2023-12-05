@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface MusicRepository extends JpaRepository<Music, Long> {
 
-    Optional<Music> findByNmMusicAndSingerAndGenderUserCdUser(String nmMusic, String singer, Long cdUser);
+    Optional<Music> findByNmMusicAndSingerAndGenresUserCdUser(String nmMusic, String singer, Long cdUser);
 
-    List<Music> findAllMusicByGenderCdGender(Long cdGender);
+    List<Music> findAllMusicByGenresCdGender(Long cdGender);
 }

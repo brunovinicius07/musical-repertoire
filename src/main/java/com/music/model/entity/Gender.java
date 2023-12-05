@@ -1,5 +1,6 @@
 package com.music.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -16,6 +17,7 @@ import java.util.Objects;
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -31,28 +33,17 @@ public class Gender {
     @NotBlank
     private String nmGender;
 
-
-    @OneToMany(mappedBy = "gender", fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "TB_GENDER_MUSICS",
+            joinColumns = @JoinColumn(name = "cdGender"),
+            inverseJoinColumns = @JoinColumn(name = "cdMusics")
+    )
+    @ToString.Exclude
     private List<Music> musics =  new ArrayList<>();
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "cd_user")
+    @NotNull
     private User user;
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
-        Gender gender = (Gender) o;
-        return getCdGender() != null && Objects.equals(getCdGender(), gender.getCdGender());
-    }
-
-    @Override
-    public final int hashCode() {
-        return getClass().hashCode();
-    }
 }

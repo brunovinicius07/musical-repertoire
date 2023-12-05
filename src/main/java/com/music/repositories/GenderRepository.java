@@ -13,4 +13,5 @@ public interface GenderRepository extends JpaRepository<Gender, Long> {
     Optional<Gender> findByNmGenderAndUserCdUser(String nmGender, Long cdUser);
 
     List<Gender> findAllGenderByUserCdUser(Long cdUser);
+    List<Gender> findAllGenderByCdGender(Long cdGender);
 }

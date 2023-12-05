@@ -101,7 +101,7 @@ class MusicServiceImplTest {
         when(genderRepository.findById(anyLong())).thenReturn(Optional.of(gender));
         when(musicMapper.toMusic(any())).thenReturn(music);
         when(musicRepository.save(any())).thenReturn(music);
-        when(musicRepository.findByNmMusicAndSingerAndGenderUserCdUser(NM_MUSIC, SINGER,CD_USER)).thenReturn(optionalMusic);
+        when(musicRepository.findByNmMusicAndSingerAndGenresUserCdUser(NM_MUSIC, SINGER,CD_USER)).thenReturn(optionalMusic);
         when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
 
         MusicRequestDto resquest = musicRequestDto;
@@ -120,12 +120,12 @@ class MusicServiceImplTest {
 
     @Test
     void existingMusic_success() {
-        when(musicRepository.findByNmMusicAndSingerAndGenderUserCdUser(NM_MUSIC, SINGER, CD_USER)).thenReturn(Optional.empty());
+        when(musicRepository.findByNmMusicAndSingerAndGenresUserCdUser(NM_MUSIC, SINGER, CD_USER)).thenReturn(Optional.empty());
         when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
 
         musicService.existingMusic(NM_MUSIC, SINGER, CD_USER);
 
-        verify(musicRepository, times(1)).findByNmMusicAndSingerAndGenderUserCdUser(NM_MUSIC, SINGER, CD_USER);
+        verify(musicRepository, times(1)).findByNmMusicAndSingerAndGenresUserCdUser(NM_MUSIC, SINGER, CD_USER);
         verifyNoMoreInteractions(musicRepository, musicMapper);
         verify(musicMapper, never()).toMusicResponseDto(any());
         verifyNoMoreInteractions(musicRepository);
@@ -134,13 +134,13 @@ class MusicServiceImplTest {
 
     @Test
     void existingGender_failure() {
-        when(musicRepository.findByNmMusicAndSingerAndGenderUserCdUser(NM_MUSIC, SINGER, CD_USER)).thenReturn(optionalMusic);
+        when(musicRepository.findByNmMusicAndSingerAndGenresUserCdUser(NM_MUSIC, SINGER, CD_USER)).thenReturn(optionalMusic);
         when(musicMapper.toMusicResponseDto(any())).thenReturn(musicResponseDto);
 
         AlertException exception = assertThrows(AlertException.class, () -> {
             musicService.existingMusic(NM_MUSIC, SINGER, CD_USER);
         });
-        verify(musicRepository, times(1)).findByNmMusicAndSingerAndGenderUserCdUser(NM_MUSIC, SINGER,CD_USER);
+        verify(musicRepository, times(1)).findByNmMusicAndSingerAndGenresUserCdUser(NM_MUSIC, SINGER,CD_USER);
         verifyNoMoreInteractions(musicRepository, musicMapper);
         verify(musicMapper, never()).toMusicResponseDto(any());
 

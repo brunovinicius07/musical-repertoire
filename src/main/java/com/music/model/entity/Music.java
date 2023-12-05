@@ -9,12 +9,15 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Builder
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -33,26 +36,14 @@ public class Music {
         @NotBlank
         private String singer;
 
-        @JsonIgnore
+        @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE})
+        @JoinColumn(name = "gender")
+        @ToString.Exclude
+        private List<Gender> genres = new ArrayList<>();
+
         @ManyToOne
-        @JoinColumn(name = "cd_gender")
+        @JoinColumn(name = "cd_user")
         @NotNull
-        private Gender gender;
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
-        Music music = (Music) o;
-        return getCdMusic() != null && Objects.equals(getCdMusic(), music.getCdMusic());
-    }
-
-    @Override
-    public final int hashCode() {
-        return getClass().hashCode();
-    }
+        private User user;
 
 }

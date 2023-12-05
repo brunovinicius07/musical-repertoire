@@ -79,6 +79,20 @@ public class GenderServiceImpl implements GenderService {
         return genderList;
     }
 
+    @Transactional(readOnly = true)
+    public List<Gender> validateListGenres(Long cdGender) {
+        List<Gender> genderList = genderRepository.findAllGenderByCdGender(cdGender);
+
+        if (genderList.isEmpty()) {
+            throw new AlertException(
+                    "warn",
+                    "Nenhum gênero encontrado!",
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        return genderList;
+    }
+
     @Override
     @Transactional(readOnly = true)
     public GenderResponseDto getGenderById(Long cdGender) {

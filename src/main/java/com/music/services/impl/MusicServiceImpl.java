@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,20 +40,29 @@ public class MusicServiceImpl implements MusicService {
     @Transactional(readOnly = false)
     public MusicResponseDto registerMusic(MusicRequestDto musicRequestDto) {
 
+
         existingMusic(musicRequestDto.getNmMusic(), musicRequestDto.getSinger(), musicRequestDto.getCdUser());
         var user = authenticationService.validateUser(musicRequestDto.getCdUser());
-        Gender gender = genderServiceImp.validateGender(musicRequestDto.getCdGender());
+        List<Gender> genres = musicRequestDto.getCdGenres().stream()
+                .map(genderServiceImp::validateGender)
+                .collect(Collectors.toList());
+
+
 
         Music music = musicMapper.toMusic(musicRequestDto);
-        music.setGender(gender);
-        music.getGender().setUser(user);
+        music.setGenres(genres);
+        music.setUser(user);
+
+        for (Gender genre : genres) {
+            genre.getMusics().add(music);
+        }
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
 
     @Transactional(readOnly = true)
     public void existingMusic(String nmMusic, String singer, Long cdUser) {
-        Optional<Music> optionalMusic = musicRepository.findByNmMusicAndSingerAndGenderUserCdUser(nmMusic, singer, cdUser);
+        Optional<Music> optionalMusic = musicRepository.findByNmMusicAndSingerAndGenresUserCdUser(nmMusic, singer, cdUser);
 
         if (optionalMusic.isPresent()) {
             throw new AlertException(
@@ -73,7 +83,7 @@ public class MusicServiceImpl implements MusicService {
 
     @Transactional(readOnly = true)
     public List<Music> validateListMusic(Long cdGender) {
-        List<Music> musicList = musicRepository.findAllMusicByGenderCdGender(cdGender);
+        List<Music> musicList = musicRepository.findAllMusicByGenresCdGender(cdGender);
 
         if (musicList.isEmpty()) {
             throw new AlertException(
@@ -113,7 +123,7 @@ public class MusicServiceImpl implements MusicService {
         Music music = validateMusic(cdMusic);
         music.setNmMusic(musicRequestDto.getNmMusic());
         music.setSinger(musicRequestDto.getSinger());
-        music.getGender().setCdGender(musicRequestDto.getCdGender());
+//        music.getGender().setCdGender(musicRequestDto.getCdGender());
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
