@@ -1,38 +1,35 @@
 package com.music.model.mapper;
 
 import com.music.model.dto.request.MusicRequestDto;
-import com.music.model.dto.response.GenderResponseDto;
 import com.music.model.dto.response.MusicResponseDto;
-import com.music.model.entity.Gender;
+import com.music.model.entity.BlockMusic;
 import com.music.model.entity.Music;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface MusicMapper {
 
+    @Mapping(target = "user.cdUser", source = "cdUser")
     Music toMusic(MusicRequestDto musicRequestDto);
 
-
-
-    @Mapping(source = "user.cdUser", target = "cdUser")
-    @Mapping(target = "nmGenres", expression = "java(mapGenderNames(music.getGenres()))")
+    @Mapping(target = "letterMusic", source = "letterMusic")
+    @Mapping(target = "nmMusic", source = "nmMusic")
+    @Mapping(target = "singer", source = "singer")
+    @Mapping(target = "cdMusic", source = "cdMusic")
+    @Mapping(target = "cdBlockMusics", expression = "java(mapBlockMusic(music.getBlockMusics()))")
+    @Mapping(target = "cdUser", source = "user.cdUser")
     MusicResponseDto toMusicResponseDto(Music music);
 
-    default List<String> mapGenderNames(List<Gender> genderList) {
-        List<String> genderNames  = new ArrayList<>();
-        if (genderList.isEmpty()) {
-            return new ArrayList<>();
-        }
+    List<MusicResponseDto> toListMusicResponseDto(List<Music> musicList);
 
-        for (Gender gender: genderList) {
-            genderNames.add(gender.getNmGender());
-        }
 
-        return genderNames;
+    default List<Long> mapBlockMusic(List<BlockMusic> blockMusics) {
+        return blockMusics.stream()
+                .map(BlockMusic::getCdBlockMusic)
+                .collect(Collectors.toList());
     }
-
 }

@@ -2,6 +2,7 @@ package com.music.services;
 
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.model.dto.response.MusicResponseDto;
+import com.music.model.entity.Music;
 
 import java.util.List;
 
@@ -9,9 +10,13 @@ public interface MusicService {
 
     MusicResponseDto registerMusic(MusicRequestDto musicRequestDto);
 
-    List<MusicResponseDto> getAllMusic(Long cdGender);
+    void existingMusic(String nmMusic, String singer, Long cdUser);
 
     MusicResponseDto getMusicById(Long cdMusic);
+
+    Music validateMusic(Long cdMusic);
+
+    List<MusicResponseDto> getAllMusic(Long cdUser);
 
     MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto);
 

@@ -23,9 +23,9 @@ public class MusicController {
         return ResponseEntity.status(HttpStatus.CREATED).body(musicService.registerMusic(musicRequestDto));
     }
 
-    @PostMapping("/{cdGender}")
-    public ResponseEntity<Object> getAllMusic(@PathVariable Long cdGender) {
-        return ResponseEntity.ok(musicService.getAllMusic(cdGender));
+    @PostMapping("/{cdUser}")
+    public ResponseEntity<Object> getAllMusic(@PathVariable Long cdUser) {
+        return ResponseEntity.ok(musicService.getAllMusic(cdUser));
     }
 
     @GetMapping("/{cdMusic}")

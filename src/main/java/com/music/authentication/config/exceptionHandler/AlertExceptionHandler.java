@@ -1,4 +1,4 @@
-package com.music.exception;
+package com.music.authentication.config.exceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

@@ -1,9 +1,7 @@
 package com.music.authentication.auth;
 
 import com.music.authentication.config.JwtService;
-import com.music.exception.AlertException;
-import com.music.model.dto.response.UserResponseDto;
-import com.music.model.entity.Gender;
+import com.music.authentication.config.exceptionHandler.AlertException;
 import com.music.model.entity.User;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;

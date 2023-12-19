@@ -1,6 +1,5 @@
 package com.music.model.dto.response;
 
-import com.music.model.entity.Music;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,17 +7,16 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenderResponseDto {
+public class RepertoireResponseDto {
 
-    private Long cdGender;
+    private Long cdRepertoire;
+
+    private String nmRepertoire;
+
+    private List<Long> cdBlockMusics = new ArrayList<>();
 
     private Long cdUser;
-
-    private String nmGender;
-
-    private List<Music> musics = new ArrayList<>();
 }

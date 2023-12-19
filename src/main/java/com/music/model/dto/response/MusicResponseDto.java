@@ -14,11 +14,13 @@ public class MusicResponseDto {
 
     private Long cdMusic;
 
-    private long cdUser;
-
     private String nmMusic;
 
     private String singer;
 
-    private List<String> nmGenres = new ArrayList<>();
+    private String letterMusic;
+
+    private List<Long> cdBlockMusics = new ArrayList<>();
+
+    private Long cdUser;
 }

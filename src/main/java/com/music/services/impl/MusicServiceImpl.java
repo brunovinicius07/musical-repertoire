@@ -1,22 +1,18 @@
 package com.music.services.impl;
 
-import com.music.authentication.auth.AuthenticationService;
-import com.music.exception.AlertException;
 import com.music.model.dto.request.MusicRequestDto;
 import com.music.model.dto.response.MusicResponseDto;
-import com.music.model.entity.Gender;
 import com.music.model.entity.Music;
+import com.music.model.exceptions.Music.MusicIsPresentException;
+import com.music.model.exceptions.Music.MusicNotFoundException;
 import com.music.model.mapper.MusicMapper;
 import com.music.repositories.MusicRepository;
+import com.music.services.BlockMusicService;
 import com.music.services.MusicService;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MusicServiceImpl implements MusicService {
@@ -25,96 +21,64 @@ public class MusicServiceImpl implements MusicService {
 
     private final MusicRepository musicRepository;
 
-    private final AuthenticationService authenticationService;
+    private final BlockMusicService musicService;
 
-    private final GenderServiceImpl genderServiceImp;
-
-    public MusicServiceImpl(MusicMapper musicMapper, MusicRepository musicRepository, AuthenticationService authenticationService, GenderServiceImpl genderServiceImp) {
+    public MusicServiceImpl(MusicMapper musicMapper, MusicRepository musicRepository, BlockMusicService musicService) {
         this.musicMapper = musicMapper;
         this.musicRepository = musicRepository;
-        this.authenticationService = authenticationService;
-        this.genderServiceImp = genderServiceImp;
+        this.musicService = musicService;
     }
 
     @Override
     @Transactional(readOnly = false)
     public MusicResponseDto registerMusic(MusicRequestDto musicRequestDto) {
 
-
         existingMusic(musicRequestDto.getNmMusic(), musicRequestDto.getSinger(), musicRequestDto.getCdUser());
-        var user = authenticationService.validateUser(musicRequestDto.getCdUser());
-        List<Gender> genres = musicRequestDto.getCdGenres().stream()
-                .map(genderServiceImp::validateGender)
-                .collect(Collectors.toList());
-
-
+        var blockMusics = musicService.getBlockMusicByCdBlockMusics(musicRequestDto.getCdBlockMusics());
 
         Music music = musicMapper.toMusic(musicRequestDto);
-        music.setGenres(genres);
-        music.setUser(user);
+        music.setBlockMusics(blockMusics);
 
-        for (Gender genre : genres) {
-            genre.getMusics().add(music);
-        }
+        // Adicione a música à lista de músicas de cada bloco de música
+        blockMusics.forEach(blockMusic -> blockMusic.getMusics().add(music));
+
+        // Salve a música e os blocos de música
+        musicRepository.save(music);
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
 
-    @Transactional(readOnly = true)
-    public void existingMusic(String nmMusic, String singer, Long cdUser) {
-        Optional<Music> optionalMusic = musicRepository.findByNmMusicAndSingerAndGenresUserCdUser(nmMusic, singer, cdUser);
-
-        if (optionalMusic.isPresent()) {
-            throw new AlertException(
-                    "warn",
-                    String.format("Música %S já está cadastrada!", nmMusic, singer),
-                    HttpStatus.CONFLICT
-            );
-        }
-    }
-
     @Override
     @Transactional(readOnly = true)
-    public List<MusicResponseDto> getAllMusic(Long cdGender) {
-        List<Music> musicList = validateListMusic(cdGender);
-
-        return musicList.stream().map(musicMapper::toMusicResponseDto).collect(Collectors.toList());
+    public void existingMusic(String nmMusic, String singer, Long cdUser) {
+        musicRepository.findByNmMusicAndSingerAndUserCdUser(nmMusic, singer, cdUser)
+                .ifPresent(music -> {
+            throw new MusicIsPresentException();
+        });
     }
 
-    @Transactional(readOnly = true)
-    public List<Music> validateListMusic(Long cdGender) {
-        List<Music> musicList = musicRepository.findAllMusicByGenresCdGender(cdGender);
-
-        if (musicList.isEmpty()) {
-            throw new AlertException(
-                    "warn",
-                    ("Nenhuma música encontrada!"),
-                    HttpStatus.NOT_FOUND
-            );
-        }
-        return musicList;
-    }
 
     @Override
     @Transactional(readOnly = true)
     public MusicResponseDto getMusicById(Long cdMusic) {
-        var music = validateMusic(cdMusic);
+        Music music = validateMusic(cdMusic);
 
         return musicMapper.toMusicResponseDto(music);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Music validateMusic(Long cdMusic) {
-        Optional<Music> optionalMusic = musicRepository.findById(cdMusic);
+        return musicRepository.findById(cdMusic).orElseThrow(MusicNotFoundException::new);
+    }
 
-        if (optionalMusic.isEmpty()) {
-            throw new AlertException(
-                    "warn",
-                    String.format("Música com id %S não cadastrada!", cdMusic),
-                    HttpStatus.NOT_FOUND
-            );
-        }
-        return optionalMusic.get();
+    @Override
+    @Transactional(readOnly = true)
+    public List<MusicResponseDto> getAllMusic(Long cdUser) {
+        List<Music> musicList = musicRepository.findAllMusicByUserCdUser(cdUser);
+        if (musicList.isEmpty()) throw new MusicNotFoundException();
+
+        return musicMapper.toListMusicResponseDto(musicList);
     }
 
     @Override
@@ -123,7 +87,7 @@ public class MusicServiceImpl implements MusicService {
         Music music = validateMusic(cdMusic);
         music.setNmMusic(musicRequestDto.getNmMusic());
         music.setSinger(musicRequestDto.getSinger());
-//        music.getGender().setCdGender(musicRequestDto.getCdGender());
+        music.setLetterMusic(musicRequestDto.getLetterMusic());
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
@@ -134,6 +98,6 @@ public class MusicServiceImpl implements MusicService {
         Music music = validateMusic(cdMusic);
         musicRepository.delete(music);
 
-        return "Musica com ID " + cdMusic + " excluída com sucesso!";
+        return "Música com ID " + cdMusic + " excluída com sucesso!";
     }
 }

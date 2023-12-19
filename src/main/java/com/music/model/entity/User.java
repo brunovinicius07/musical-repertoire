@@ -1,6 +1,5 @@
 package com.music.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.music.role.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
 
 @Builder
 @Getter
@@ -47,14 +45,6 @@ public class User implements UserDetails, Serializable {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<ScheduleEvent> events = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    @ToString.Exclude
-    private List<Gender> genders = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    @ToString.Exclude
-    private List<Music> music = new ArrayList<>();
 
     public User(String nmUser, String email, String password, UserRole role) {
         this.nmUser = nmUser;

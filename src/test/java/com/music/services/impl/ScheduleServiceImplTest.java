@@ -1,9 +1,7 @@
 package com.music.services.impl;
 
 import com.music.model.dto.request.ScheduleRequestDto;
-import com.music.model.dto.response.GenderResponseDto;
 import com.music.model.dto.response.ScheduleResponseDto;
-import com.music.model.entity.Gender;
 import com.music.model.entity.Schedule;
 import com.music.model.entity.ScheduleEvent;
 import com.music.model.entity.User;
