@@ -87,10 +87,8 @@ public class RepertoireServiceImpl implements RepertoireService {
     public String deleteRepertoire(Long cdRepertoire) {
         Repertoire repertoire = validateRepertoire(cdRepertoire);
 
-        // Remover a associação dos blocos musicais antes de excluir o repertório
         repertoire.getBlockMusics().forEach(blockMusic -> blockMusic.setRepertoire(null));
 
-        // Agora você pode excluir o repertório sem violar a integridade referencial
         repertoireRepository.delete(repertoire);
 
         return "Repertorio com id " + cdRepertoire + "excluído com sucesso";

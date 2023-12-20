@@ -24,14 +24,11 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
     private final BlockMusicMapper blockMusicMapper;
 
-    private final AuthenticationService authenticationService;
-
     private final RepertoireService repertoireService;
 
-    public BlockMusicServiceImpl(BlockMusicRepository blockMusicRepository, BlockMusicMapper blockMusicMapper, AuthenticationService authenticationService, RepertoireService repertoireService) {
+    public BlockMusicServiceImpl(BlockMusicRepository blockMusicRepository, BlockMusicMapper blockMusicMapper, RepertoireService repertoireService) {
         this.blockMusicRepository = blockMusicRepository;
         this.blockMusicMapper = blockMusicMapper;
-        this.authenticationService = authenticationService;
         this.repertoireService = repertoireService;
     }
 
