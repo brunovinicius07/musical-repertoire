@@ -38,7 +38,7 @@ public class BlockMusicServiceImpl implements BlockMusicService {
     @Override
     @Transactional(readOnly = false)
     public BlockMusicResponseDto registerBlockMusic(BlockMusicRequestDto blockMusicRequestDto) {
-        existingBlockMusic(blockMusicRequestDto.getNmBlockMusic(),blockMusicRequestDto.getCdUser());
+        existingBlockMusic(blockMusicRequestDto.getNmBlockMusic(),blockMusicRequestDto.getCdRepertoire());
         BlockMusic blockMusic = blockMusicMapper.toBlockMusic(blockMusicRequestDto);
         var repertoire = repertoireService.validateRepertoire(blockMusicRequestDto.getCdRepertoire());
         blockMusic.setRepertoire(repertoire);
@@ -80,6 +80,7 @@ public class BlockMusicServiceImpl implements BlockMusicService {
     @Override
     @Transactional(readOnly = false)
     public BlockMusicResponseDto updateBlockMusic(Long cdBlockMusic, BlockMusicRequestDto blockMusicRequestDto) {
+        existingBlockMusic(blockMusicRequestDto.getNmBlockMusic(),blockMusicRequestDto.getCdRepertoire());
         BlockMusic blockMusic = validateBlockMusic(cdBlockMusic);
         blockMusic.setNmBlockMusic(blockMusicRequestDto.getNmBlockMusic());
         return blockMusicMapper.toBlockMusicResponseDto(blockMusicRepository.save(blockMusic));

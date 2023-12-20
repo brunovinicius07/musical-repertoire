@@ -38,12 +38,7 @@ public class MusicServiceImpl implements MusicService {
 
         Music music = musicMapper.toMusic(musicRequestDto);
         music.setBlockMusics(blockMusics);
-
-        // Adicione a música à lista de músicas de cada bloco de música
         blockMusics.forEach(blockMusic -> blockMusic.getMusics().add(music));
-
-        // Salve a música e os blocos de música
-        musicRepository.save(music);
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
@@ -84,6 +79,7 @@ public class MusicServiceImpl implements MusicService {
     @Override
     @Transactional(readOnly = false)
     public MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto) {
+        existingMusic(musicRequestDto.getNmMusic(), musicRequestDto.getSinger(), musicRequestDto.getCdUser());
         Music music = validateMusic(cdMusic);
         music.setNmMusic(musicRequestDto.getNmMusic());
         music.setSinger(musicRequestDto.getSinger());

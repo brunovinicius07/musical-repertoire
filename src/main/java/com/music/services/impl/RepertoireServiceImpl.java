@@ -75,6 +75,7 @@ public class RepertoireServiceImpl implements RepertoireService {
     @Override
     @Transactional(readOnly = false)
     public RepertoireResponseDto updateRepertoire(Long cdRepertoire, RepertoireRequestDto repertoireRequestDto) {
+        existingRepertoire(repertoireRequestDto.getNmRepertoire(), repertoireRequestDto.getCdUser());
         Repertoire repertoire = validateRepertoire(cdRepertoire);
         repertoire.setNmRepertoire(repertoireRequestDto.getNmRepertoire());
 
