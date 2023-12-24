@@ -16,9 +16,12 @@ public interface MusicService {
 
     Music validateMusic(Long cdMusic);
 
-    List<MusicResponseDto> getAllMusic(Long cdUser);
+    List<MusicResponseDto> getAllMusicByCdUser(Long cdUser);
+
+    List<MusicResponseDto> getAllMusicByCdBlockMusic(Long cdBlockMusic);
 
     MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto);
 
     Object deleteMusic(Long cdMusic);
+
 }

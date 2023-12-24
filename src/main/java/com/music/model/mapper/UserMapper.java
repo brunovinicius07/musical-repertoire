@@ -12,6 +12,5 @@ public interface UserMapper {
     @Mapping(target = "nmUser", source = "nmUser")
     User registerDtoToUser(RegisterRequest registerDto);
 
-
     UserResponseDto userToDto(User user);
 }

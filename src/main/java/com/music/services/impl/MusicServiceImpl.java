@@ -34,11 +34,14 @@ public class MusicServiceImpl implements MusicService {
     public MusicResponseDto registerMusic(MusicRequestDto musicRequestDto) {
 
         existingMusic(musicRequestDto.getNmMusic(), musicRequestDto.getSinger(), musicRequestDto.getCdUser());
-        var blockMusics = musicService.getBlockMusicByCdBlockMusics(musicRequestDto.getCdBlockMusics());
 
         Music music = musicMapper.toMusic(musicRequestDto);
-        music.setBlockMusics(blockMusics);
-        blockMusics.forEach(blockMusic -> blockMusic.getMusics().add(music));
+
+        if (musicRequestDto.getCdBlockMusics() != null && !musicRequestDto.getCdBlockMusics().isEmpty()) {
+            var blockMusics = musicService.getBlockMusicByCdBlockMusics(musicRequestDto.getCdBlockMusics());
+            music.setBlockMusics(blockMusics);
+            blockMusics.forEach(blockMusic -> blockMusic.getMusics().add(music));
+        }
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
@@ -51,7 +54,6 @@ public class MusicServiceImpl implements MusicService {
             throw new MusicIsPresentException();
         });
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -69,8 +71,17 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MusicResponseDto> getAllMusic(Long cdUser) {
+    public List<MusicResponseDto> getAllMusicByCdUser(Long cdUser) {
         List<Music> musicList = musicRepository.findAllMusicByUserCdUser(cdUser);
+        if (musicList.isEmpty()) throw new MusicNotFoundException();
+
+        return musicMapper.toListMusicResponseDto(musicList);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MusicResponseDto> getAllMusicByCdBlockMusic(Long cdBlockMusic) {
+        List<Music> musicList = musicRepository.findAllMusicByBlockMusicsCdBlockMusic(cdBlockMusic);
         if (musicList.isEmpty()) throw new MusicNotFoundException();
 
         return musicMapper.toListMusicResponseDto(musicList);

@@ -18,7 +18,7 @@ public class MusicRequestDto {
 
     private String letterMusic;
 
-    private List<Long> cdBlockMusics = new ArrayList<>();
+    private List<Long> cdBlockMusics;
 
     private Long cdUser;
 }

@@ -14,4 +14,6 @@ public interface MusicRepository extends JpaRepository<Music, Long> {
     Optional<Music> findByNmMusicAndSingerAndUserCdUser(String nmMusic, String singer, Long cdUser);
 
     List<Music> findAllMusicByUserCdUser(Long cdUser);
+
+    List<Music> findAllMusicByBlockMusicsCdBlockMusic(Long cdBlockMusic);
 }

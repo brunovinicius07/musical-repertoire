@@ -7,6 +7,7 @@ import com.music.model.entity.Music;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +29,12 @@ public interface MusicMapper {
 
 
     default List<Long> mapBlockMusic(List<BlockMusic> blockMusics) {
-        return blockMusics.stream()
-                .map(BlockMusic::getCdBlockMusic)
-                .collect(Collectors.toList());
+        if (blockMusics != null) {
+            return blockMusics.stream()
+                    .map(BlockMusic::getCdBlockMusic)
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 }
