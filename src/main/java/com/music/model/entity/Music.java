@@ -30,7 +30,7 @@ public class Music {
         @NotBlank
         private String singer;
 
-        @Size(max = 255)
+        @Size(max = 7500)
         private String letterMusic;
 
         @ManyToMany(mappedBy = "musics")
