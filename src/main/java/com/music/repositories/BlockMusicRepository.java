@@ -13,4 +13,5 @@ public interface BlockMusicRepository extends JpaRepository<BlockMusic, Long> {
     Optional<BlockMusic> findBlockMusicByNmBlockMusicAndRepertoireCdRepertoire(String nmBlockMusic, Long cdRepertoire);
 
     List<BlockMusic> findAllBlockMusicByUserCdUser(Long cdUser);
+
 }

@@ -1,14 +1,20 @@
 package com.music.services.impl;
 
-import com.music.authentication.auth.AuthenticationService;
 import com.music.model.dto.request.BlockMusicRequestDto;
+import com.music.model.dto.request.MusicToBlockRequest;
 import com.music.model.dto.response.BlockMusicResponseDto;
+import com.music.model.dto.response.MusicResponseDto;
 import com.music.model.entity.BlockMusic;
+import com.music.model.entity.Music;
 import com.music.model.exceptions.BlockMusic.BlockMusicIsPresentException;
 import com.music.model.exceptions.BlockMusic.BlockMusicNotFoundException;
+import com.music.model.exceptions.Music.MusicNotFoundException;
 import com.music.model.mapper.BlockMusicMapper;
+import com.music.model.mapper.MusicMapper;
 import com.music.repositories.BlockMusicRepository;
+import com.music.repositories.MusicRepository;
 import com.music.services.BlockMusicService;
+import com.music.services.MusicService;
 import com.music.services.RepertoireService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +32,17 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
     private final RepertoireService repertoireService;
 
-    public BlockMusicServiceImpl(BlockMusicRepository blockMusicRepository, BlockMusicMapper blockMusicMapper, RepertoireService repertoireService) {
+    private final MusicRepository musicRepository;
+
+    private final MusicMapper musicMapper;
+
+
+    public BlockMusicServiceImpl(BlockMusicRepository blockMusicRepository, BlockMusicMapper blockMusicMapper, RepertoireService repertoireService, MusicRepository musicRepository, MusicMapper musicMapper) {
         this.blockMusicRepository = blockMusicRepository;
         this.blockMusicMapper = blockMusicMapper;
         this.repertoireService = repertoireService;
+        this.musicRepository = musicRepository;
+        this.musicMapper = musicMapper;
     }
 
     @Override
@@ -100,6 +113,48 @@ public class BlockMusicServiceImpl implements BlockMusicService {
             blockMusic.ifPresent(blockMusics::add);
         }
         return blockMusics;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public MusicResponseDto linkMusicToBLock(Long cdBlockMusic, MusicToBlockRequest musicToBlockRequest) {
+        // Obtém a música pelo ID
+        Music music = musicRepository.findById(musicToBlockRequest.getCdMusic()).orElseThrow(MusicNotFoundException::new);
+
+        // Obtém a lista de blocos musicais pelos IDs fornecidos
+        List<BlockMusic> blockMusicList = getBlockMusicsByCdsBlocMusic(musicToBlockRequest.getCdsBlockMusic());
+
+        // Valida e obtém o bloco musical específico pelo ID
+        BlockMusic blockMusic = validateBlockMusic(cdBlockMusic);
+
+        // Adiciona a música à lista de músicas associadas ao bloco musical, se ainda não estiver presente
+        if (!blockMusic.getMusics().contains(music)) {
+            blockMusic.getMusics().add(music);
+        }
+
+        // Atualiza a lista de músicas associadas ao bloco musical
+        blockMusicRepository.save(blockMusic);
+
+        // Atualiza a lista de blocos musicais associados à música
+        music.getBlockMusics().addAll(blockMusicList);
+
+        // Salva a música no repositório
+        Music savedMusic = musicRepository.save(music);
+
+        // Retorna a resposta mapeada
+        return musicMapper.toMusicResponseDto(savedMusic);
+    }
+
+
+
+    @Transactional(readOnly = true)
+    public List<BlockMusic> getBlockMusicsByCdsBlocMusic(List<Long> cdsBlocMusic) {
+        List<BlockMusic> blockMusicList = new ArrayList<>();
+        for (Long item : cdsBlocMusic) {
+            Optional<BlockMusic> blockMusic = blockMusicRepository.findById(item);
+            blockMusic.ifPresent(blockMusicList::add);
+        }
+        return blockMusicList;
     }
 
 }

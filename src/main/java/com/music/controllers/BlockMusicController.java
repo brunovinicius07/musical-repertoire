@@ -1,7 +1,10 @@
 package com.music.controllers;
 
 import com.music.model.dto.request.BlockMusicRequestDto;
+import com.music.model.dto.request.MusicRequestDto;
+import com.music.model.dto.request.MusicToBlockRequest;
 import com.music.model.dto.response.BlockMusicResponseDto;
+import com.music.model.dto.response.MusicResponseDto;
 import com.music.services.BlockMusicService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,7 @@ public class BlockMusicController {
         return ResponseEntity.ok(blockMusicService.getAllBlockMusic(cdUser));
     }
 
+
     @GetMapping("/{blockMusic}")
     public ResponseEntity<BlockMusicResponseDto> getBlockMusicByCdBlockMusic(@PathVariable Long blockMusic) {
         return ResponseEntity.ok(blockMusicService.getBlockMusicByCdBlockMusic(blockMusic));
@@ -38,6 +42,11 @@ public class BlockMusicController {
     @PutMapping("{blockMusic}")
     public ResponseEntity<BlockMusicResponseDto> updateGender(@PathVariable Long blockMusic, @RequestBody @Valid BlockMusicRequestDto blockMusicRequestDto) {
         return ResponseEntity.ok(blockMusicService.updateBlockMusic(blockMusic, blockMusicRequestDto));
+    }
+
+    @PutMapping("/link-music-to-block/{cdMusic}")
+    public ResponseEntity<MusicResponseDto> linkMusicToBLock(@PathVariable Long cdMusic, @RequestBody MusicToBlockRequest musicToBlockRequest){
+        return ResponseEntity.ok(blockMusicService.linkMusicToBLock(cdMusic, musicToBlockRequest));
     }
 
     @DeleteMapping("{blockMusic}")
