@@ -1,7 +1,6 @@
 package com.music.controllers;
 
 import com.music.model.dto.request.BlockMusicRequestDto;
-import com.music.model.dto.request.MusicRequestDto;
 import com.music.model.dto.request.MusicToBlockRequest;
 import com.music.model.dto.response.BlockMusicResponseDto;
 import com.music.model.dto.response.MusicResponseDto;
@@ -44,9 +43,9 @@ public class BlockMusicController {
         return ResponseEntity.ok(blockMusicService.updateBlockMusic(blockMusic, blockMusicRequestDto));
     }
 
-    @PutMapping("/link-music-to-block/{cdMusic}")
-    public ResponseEntity<MusicResponseDto> linkMusicToBLock(@PathVariable Long cdMusic, @RequestBody MusicToBlockRequest musicToBlockRequest){
-        return ResponseEntity.ok(blockMusicService.linkMusicToBLock(cdMusic, musicToBlockRequest));
+    @PutMapping("/link-music-to-block/{cdBlockMusic}")
+    public ResponseEntity<MusicResponseDto> linkMusicToBLock(@PathVariable Long cdBlockMusic, @RequestBody MusicToBlockRequest musicToBlockRequest){
+        return ResponseEntity.ok(blockMusicService.linkMusicToBLock(cdBlockMusic, musicToBlockRequest));
     }
 
     @DeleteMapping("{blockMusic}")

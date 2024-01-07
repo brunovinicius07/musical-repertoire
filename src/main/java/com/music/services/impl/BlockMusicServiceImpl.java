@@ -118,30 +118,22 @@ public class BlockMusicServiceImpl implements BlockMusicService {
     @Override
     @Transactional(readOnly = false)
     public MusicResponseDto linkMusicToBLock(Long cdBlockMusic, MusicToBlockRequest musicToBlockRequest) {
-        // Obtém a música pelo ID
         Music music = musicRepository.findById(musicToBlockRequest.getCdMusic()).orElseThrow(MusicNotFoundException::new);
 
-        // Obtém a lista de blocos musicais pelos IDs fornecidos
         List<BlockMusic> blockMusicList = getBlockMusicsByCdsBlocMusic(musicToBlockRequest.getCdsBlockMusic());
 
-        // Valida e obtém o bloco musical específico pelo ID
         BlockMusic blockMusic = validateBlockMusic(cdBlockMusic);
 
-        // Adiciona a música à lista de músicas associadas ao bloco musical, se ainda não estiver presente
         if (!blockMusic.getMusics().contains(music)) {
             blockMusic.getMusics().add(music);
         }
 
-        // Atualiza a lista de músicas associadas ao bloco musical
         blockMusicRepository.save(blockMusic);
 
-        // Atualiza a lista de blocos musicais associados à música
         music.getBlockMusics().addAll(blockMusicList);
 
-        // Salva a música no repositório
         Music savedMusic = musicRepository.save(music);
 
-        // Retorna a resposta mapeada
         return musicMapper.toMusicResponseDto(savedMusic);
     }
 
