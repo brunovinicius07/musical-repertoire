@@ -101,6 +101,7 @@ public class BlockMusicServiceImpl implements BlockMusicService {
     public String deleteBlockMusic(Long cdBlockMusic) {
         BlockMusic blockMusic = validateBlockMusic(cdBlockMusic);
         blockMusicRepository.delete(blockMusic);
+        
         return "Bloco com ID " + cdBlockMusic + " excluído com sucesso!";
     }
 
