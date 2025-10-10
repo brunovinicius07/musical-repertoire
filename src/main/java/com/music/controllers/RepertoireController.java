@@ -20,7 +20,7 @@ public class RepertoireController {
         this.repertoireService = repertoireService;
     }
 
-    @PostMapping()
+    @PostMapping("/post")
     ResponseEntity<RepertoireResponseDto> registerRepertoire(@RequestBody @Valid RepertoireRequestDto repertoireRequestDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(repertoireService.registerRepertoire(repertoireRequestDto));
     }
@@ -35,13 +35,13 @@ public class RepertoireController {
         return ResponseEntity.ok(repertoireService.getRepertoireByCdRepertoire(cdRepertoire));
     }
 
-    @PutMapping("/{cdRepertoire}")
+    @PutMapping("/put/{cdRepertoire}")
     ResponseEntity<RepertoireResponseDto> updadeRepertoire(@PathVariable Long cdRepertoire, @RequestBody
                                                            @Valid RepertoireRequestDto repertoireRequestDto){
         return ResponseEntity.ok(repertoireService.updateRepertoire(cdRepertoire, repertoireRequestDto));
     }
 
-    @DeleteMapping("/{cdRepertoire}")
+    @DeleteMapping("delete/{cdRepertoire}")
     ResponseEntity<Object> deleteRepertoire(@PathVariable Long cdRepertoire){
         return ResponseEntity.ok(repertoireService.deleteRepertoire(cdRepertoire));
     }

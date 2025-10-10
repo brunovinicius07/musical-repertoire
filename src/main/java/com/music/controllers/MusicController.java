@@ -20,8 +20,7 @@ public class MusicController {
         this.musicService = musicService;
     }
 
-
-    @PostMapping()
+    @PostMapping("/post")
     public ResponseEntity<MusicResponseDto> registerMusic(@RequestBody @Valid MusicRequestDto musicRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(musicService.registerMusic(musicRequestDto));
     }

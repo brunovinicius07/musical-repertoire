@@ -133,9 +133,7 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
         music.getBlockMusics().addAll(blockMusicList);
 
-        Music savedMusic = musicRepository.save(music);
-
-        return musicMapper.toMusicResponseDto(savedMusic);
+        return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
 
 
