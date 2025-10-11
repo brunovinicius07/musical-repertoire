@@ -14,7 +14,6 @@ import com.music.model.mapper.MusicMapper;
 import com.music.repositories.BlockMusicRepository;
 import com.music.repositories.MusicRepository;
 import com.music.services.BlockMusicService;
-import com.music.services.MusicService;
 import com.music.services.RepertoireService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -135,8 +134,6 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
-
-
 
     @Transactional(readOnly = true)
     public List<BlockMusic> getBlockMusicsByCdsBlocMusic(List<Long> cdsBlocMusic) {

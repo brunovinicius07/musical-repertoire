@@ -3,7 +3,6 @@ package com.music.model.mapper;
 import com.music.model.dto.request.RepertoireRequestDto;
 import com.music.model.dto.response.RepertoireResponseDto;
 import com.music.model.entity.BlockMusic;
-import com.music.model.entity.Music;
 import com.music.model.entity.Repertoire;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
