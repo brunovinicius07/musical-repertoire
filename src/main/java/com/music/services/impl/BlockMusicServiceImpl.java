@@ -15,6 +15,7 @@ import com.music.repositories.BlockMusicRepository;
 import com.music.repositories.MusicRepository;
 import com.music.services.BlockMusicService;
 import com.music.services.RepertoireService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class BlockMusicServiceImpl implements BlockMusicService {
 
@@ -34,15 +36,6 @@ public class BlockMusicServiceImpl implements BlockMusicService {
     private final MusicRepository musicRepository;
 
     private final MusicMapper musicMapper;
-
-
-    public BlockMusicServiceImpl(BlockMusicRepository blockMusicRepository, BlockMusicMapper blockMusicMapper, RepertoireService repertoireService, MusicRepository musicRepository, MusicMapper musicMapper) {
-        this.blockMusicRepository = blockMusicRepository;
-        this.blockMusicMapper = blockMusicMapper;
-        this.repertoireService = repertoireService;
-        this.musicRepository = musicRepository;
-        this.musicMapper = musicMapper;
-    }
 
     @Override
     @Transactional(readOnly = false)

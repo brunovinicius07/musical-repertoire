@@ -1,6 +1,7 @@
 package com.music.authentication.auth;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,22 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("v1/music/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService service;
 
     private final AuthenticationService authenticationService;
 
-    public AuthenticationController(AuthenticationService service, AuthenticationService authenticationService) {
-        this.service = service;
-        this.authenticationService = authenticationService;
-    }
-
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody @Valid RegisterRequest request) {
-
-        authenticationService.userIsInvalid(request.getEmail());
-
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.register(request));
     }
 

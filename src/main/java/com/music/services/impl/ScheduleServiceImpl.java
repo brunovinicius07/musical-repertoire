@@ -9,6 +9,7 @@ import com.music.model.entity.User;
 import com.music.model.mapper.ScheduleMapper;
 import com.music.repositories.ScheduleRepository;
 import com.music.services.ScheduleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
 
@@ -25,18 +27,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final AuthenticationService authenticationService;
 
-    public ScheduleServiceImpl(ScheduleRepository scheduleRepository, ScheduleMapper scheduleMapper, AuthenticationService authenticationService) {
-        this.scheduleRepository = scheduleRepository;
-        this.scheduleMapper = scheduleMapper;
-        this.authenticationService = authenticationService;
-    }
-
     @Override
     @Transactional(readOnly = false)
     public ScheduleResponseDto createSchedule(ScheduleRequestDto scheduleRequestDto) {
 
         existingSchedule(scheduleRequestDto.getCdUser());
-        User user = authenticationService.validateUser(scheduleRequestDto.getCdUser());
+        User user = authenticationService.validateUserById(scheduleRequestDto.getCdUser());
 
         Schedule schedule = scheduleMapper.toSchedule(scheduleRequestDto);
         schedule.setUser(user);

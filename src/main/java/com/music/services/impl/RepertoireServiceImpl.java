@@ -9,11 +9,13 @@ import com.music.model.exceptions.Repertoire.RepertoireNotFoundException;
 import com.music.model.mapper.RepertoireMapper;
 import com.music.repositories.RepertoireRepository;
 import com.music.services.RepertoireService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class RepertoireServiceImpl implements RepertoireService {
 
@@ -23,19 +25,12 @@ public class RepertoireServiceImpl implements RepertoireService {
 
     private final AuthenticationService authenticationService;
 
-    public RepertoireServiceImpl(RepertoireRepository repertoireRepository, RepertoireMapper repertoireMapper, AuthenticationService authenticationService) {
-        this.repertoireRepository = repertoireRepository;
-        this.repertoireMapper = repertoireMapper;
-        this.authenticationService = authenticationService;
-    }
-
-
     @Override
     @Transactional(readOnly = false)
     public RepertoireResponseDto registerRepertoire(RepertoireRequestDto repertoireRequestDto) {
         existingRepertoire(repertoireRequestDto.getNmRepertoire(), repertoireRequestDto.getCdUser());
         Repertoire repertoire = repertoireMapper.toRepertoire(repertoireRequestDto);
-        var user = authenticationService.validateUser(repertoireRequestDto.getCdUser());
+        var user = authenticationService.validateUserById(repertoireRequestDto.getCdUser());
         repertoire.setUser(user);
 
         return repertoireMapper.toRepertoireResponseDto(repertoireRepository.save(repertoire));

@@ -1,5 +1,6 @@
 package com.music.model.mapper;
 
+import com.music.authentication.auth.AuthenticationResponse;
 import com.music.authentication.auth.RegisterRequest;
 import com.music.model.dto.response.UserResponseDto;
 import com.music.model.entity.User;
@@ -12,5 +13,7 @@ public interface UserMapper {
     @Mapping(target = "nmUser", source = "nmUser")
     User registerDtoToUser(RegisterRequest registerDto);
 
-    UserResponseDto userToDto(User user);
+    UserResponseDto userToResponseDto(User user);
+
+    AuthenticationResponse userToAuthenticationResponse(User user);
 }

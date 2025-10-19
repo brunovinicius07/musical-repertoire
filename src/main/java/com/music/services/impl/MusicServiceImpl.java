@@ -9,11 +9,13 @@ import com.music.model.mapper.MusicMapper;
 import com.music.repositories.MusicRepository;
 import com.music.services.BlockMusicService;
 import com.music.services.MusicService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class MusicServiceImpl implements MusicService {
 
@@ -22,12 +24,6 @@ public class MusicServiceImpl implements MusicService {
     private final MusicRepository musicRepository;
 
     private final BlockMusicService musicService;
-
-    public MusicServiceImpl(MusicMapper musicMapper, MusicRepository musicRepository, BlockMusicService musicService) {
-        this.musicMapper = musicMapper;
-        this.musicRepository = musicRepository;
-        this.musicService = musicService;
-    }
 
     @Override
     @Transactional(readOnly = false)

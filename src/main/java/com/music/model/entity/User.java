@@ -46,13 +46,6 @@ public class User implements UserDetails, Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<ScheduleEvent> events = new ArrayList<>();
 
-    public User(String nmUser, String email, String password, UserRole role) {
-        this.nmUser = nmUser;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN){

@@ -1,105 +1,82 @@
 package com.music.authentication.auth;
 
 import com.music.authentication.config.JwtService;
-import com.music.authentication.config.exceptionHandler.AlertException;
 import com.music.model.entity.User;
+import com.music.model.exceptions.login.VerifyCredential;
+import com.music.model.exceptions.login.EmailPresentException;
+import com.music.model.exceptions.user.UserNotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
 import com.music.role.UserRole;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationService(UserMapper userMapper, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
-        this.userMapper = userMapper;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-    }
-
-
     @Transactional()
     public AuthenticationResponse register(RegisterRequest request) {
 
+        existingUser(request.getEmail());
+
         User user = this.userMapper.registerDtoToUser(request);
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        user.setRole(UserRole.ADMIN);
 
         userRepository.save(user);
 
-        if (user.getAuthorities() != null) {
-            this.saveEntity(user);
-        }
-
         String token = jwtService.generateToken(user);
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        authenticationResponse.setCdUser(user.getCdUser());
+        AuthenticationResponse authenticationResponse = userMapper.userToAuthenticationResponse(user);
         authenticationResponse.setToken(token);
-        authenticationResponse.setNmUser(user.getNmUser());
 
         return authenticationResponse;
+    }
+
+    @Transactional(readOnly = true)
+    public void existingUser(String email){
+        userRepository.findByEmail(email).ifPresent(verify -> {
+            throw new EmailPresentException();
+        });
     }
 
     @Transactional(readOnly = true)
     public AuthenticationResponse login(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        try {
+           Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
 
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+            User user = (User) authentication.getPrincipal();
 
-        String token = jwtService.generateToken(user);
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        authenticationResponse.setToken(token);
-        authenticationResponse.setCdUser(user.getCdUser());
-        authenticationResponse.setNmUser(user.getNmUser());
+            String token = jwtService.generateToken(user);
+            AuthenticationResponse authResponse = userMapper.userToAuthenticationResponse(user);
+            authResponse.setToken(token);
 
-        return authenticationResponse;
+            return authResponse;
+        }catch (BadCredentialsException e){
+            throw new VerifyCredential();
+        }
     }
 
     @Transactional(readOnly = true)
-    public User validateUser(Long cdUser) {
-        Optional<User> optionalUser = userRepository.findById(cdUser);
-
-        if (optionalUser.isEmpty()) {
-            throw new AlertException(
-                    "warn",
-                    String.format("Usuário com id %S não cadastrado!", cdUser),
-                    HttpStatus.NOT_FOUND
-            );
-        }
-        return optionalUser.get();
-    }
-
-    @Transactional(readOnly = true)
-    public void userIsInvalid(String email) {
-        Optional<User> newUser = this.userRepository.findByEmail(email);
-
-        if (newUser.isPresent()) {
-            throw new AlertException(
-                    "warn",
-                    String.format("Email já cadastrado", email),
-                    HttpStatus.CONFLICT
-            );
-        }
+    public User validateUserById(Long cdUser) {
+        return userRepository.findById(cdUser).orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional()

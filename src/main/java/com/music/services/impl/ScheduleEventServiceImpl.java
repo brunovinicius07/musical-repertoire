@@ -8,6 +8,7 @@ import com.music.model.entity.ScheduleEvent;
 import com.music.model.mapper.ScheduleEventMapper;
 import com.music.repositories.ScheduleEventRepository;
 import com.music.services.ScheduleEventService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class ScheduleEventServiceImpl implements ScheduleEventService {
 
@@ -24,13 +26,6 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
     private final ScheduleServiceImpl scheduleService;
 
     private final ScheduleEventMapper scheduleEventMapper;
-
-    public ScheduleEventServiceImpl(ScheduleEventRepository scheduleEventRepository, ScheduleServiceImpl scheduleService, ScheduleEventMapper scheduleEventMapper) {
-        this.scheduleEventRepository = scheduleEventRepository;
-        this.scheduleService = scheduleService;
-        this.scheduleEventMapper = scheduleEventMapper;
-    }
-
 
     @Override
     @Transactional(readOnly = false)
