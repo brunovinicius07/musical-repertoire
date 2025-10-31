@@ -21,8 +21,10 @@ public class RepertoireController {
     }
 
     @PostMapping("/post")
-    ResponseEntity<RepertoireResponseDto> registerRepertoire(@RequestBody @Valid RepertoireRequestDto repertoireRequestDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(repertoireService.registerRepertoire(repertoireRequestDto));
+    ResponseEntity<RepertoireResponseDto> registerRepertoire(
+            @RequestBody @Valid RepertoireRequestDto repertoireRequestDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(repertoireService
+                .registerRepertoire(repertoireRequestDto));
     }
 
     @PostMapping("/{cdUser}")
@@ -36,13 +38,13 @@ public class RepertoireController {
     }
 
     @PutMapping("/put/{cdRepertoire}")
-    ResponseEntity<RepertoireResponseDto> updadeRepertoire(@PathVariable Long cdRepertoire, @RequestBody
+    ResponseEntity<RepertoireResponseDto> updateRepertoire(@PathVariable Long cdRepertoire, @RequestBody
                                                            @Valid RepertoireRequestDto repertoireRequestDto){
         return ResponseEntity.ok(repertoireService.updateRepertoire(cdRepertoire, repertoireRequestDto));
     }
 
     @DeleteMapping("delete/{cdRepertoire}")
-    ResponseEntity<Object> deleteRepertoire(@PathVariable Long cdRepertoire){
+    ResponseEntity<String> deleteRepertoire(@PathVariable Long cdRepertoire){
         return ResponseEntity.ok(repertoireService.deleteRepertoire(cdRepertoire));
     }
 }

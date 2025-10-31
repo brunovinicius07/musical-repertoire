@@ -7,13 +7,11 @@ import lombok.*;
 
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
-@RequiredArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_repertoire")
 public class Repertoire {
@@ -29,6 +27,7 @@ public class Repertoire {
     @OneToMany(mappedBy = "repertoire", cascade = CascadeType.ALL)
     private List<BlockMusic> blockMusics;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cdUser")
     private User user;
 }

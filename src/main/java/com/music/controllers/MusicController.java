@@ -41,12 +41,13 @@ public class MusicController {
     }
 
     @PutMapping("/put/{cdMusic}")
-    public ResponseEntity<MusicResponseDto> updateMusic(@PathVariable Long cdMusic, @RequestBody @Valid MusicRequestDto musicRequestDto) {
+    public ResponseEntity<MusicResponseDto> updateMusic(@PathVariable Long cdMusic,
+                                                        @RequestBody @Valid MusicRequestDto musicRequestDto) {
         return ResponseEntity.ok(musicService.updateMusic(cdMusic, musicRequestDto));
     }
 
     @DeleteMapping("/delete/{cdMusic}")
-    public ResponseEntity<Object> deleteMusic(@PathVariable Long cdMusic) {
+    public ResponseEntity<String> deleteMusic(@PathVariable Long cdMusic) {
         return ResponseEntity.ok(musicService.deleteMusic(cdMusic));
     }
 }

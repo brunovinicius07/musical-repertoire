@@ -1,6 +1,7 @@
 package com.music.controllers;
 
 import com.music.model.dto.request.ScheduleEventRequestDto;
+import com.music.model.dto.response.ScheduleEventResponseDto;
 import com.music.services.ScheduleEventService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,17 +19,21 @@ public class ScheduleEventController {
     }
 
     @PostMapping()
-    public ResponseEntity<Object> registerEvent(@RequestBody @Valid ScheduleEventRequestDto scheduleEventRequestDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleEventService.registerEvent(scheduleEventRequestDto));
+    public ResponseEntity<ScheduleEventResponseDto> registerEvent(
+            @RequestBody @Valid ScheduleEventRequestDto scheduleEventRequestDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleEventService
+                .registerEvent(scheduleEventRequestDto));
     }
 
     @PutMapping("/{cdScheduleEvent}")
-    public ResponseEntity<Object> updateSheduleEvent(@PathVariable Long cdScheduleEvent, @RequestBody @Valid ScheduleEventRequestDto scheduleEventRequestDto){
+    public ResponseEntity<ScheduleEventResponseDto> updateScheduleEvent(
+            @PathVariable Long cdScheduleEvent,
+            @RequestBody @Valid ScheduleEventRequestDto scheduleEventRequestDto){
         return ResponseEntity.ok(scheduleEventService.updateSheduleEvent(cdScheduleEvent, scheduleEventRequestDto));
     }
 
     @DeleteMapping("/{cdScheduleEvent}")
-    public ResponseEntity<Object> deleteScheduleEvent(@PathVariable Long cdScheduleEvent){
+    public ResponseEntity<String> deleteScheduleEvent(@PathVariable Long cdScheduleEvent){
         return ResponseEntity.ok(scheduleEventService.deleteScheduleEvent(cdScheduleEvent));
     }
 }

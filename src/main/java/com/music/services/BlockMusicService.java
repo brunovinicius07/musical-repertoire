@@ -21,7 +21,7 @@ public interface BlockMusicService {
 
     BlockMusicResponseDto updateBlockMusic(Long cdBlockMusic, BlockMusicRequestDto blockMusicRequestDto);
 
-    Object deleteBlockMusic(Long cdBlockMusic);
+    String deleteBlockMusic(Long cdBlockMusic);
 
     List<BlockMusic> getBlockMusicByCdBlockMusics(List<Long> cdBlockMusics);
 

@@ -6,12 +6,12 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
-@ToString
-@RequiredArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString(exclude = "events")
 @Entity
 @Table(name = "tb_schedule")
 public class Schedule {
@@ -20,10 +20,11 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long cdSchedule;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cd_user")
     private User user;
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleEvent> events = new ArrayList<>();
 
 }

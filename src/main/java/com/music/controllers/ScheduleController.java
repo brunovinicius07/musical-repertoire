@@ -1,11 +1,14 @@
 package com.music.controllers;
 
 import com.music.model.dto.request.ScheduleRequestDto;
+import com.music.model.dto.response.ScheduleResponseDto;
 import com.music.services.ScheduleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController()
 @RequestMapping(value = "v1/music/schedule")
@@ -18,17 +21,13 @@ public class ScheduleController {
     }
 
     @PostMapping()
-    public ResponseEntity<Object> createSchedule(@RequestBody @Valid ScheduleRequestDto scheduleRequestDto){
+    public ResponseEntity<ScheduleResponseDto> createSchedule(
+            @RequestBody @Valid ScheduleRequestDto scheduleRequestDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.createSchedule(scheduleRequestDto));
     }
 
     @GetMapping()
-    public ResponseEntity<Object> getAllEvent(){
+    public ResponseEntity<List<ScheduleResponseDto>> getAllEvent(){
         return ResponseEntity.ok(scheduleService.getAllEvent());
-    }
-
-    @GetMapping("/{cdSchedule}")
-    public ResponseEntity<Object> getScheduleByCdSchedule(@PathVariable Long cdSchedule){
-        return ResponseEntity.ok(scheduleService.getScheduleByCdSchedule(cdSchedule));
     }
 }

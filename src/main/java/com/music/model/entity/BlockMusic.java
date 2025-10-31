@@ -7,13 +7,11 @@ import lombok.*;
 
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
-@RequiredArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_block_musical")
 public class BlockMusic {
@@ -30,15 +28,16 @@ public class BlockMusic {
     @JoinColumn(name = "cdRepertoire")
     private Repertoire repertoire;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "TB_BLOCKMUSIC_MUSIC",
+            name = "TB_BLOCK_MUSIC_MUSIC",
             joinColumns = @JoinColumn(name = "cdBlockMusic"),
             inverseJoinColumns = @JoinColumn(name = "cdMusic")
     )
     @ToString.Exclude
     private List<Music> musics;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cdUser")
     private User user;
 }

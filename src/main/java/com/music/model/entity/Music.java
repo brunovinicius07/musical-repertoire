@@ -7,13 +7,11 @@ import lombok.*;
 
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_music")
 public class Music {
@@ -33,7 +31,7 @@ public class Music {
         @Size(max = 7500)
         private String letterMusic;
 
-        @ManyToMany(mappedBy = "musics")
+        @ManyToMany(mappedBy = "musics", fetch = FetchType.LAZY)
         @ToString.Exclude
         private List<BlockMusic> blockMusics;
 

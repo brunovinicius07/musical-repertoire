@@ -19,5 +19,5 @@ public interface RepertoireService {
 
     RepertoireResponseDto updateRepertoire(Long cdRepertoire, RepertoireRequestDto repertoireRequestDto);
 
-    Object deleteRepertoire(Long cdRepertoire);
+    String deleteRepertoire(Long cdRepertoire);
 }

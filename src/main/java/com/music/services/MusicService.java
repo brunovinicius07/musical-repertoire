@@ -22,6 +22,6 @@ public interface MusicService {
 
     MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto);
 
-    Object deleteMusic(Long cdMusic);
+    String deleteMusic(Long cdMusic);
 
 }

@@ -9,5 +9,5 @@ public interface ScheduleEventService {
 
     ScheduleEventResponseDto updateSheduleEvent(Long cdScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto);
 
-    Object deleteScheduleEvent(Long cdScheduleEvent);
+    String deleteScheduleEvent(Long cdScheduleEvent);
 }

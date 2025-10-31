@@ -23,8 +23,10 @@ public class BlockMusicController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<BlockMusicResponseDto> registerBlockMusic(@RequestBody @Valid BlockMusicRequestDto blockMusicRequestDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(blockMusicService.registerBlockMusic(blockMusicRequestDto));
+    public ResponseEntity<BlockMusicResponseDto> registerBlockMusic(
+            @RequestBody @Valid BlockMusicRequestDto blockMusicRequestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(blockMusicService
+                .registerBlockMusic(blockMusicRequestDto));
     }
 
     @PostMapping("/{cdUser}")
@@ -39,17 +41,21 @@ public class BlockMusicController {
     }
 
     @PutMapping("/put/{cdBlockMusic}")
-    public ResponseEntity<BlockMusicResponseDto> updateGender(@PathVariable Long cdBlockMusic, @RequestBody @Valid BlockMusicRequestDto blockMusicRequestDto) {
+    public ResponseEntity<BlockMusicResponseDto> updateBlockMusic(@PathVariable Long cdBlockMusic,
+                                                                  @RequestBody @Valid
+                                                              BlockMusicRequestDto blockMusicRequestDto) {
         return ResponseEntity.ok(blockMusicService.updateBlockMusic(cdBlockMusic, blockMusicRequestDto));
     }
 
     @PutMapping("/link-music-to-block/{cdBlockMusic}")
-    public ResponseEntity<MusicResponseDto> linkMusicToBLock(@PathVariable Long cdBlockMusic, @RequestBody MusicToBlockRequest musicToBlockRequest){
+    public ResponseEntity<MusicResponseDto> linkMusicToBLock(@PathVariable Long cdBlockMusic,
+                                                             @RequestBody
+                                                             MusicToBlockRequest musicToBlockRequest){
         return ResponseEntity.ok(blockMusicService.linkMusicToBLock(cdBlockMusic, musicToBlockRequest));
     }
 
     @DeleteMapping("/delete/{cdBlockMusic}")
-    public ResponseEntity<Object> deleteGender(@PathVariable Long cdBlockMusic) {
+    public ResponseEntity<String> deleteBlockMusic(@PathVariable Long cdBlockMusic) {
         return ResponseEntity.ok(blockMusicService.deleteBlockMusic(cdBlockMusic));
     }
 }

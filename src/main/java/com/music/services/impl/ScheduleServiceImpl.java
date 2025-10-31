@@ -24,7 +24,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final ScheduleMapper scheduleMapper;
-
     private final AuthenticationService authenticationService;
 
     @Override

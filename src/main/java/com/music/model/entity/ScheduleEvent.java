@@ -1,44 +1,55 @@
 package com.music.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Builder
 @Getter
 @Setter
-@ToString
-@RequiredArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"schedule", "user"})
 @Entity
 @Table(name = "tb_schedule_event")
 public class ScheduleEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private long cdScheduleEvent;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "cd_schedule")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cdSchedule", nullable = false)
+    @JsonBackReference
     private Schedule schedule;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "cd_user")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cdUser", nullable = false)
     private User user;
 
-    @Column(name = "`day`")
+    @NotNull
+    @Column(name = "`day`", nullable = false)
     private LocalDate day;
 
+    @NotNull
+    @Column(nullable = false)
     private LocalTime opening;
 
+    @NotNull
+    @Column(nullable = false)
     private LocalTime closure;
 
+    @NotNull
+    @Column(nullable = false, length = 60)
     private String title;
 
+    @Column(length = 256)
     private String description;
 }
