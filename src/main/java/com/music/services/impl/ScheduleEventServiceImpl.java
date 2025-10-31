@@ -57,7 +57,7 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
 
     @Override
     @Transactional(readOnly = false)
-    public ScheduleEventResponseDto updateSheduleEvent(Long cdScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto) {
+    public ScheduleEventResponseDto updateScheduleEvent(Long cdScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto) {
         ScheduleEvent scheduleEvent = validateScheduleEvent(cdScheduleEvent);
         scheduleEvent.setDay(scheduleEventRequestDto.getDay());
         scheduleEvent.setOpening(scheduleEventRequestDto.getOpening());

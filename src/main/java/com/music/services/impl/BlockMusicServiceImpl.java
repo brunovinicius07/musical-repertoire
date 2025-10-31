@@ -50,24 +50,10 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
     @Override
     @Transactional(readOnly = true)
-    public void existingBlockMusic(String nmBlockMusic, Long cdRepertoire) {
-        blockMusicRepository.findBlockMusicByNmBlockMusicAndRepertoireCdRepertoire(nmBlockMusic, cdRepertoire)
-                .ifPresent(blockMusic -> {throw new BlockMusicIsPresentException();
-                });
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public BlockMusicResponseDto getBlockMusicByCdBlockMusic(Long cdBlockMusic) {
         BlockMusic blockMusic = validateBlockMusic(cdBlockMusic);
 
         return blockMusicMapper.toBlockMusicResponseDto(blockMusic);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public BlockMusic validateBlockMusic(Long cdBlockMusic) {
-        return blockMusicRepository.findById(cdBlockMusic).orElseThrow(BlockMusicNotFoundException::new);
     }
 
     @Override
@@ -85,6 +71,7 @@ public class BlockMusicServiceImpl implements BlockMusicService {
         existingBlockMusic(blockMusicRequestDto.getNmBlockMusic(),blockMusicRequestDto.getCdRepertoire());
         BlockMusic blockMusic = validateBlockMusic(cdBlockMusic);
         blockMusic.setNmBlockMusic(blockMusicRequestDto.getNmBlockMusic());
+
         return blockMusicMapper.toBlockMusicResponseDto(blockMusicRepository.save(blockMusic));
     }
 
@@ -136,6 +123,20 @@ public class BlockMusicServiceImpl implements BlockMusicService {
             blockMusic.ifPresent(blockMusicList::add);
         }
         return blockMusicList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void existingBlockMusic(String nmBlockMusic, Long cdRepertoire) {
+        blockMusicRepository.findBlockMusicByNmBlockMusicAndRepertoireCdRepertoire(nmBlockMusic, cdRepertoire)
+                .ifPresent(blockMusic -> {throw new BlockMusicIsPresentException();
+                });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BlockMusic validateBlockMusic(Long cdBlockMusic) {
+        return blockMusicRepository.findById(cdBlockMusic).orElseThrow(BlockMusicNotFoundException::new);
     }
 
 }

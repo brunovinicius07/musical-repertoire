@@ -7,7 +7,7 @@ public interface ScheduleEventService {
 
     ScheduleEventResponseDto registerEvent(ScheduleEventRequestDto scheduleEventRequestDto);
 
-    ScheduleEventResponseDto updateSheduleEvent(Long cdScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto);
+    ScheduleEventResponseDto updateScheduleEvent(Long cdScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto);
 
     String deleteScheduleEvent(Long cdScheduleEvent);
 }
