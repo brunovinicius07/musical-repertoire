@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RepertoireRequestDto {
 
-    private String nmRepertoire;
+    private String nameRepertoire;
 
-    private Long cdUser;
+    private Long idUser;
 
 }

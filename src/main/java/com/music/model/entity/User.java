@@ -5,17 +5,14 @@ import com.music.role.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -31,9 +28,9 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cdUser;
+    private Long idUser;
 
-    private String nmUser;
+    private String nameUser;
 
     private String email;
 
@@ -52,8 +49,10 @@ public class User implements UserDetails {
         return switch (role) {
             case ADMIN -> List.of(
                     new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_USER_FULL"),
                     new SimpleGrantedAuthority("ROLE_USER")
             );
+            case USER_FULL -> List.of(new SimpleGrantedAuthority("ROLE_USER_FULL"));
             case USER -> List.of(new SimpleGrantedAuthority("ROLE_USER"));
         };
     }
@@ -92,7 +91,7 @@ public class User implements UserDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User other)) return false;
-        return cdUser != null && cdUser.equals(other.getCdUser());
+        return idUser != null && idUser.equals(other.getIdUser());
     }
 
     @Override

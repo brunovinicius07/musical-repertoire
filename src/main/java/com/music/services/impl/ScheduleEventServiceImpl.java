@@ -31,9 +31,9 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
     @Transactional(readOnly = false)
     public ScheduleEventResponseDto registerEvent(ScheduleEventRequestDto scheduleEventRequestDto) {
 
-        existingScheduleEvent(scheduleEventRequestDto.getCdUser() ,scheduleEventRequestDto.getDay(), scheduleEventRequestDto.getOpening());
+        existingScheduleEvent(scheduleEventRequestDto.getIdUser() ,scheduleEventRequestDto.getDay(), scheduleEventRequestDto.getOpening());
 
-        Schedule schedule = scheduleService.validateSchedule(scheduleEventRequestDto.getCdSchedule());
+        Schedule schedule = scheduleService.validateSchedule(scheduleEventRequestDto.getIdSchedule());
 
         ScheduleEvent scheduleEvent = scheduleEventMapper.toScheduleEvent(scheduleEventRequestDto);
         scheduleEvent.setSchedule(schedule);
@@ -42,9 +42,9 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
     }
 
     @Transactional(readOnly = true)
-    public void existingScheduleEvent(Long cdUser, LocalDate day, LocalTime opening){
+    public void existingScheduleEvent(Long idUser, LocalDate day, LocalTime opening){
 
-        Optional<ScheduleEvent> scheduleEvent = scheduleEventRepository.findByUserCdUserAndDayAndOpening(cdUser,day, opening);
+        Optional<ScheduleEvent> scheduleEvent = scheduleEventRepository.findByUserIdUserAndDayAndOpening(idUser,day, opening);
 
         if(scheduleEvent.isPresent()){
             throw new AlertException(
@@ -57,8 +57,8 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
 
     @Override
     @Transactional(readOnly = false)
-    public ScheduleEventResponseDto updateScheduleEvent(Long cdScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto) {
-        ScheduleEvent scheduleEvent = validateScheduleEvent(cdScheduleEvent);
+    public ScheduleEventResponseDto updateScheduleEvent(Long idScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto) {
+        ScheduleEvent scheduleEvent = validateScheduleEvent(idScheduleEvent);
         scheduleEvent.setDay(scheduleEventRequestDto.getDay());
         scheduleEvent.setOpening(scheduleEventRequestDto.getOpening());
         scheduleEvent.setClosure(scheduleEventRequestDto.getClosure());
@@ -69,13 +69,13 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
     }
 
     @Transactional(readOnly = true)
-    public ScheduleEvent validateScheduleEvent(Long cdScheduleEvent) {
-        Optional<ScheduleEvent> scheduleEvent = scheduleEventRepository.findById(cdScheduleEvent);
+    public ScheduleEvent validateScheduleEvent(Long idScheduleEvent) {
+        Optional<ScheduleEvent> scheduleEvent = scheduleEventRepository.findById(idScheduleEvent);
 
         if (scheduleEvent.isEmpty()) {
             throw new AlertException(
                     "warn",
-                    String.format("Evento com id %S não cadastrada!", cdScheduleEvent),
+                    String.format("Evento com id %S não cadastrada!", idScheduleEvent),
                     HttpStatus.NOT_FOUND
             );
         }
@@ -83,11 +83,11 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
     }
 
     @Override
-    public String deleteScheduleEvent(Long cdScheduleEvent) {
+    public String deleteScheduleEvent(Long idScheduleEvent) {
 
-        ScheduleEvent scheduleEvent = validateScheduleEvent(cdScheduleEvent);
+        ScheduleEvent scheduleEvent = validateScheduleEvent(idScheduleEvent);
         scheduleEventRepository.delete(scheduleEvent);
 
-        return "Evento com o id " + cdScheduleEvent + " apagado com sucesso!";
+        return "Evento com o id " + idScheduleEvent + " apagado com sucesso!";
     }
 }

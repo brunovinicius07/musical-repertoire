@@ -24,34 +24,34 @@ public class MusicController {
         return ResponseEntity.status(HttpStatus.CREATED).body(musicResponse);
     }
 
-    @PostMapping("/{cdUser}")
-    public ResponseEntity<List<MusicResponseDto>> getAllMusicByCdUser(@PathVariable Long cdUser) {
-        var musicResponse = musicService.getAllMusicByCdUser(cdUser);
+    @PostMapping("/{idUser}")
+    public ResponseEntity<List<MusicResponseDto>> getAllMusicByIdUser(@PathVariable Long idUser) {
+        var musicResponse = musicService.getAllMusicByIdUser(idUser);
         return ResponseEntity.ok(musicResponse);
     }
 
-    @GetMapping("/list-music/{cdBlockMusic}")
-    public ResponseEntity<List<MusicResponseDto>> getAllMusicByCdBlockMusic(@PathVariable Long cdBlockMusic){
-        var musicResponse = musicService.getAllMusicByCdBlockMusic(cdBlockMusic);
+    @GetMapping("/list-music/{idBlockMusic}")
+    public ResponseEntity<List<MusicResponseDto>> getAllMusicByIdBlockMusic(@PathVariable Long idBlockMusic){
+        var musicResponse = musicService.getAllMusicByIdBlockMusic(idBlockMusic);
         return ResponseEntity.ok(musicResponse);
     }
 
-    @GetMapping("/{cdMusic}")
-    public ResponseEntity<MusicResponseDto> getMusicById(@PathVariable Long cdMusic) {
-        var musicResponse = musicService.getMusicById(cdMusic);
+    @GetMapping("/{idMusic}")
+    public ResponseEntity<MusicResponseDto> getMusicById(@PathVariable Long idMusic) {
+        var musicResponse = musicService.getMusicById(idMusic);
         return ResponseEntity.ok(musicResponse);
     }
 
-    @PutMapping("/put/{cdMusic}")
-    public ResponseEntity<MusicResponseDto> updateMusic(@PathVariable Long cdMusic,
+    @PutMapping("/put/{idMusic}")
+    public ResponseEntity<MusicResponseDto> updateMusic(@PathVariable Long idMusic,
                                                         @RequestBody @Valid MusicRequestDto musicRequestDto) {
-        var musicResponse = musicService.updateMusic(cdMusic,musicRequestDto);
+        var musicResponse = musicService.updateMusic(idMusic,musicRequestDto);
         return ResponseEntity.ok(musicResponse);
     }
 
-    @DeleteMapping("/delete/{cdMusic}")
-    public ResponseEntity<String> deleteMusic(@PathVariable Long cdMusic) {
-        String message = musicService.deleteMusic(cdMusic);
+    @DeleteMapping("/delete/{idMusic}")
+    public ResponseEntity<String> deleteMusic(@PathVariable Long idMusic) {
+        String message = musicService.deleteMusic(idMusic);
         return ResponseEntity.ok(message);
     }
 }

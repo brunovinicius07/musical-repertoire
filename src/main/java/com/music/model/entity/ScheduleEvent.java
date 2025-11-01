@@ -1,7 +1,6 @@
 package com.music.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -23,15 +22,15 @@ public class ScheduleEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private long cdScheduleEvent;
+    private long idScheduleEvent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cdSchedule", nullable = false)
+    @JoinColumn(name = "idSchedule", nullable = false)
     @JsonBackReference
     private Schedule schedule;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cdUser", nullable = false)
+    @JoinColumn(name = "idUser", nullable = false)
     private User user;
 
     @NotNull

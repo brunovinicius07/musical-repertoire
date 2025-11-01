@@ -27,38 +27,38 @@ public class BlockMusicController {
         return ResponseEntity.status(HttpStatus.CREATED).body(blockMusicResponse);
     }
 
-    @PostMapping("/{cdUser}")
-    public ResponseEntity<List<BlockMusicResponseDto>> getAllBlockMusic(@PathVariable Long cdUser) {
-        var blockMusicResponse = blockMusicService.getAllBlockMusic(cdUser);
+    @PostMapping("/{idUser}")
+    public ResponseEntity<List<BlockMusicResponseDto>> getAllBlockMusic(@PathVariable Long idUser) {
+        var blockMusicResponse = blockMusicService.getAllBlockMusic(idUser);
         return ResponseEntity.ok(blockMusicResponse);
     }
 
-    @GetMapping("/{cdBlockMusic}")
-    public ResponseEntity<BlockMusicResponseDto> getBlockMusicByCdBlockMusic(@PathVariable Long cdBlockMusic) {
-        var blockMusicResponse = blockMusicService.getBlockMusicByCdBlockMusic(cdBlockMusic);
+    @GetMapping("/{idBlockMusic}")
+    public ResponseEntity<BlockMusicResponseDto> getBlockMusicByIdBlockMusic(@PathVariable Long idBlockMusic) {
+        var blockMusicResponse = blockMusicService.getBlockMusicByIdBlockMusic(idBlockMusic);
         return ResponseEntity.ok(blockMusicResponse);
     }
 
-    @PutMapping("/put/{cdBlockMusic}")
-    public ResponseEntity<BlockMusicResponseDto> updateBlockMusic(@PathVariable Long cdBlockMusic,
+    @PutMapping("/put/{idBlockMusic}")
+    public ResponseEntity<BlockMusicResponseDto> updateBlockMusic(@PathVariable Long idBlockMusic,
                                                                   @RequestBody @Valid
                                                               BlockMusicRequestDto blockMusicRequestDto) {
-        var blockMusicResponse = blockMusicService.updateBlockMusic(cdBlockMusic,blockMusicRequestDto);
+        var blockMusicResponse = blockMusicService.updateBlockMusic(idBlockMusic,blockMusicRequestDto);
         return ResponseEntity.ok(blockMusicResponse);
     }
 
-    @PutMapping("/link-music-to-block/{cdBlockMusic}")
-    public ResponseEntity<MusicResponseDto> linkMusicToBLock(@PathVariable Long cdBlockMusic,
+    @PutMapping("/link-music-to-block/{idBlockMusic}")
+    public ResponseEntity<MusicResponseDto> linkMusicToBLock(@PathVariable Long idBlockMusic,
                                                              @RequestBody
                                                              MusicToBlockRequest musicToBlockRequest){
 
-        var blockMusicResponse = blockMusicService.linkMusicToBLock(cdBlockMusic,musicToBlockRequest);
+        var blockMusicResponse = blockMusicService.linkMusicToBLock(idBlockMusic,musicToBlockRequest);
         return ResponseEntity.ok(blockMusicResponse);
     }
 
-    @DeleteMapping("/delete/{cdBlockMusic}")
-    public ResponseEntity<String> deleteBlockMusic(@PathVariable Long cdBlockMusic) {
-        String message = blockMusicService.deleteBlockMusic(cdBlockMusic);
+    @DeleteMapping("/delete/{idBlockMusic}")
+    public ResponseEntity<String> deleteBlockMusic(@PathVariable Long idBlockMusic) {
+        String message = blockMusicService.deleteBlockMusic(idBlockMusic);
         return ResponseEntity.ok(message);
     }
 }

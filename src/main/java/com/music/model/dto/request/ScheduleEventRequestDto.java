@@ -13,9 +13,9 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ScheduleEventRequestDto {
 
-    private Long cdSchedule;
+    private Long idSchedule;
 
-    private Long cdUser;
+    private Long idUser;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate day;

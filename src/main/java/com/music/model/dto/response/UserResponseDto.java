@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserResponseDto {
 
-    private Long cdUser;
+    private Long idUser;
 
-    private String nmUser;
+    private String nameUser;
 
     private String email;
 

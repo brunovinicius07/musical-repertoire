@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BlockMusicRequestDto {
 
-    private String nmBlockMusic;
+    private String nameBlockMusic;
 
-    private Long cdRepertoire;
+    private Long idRepertoire;
 
-    private Long cdUser;
+    private Long idUser;
 }

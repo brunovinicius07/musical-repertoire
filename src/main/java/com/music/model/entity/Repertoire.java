@@ -18,16 +18,16 @@ public class Repertoire {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cdRepertoire;
+    private Long idRepertoire;
 
     @Size(max = 30)
     @NotBlank
-    private String nmRepertoire;
+    private String nameRepertoire;
 
     @OneToMany(mappedBy = "repertoire", cascade = CascadeType.ALL)
     private List<BlockMusic> blockMusics;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cdUser")
+    @JoinColumn(name = "idUser")
     private User user;
 }

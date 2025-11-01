@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum UserRole {
 
     ADMIN("ADMIN"),
+    USER_FULL("USER_FULL"),
     USER("USER");
 
     private final String roleName;

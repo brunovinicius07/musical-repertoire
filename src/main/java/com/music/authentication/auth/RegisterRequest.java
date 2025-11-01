@@ -1,6 +1,5 @@
 package com.music.authentication.auth;
 
-import com.music.role.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegisterRequest {
 
-    private String nmUser;
+    private String nameUser;
 
     private String email;
 

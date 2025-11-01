@@ -14,15 +14,15 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface RepertoireMapper {
 
-    @Mapping(target = "cdRepertoire", ignore = true)
-    @Mapping(target = "nmRepertoire", source = "nmRepertoire")
-    @Mapping(target = "user.cdUser", source = "cdUser")
+    @Mapping(target = "idRepertoire", ignore = true)
+    @Mapping(target = "nameRepertoire", source = "nameRepertoire")
+    @Mapping(target = "user.idUser", source = "idUser")
     Repertoire toRepertoire (RepertoireRequestDto repertoireRequestDto);
 
-    @Mapping(source = "cdRepertoire", target = "cdRepertoire")
-    @Mapping(source = "nmRepertoire", target = "nmRepertoire")
-    @Mapping(target = "cdBlockMusics", expression = "java(mapToBlockMusic(repertoire.getBlockMusics()))")
-    @Mapping(source = "user.cdUser", target = "cdUser")
+    @Mapping(source = "idRepertoire", target = "idRepertoire")
+    @Mapping(source = "nameRepertoire", target = "nameRepertoire")
+    @Mapping(target = "idBlockMusics", expression = "java(mapToBlockMusic(repertoire.getBlockMusics()))")
+    @Mapping(source = "user.idUser", target = "idUser")
     RepertoireResponseDto toRepertoireResponseDto(Repertoire repertoire);
 
     List<RepertoireResponseDto> toListRepertoireResponseDto(List<Repertoire> repertoireList);
@@ -33,7 +33,7 @@ public interface RepertoireMapper {
         }
 
         return blockMusics.stream()
-                .map(BlockMusic::getCdBlockMusic)
+                .map(BlockMusic::getIdBlockMusic)
                 .collect(Collectors.toList());
     }
 }

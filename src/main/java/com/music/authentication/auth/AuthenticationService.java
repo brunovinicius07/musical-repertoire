@@ -75,8 +75,8 @@ public class AuthenticationService {
     }
 
     @Transactional(readOnly = true)
-    public User validateUserById(Long cdUser) {
-        return userRepository.findById(cdUser).orElseThrow(UserNotFoundException::new);
+    public User validateUserById(Long IdUser) {
+        return userRepository.findById(IdUser).orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional()
@@ -85,11 +85,12 @@ public class AuthenticationService {
 
         if (role.equals(UserRole.ADMIN.getRoleName())) {
             user.setRole(UserRole.ADMIN);
-
             this.userRepository.save(user);
-        } else if (role.equals(UserRole.USER.getRoleName())) {
+        } else if (role.equals(UserRole.USER_FULL.getRoleName())) {
+            user.setRole(UserRole.USER_FULL);
+            this.userRepository.save(user);
+        }else {
             user.setRole(UserRole.USER);
-
             this.userRepository.save(user);
         }
     }

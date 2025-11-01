@@ -11,7 +11,7 @@ public class AuthenticationResponse {
 
     private String token;
 
-    private Long cdUser;
+    private Long idUser;
 
-    private String nmUser;
+    private String nameUser;
 }

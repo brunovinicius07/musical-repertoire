@@ -30,8 +30,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional(readOnly = false)
     public ScheduleResponseDto createSchedule(ScheduleRequestDto scheduleRequestDto) {
 
-        existingSchedule(scheduleRequestDto.getCdUser());
-        User user = authenticationService.validateUserById(scheduleRequestDto.getCdUser());
+        existingSchedule(scheduleRequestDto.getIdUser());
+        User user = authenticationService.validateUserById(scheduleRequestDto.getIdUser());
 
         Schedule schedule = scheduleMapper.toSchedule(scheduleRequestDto);
         schedule.setUser(user);
@@ -40,27 +40,27 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public void existingSchedule(Long cdUser){
+    public void existingSchedule(Long idUser){
 
-        Optional<Schedule> schedule = scheduleRepository.findById(cdUser);
+        Optional<Schedule> schedule = scheduleRepository.findById(idUser);
 
         if(schedule.isPresent()){
             throw new AlertException(
                     "warn",
-                    String.format("Já existe uma agenda para o usuário: %S", cdUser),
+                    String.format("Já existe uma agenda para o usuário: %S", idUser),
                     HttpStatus.CONFLICT
             );
         }
     }
 
     @Transactional(readOnly = true)
-    public Schedule validateSchedule(Long cdSchedule) {
-        Optional<Schedule> schedule = scheduleRepository.findById(cdSchedule);
+    public Schedule validateSchedule(Long idSchedule) {
+        Optional<Schedule> schedule = scheduleRepository.findById(idSchedule);
 
         if (schedule.isEmpty()) {
             throw new AlertException(
                     "warn",
-                    String.format("Nenhuma agenda encontrada!", cdSchedule),
+                    String.format("Nenhuma agenda encontrada!", idSchedule),
                     HttpStatus.NOT_FOUND
             );
         }
@@ -77,8 +77,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Transactional(readOnly = true)
-    public ScheduleResponseDto getScheduleByCdSchedule(Long cdSchedule) {
-        Schedule schedule = validateSchedule(cdSchedule);
+    public ScheduleResponseDto getScheduleByIdSchedule(Long idSchedule) {
+        Schedule schedule = validateSchedule(idSchedule);
 
         return scheduleMapper.toScheduleResponseDto(schedule);
     }

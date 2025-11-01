@@ -18,11 +18,11 @@ public class Music {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long cdMusic;
+        private Long idMusic;
 
         @Size(max = 30)
         @NotBlank
-        private String nmMusic;
+        private String nameMusic;
 
         @Size(max = 30)
         @NotBlank

@@ -10,5 +10,5 @@ public interface ScheduleService {
 
     List<ScheduleResponseDto> getAllEvent();
 
-    ScheduleResponseDto getScheduleByCdSchedule(Long cdSchedule);
+    ScheduleResponseDto getScheduleByIdSchedule(Long idSchedule);
 }

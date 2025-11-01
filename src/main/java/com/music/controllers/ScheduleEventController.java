@@ -23,17 +23,17 @@ public class ScheduleEventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleEventResponse);
     }
 
-    @PutMapping("/{cdScheduleEvent}")
+    @PutMapping("/{idScheduleEvent}")
     public ResponseEntity<ScheduleEventResponseDto> updateScheduleEvent(
-            @PathVariable Long cdScheduleEvent,
+            @PathVariable Long idScheduleEvent,
             @RequestBody @Valid ScheduleEventRequestDto scheduleEventRequestDto){
-        var scheduleEventResponse = scheduleEventService.updateScheduleEvent(cdScheduleEvent,scheduleEventRequestDto);
+        var scheduleEventResponse = scheduleEventService.updateScheduleEvent(idScheduleEvent,scheduleEventRequestDto);
         return ResponseEntity.ok(scheduleEventResponse);
     }
 
-    @DeleteMapping("/{cdScheduleEvent}")
-    public ResponseEntity<String> deleteScheduleEvent(@PathVariable Long cdScheduleEvent){
-        String message = scheduleEventService.deleteScheduleEvent(cdScheduleEvent);
+    @DeleteMapping("/{idScheduleEvent}")
+    public ResponseEntity<String> deleteScheduleEvent(@PathVariable Long idScheduleEvent){
+        String message = scheduleEventService.deleteScheduleEvent(idScheduleEvent);
         return ResponseEntity.ok(message);
     }
 }

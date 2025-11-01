@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface RepertoireRepository extends JpaRepository<Repertoire, Long> {
 
-    Optional<Repertoire> findRepertoireByNmRepertoireAndUserCdUser(String nmRepertoire, Long cdUser);
+    Optional<Repertoire> findRepertoireByNameRepertoireAndUserIdUser(String nameRepertoire, Long idUser);
 
-    List<Repertoire> findAllRepertoireByUserCdUser(Long cdUser);
+    List<Repertoire> findAllRepertoireByUserIdUser(Long idUser);
 }

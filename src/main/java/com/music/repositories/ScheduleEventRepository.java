@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface ScheduleEventRepository extends JpaRepository<ScheduleEvent, Long> {
 
-    Optional<ScheduleEvent> findByUserCdUserAndDayAndOpening(Long cdUser, LocalDate day, LocalTime opening);
+    Optional<ScheduleEvent> findByUserIdUserAndDayAndOpening(Long idUser, LocalDate day, LocalTime opening);
 }

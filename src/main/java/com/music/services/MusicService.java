@@ -10,18 +10,18 @@ public interface MusicService {
 
     MusicResponseDto registerMusic(MusicRequestDto musicRequestDto);
 
-    void existingMusic(String nmMusic, String singer, Long cdUser);
+    void existingMusic(String nameMusic, String singer, Long idUser);
 
-    MusicResponseDto getMusicById(Long cdMusic);
+    MusicResponseDto getMusicById(Long idMusic);
 
-    Music validateMusic(Long cdMusic);
+    Music validateMusic(Long idMusic);
 
-    List<MusicResponseDto> getAllMusicByCdUser(Long cdUser);
+    List<MusicResponseDto> getAllMusicByIdUser(Long idUser);
 
-    List<MusicResponseDto> getAllMusicByCdBlockMusic(Long cdBlockMusic);
+    List<MusicResponseDto> getAllMusicByIdBlockMusic(Long idBlockMusic);
 
-    MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto);
+    MusicResponseDto updateMusic(Long idMusic, MusicRequestDto musicRequestDto);
 
-    String deleteMusic(Long cdMusic);
+    String deleteMusic(Long idMusic);
 
 }

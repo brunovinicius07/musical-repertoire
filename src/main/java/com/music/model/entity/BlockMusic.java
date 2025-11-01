@@ -18,26 +18,26 @@ public class BlockMusic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cdBlockMusic;
+    private Long idBlockMusic;
 
     @Size(max = 25)
     @NotBlank
-    private String nmBlockMusic;
+    private String nameBlockMusic;
 
     @ManyToOne
-    @JoinColumn(name = "cdRepertoire")
+    @JoinColumn(name = "idRepertoire")
     private Repertoire repertoire;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "TB_BLOCK_MUSIC_MUSIC",
-            joinColumns = @JoinColumn(name = "cdBlockMusic"),
-            inverseJoinColumns = @JoinColumn(name = "cdMusic")
+            joinColumns = @JoinColumn(name = "idBlockMusic"),
+            inverseJoinColumns = @JoinColumn(name = "idMusic")
     )
     @ToString.Exclude
     private List<Music> musics;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cdUser")
+    @JoinColumn(name = "idUser")
     private User user;
 }

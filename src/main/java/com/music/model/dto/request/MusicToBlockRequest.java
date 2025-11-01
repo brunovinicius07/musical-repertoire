@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MusicToBlockRequest {
 
-    List<Long> cdsBlockMusic;
+    List<Long> idsBlockMusic;
 
-    Long cdMusic;
+    Long idMusic;
 }

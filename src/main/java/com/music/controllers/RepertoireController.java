@@ -25,28 +25,28 @@ public class RepertoireController {
         return ResponseEntity.status(HttpStatus.CREATED).body(repertoireResponse);
     }
 
-    @PostMapping("/{cdUser}")
-    ResponseEntity<List<RepertoireResponseDto>> getAllRepertoireByCdUser(@PathVariable Long cdUser){
-        var repertoireResponse = repertoireService.getAllRepertoireByCdUser(cdUser);
+    @PostMapping("/{idUser}")
+    ResponseEntity<List<RepertoireResponseDto>> getAllRepertoireByIdUser(@PathVariable Long idUser){
+        var repertoireResponse = repertoireService.getAllRepertoireByIdUser(idUser);
         return ResponseEntity.ok(repertoireResponse);
     }
 
-    @GetMapping("/{cdRepertoire}")
-    ResponseEntity<RepertoireResponseDto> getRepertoireByCdRepertoire(@PathVariable Long cdRepertoire){
-        var repertoireResponse = repertoireService.getRepertoireByCdRepertoire(cdRepertoire);
+    @GetMapping("/{idRepertoire}")
+    ResponseEntity<RepertoireResponseDto> getRepertoireByIdRepertoire(@PathVariable Long idRepertoire){
+        var repertoireResponse = repertoireService.getRepertoireByIdRepertoire(idRepertoire);
         return ResponseEntity.ok(repertoireResponse);
     }
 
-    @PutMapping("/put/{cdRepertoire}")
-    ResponseEntity<RepertoireResponseDto> updateRepertoire(@PathVariable Long cdRepertoire, @RequestBody
+    @PutMapping("/put/{idRepertoire}")
+    ResponseEntity<RepertoireResponseDto> updateRepertoire(@PathVariable Long idRepertoire, @RequestBody
                                                            @Valid RepertoireRequestDto repertoireRequestDto){
-        var repertoireResponse = repertoireService.updateRepertoire(cdRepertoire,repertoireRequestDto);
+        var repertoireResponse = repertoireService.updateRepertoire(idRepertoire,repertoireRequestDto);
         return ResponseEntity.ok(repertoireResponse);
     }
 
-    @DeleteMapping("delete/{cdRepertoire}")
-    ResponseEntity<String> deleteRepertoire(@PathVariable Long cdRepertoire){
-        String message = repertoireService.deleteRepertoire(cdRepertoire);
+    @DeleteMapping("delete/{idRepertoire}")
+    ResponseEntity<String> deleteRepertoire(@PathVariable Long idRepertoire){
+        String message = repertoireService.deleteRepertoire(idRepertoire);
         return ResponseEntity.ok(message);
     }
 }

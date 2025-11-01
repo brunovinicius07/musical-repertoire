@@ -11,19 +11,19 @@ import java.util.List;
 public interface BlockMusicService {
     BlockMusicResponseDto registerBlockMusic(BlockMusicRequestDto blockMusicRequestDto);
 
-    void existingBlockMusic(String nmGender, Long cdUser);
+    void existingBlockMusic(String nameBlockMusic, Long idUser);
 
-    List<BlockMusicResponseDto> getAllBlockMusic(Long cdUser);
+    List<BlockMusicResponseDto> getAllBlockMusic(Long idUser);
 
-    BlockMusicResponseDto getBlockMusicByCdBlockMusic(Long cdBlockMusic);
+    BlockMusicResponseDto getBlockMusicByIdBlockMusic(Long idBlockMusic);
 
-    BlockMusic validateBlockMusic(Long cdBlockMusic);
+    BlockMusic validateBlockMusic(Long idBlockMusic);
 
-    BlockMusicResponseDto updateBlockMusic(Long cdBlockMusic, BlockMusicRequestDto blockMusicRequestDto);
+    BlockMusicResponseDto updateBlockMusic(Long idBlockMusic, BlockMusicRequestDto blockMusicRequestDto);
 
-    String deleteBlockMusic(Long cdBlockMusic);
+    String deleteBlockMusic(Long idBlockMusic);
 
-    List<BlockMusic> getBlockMusicByCdBlockMusics(List<Long> cdBlockMusics);
+    List<BlockMusic> getBlockMusicByIdBlockMusics(List<Long> idBlockMusics);
 
-    MusicResponseDto linkMusicToBLock(Long cdMusic, MusicToBlockRequest musicToBlockRequest);
+    MusicResponseDto linkMusicToBLock(Long idMusic, MusicToBlockRequest musicToBlockRequest);
 }

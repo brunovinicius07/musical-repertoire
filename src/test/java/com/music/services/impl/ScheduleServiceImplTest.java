@@ -27,8 +27,8 @@ import static org.mockito.MockitoAnnotations.openMocks;
 @SpringBootTest
 class ScheduleServiceImplTest {
 
-    public static final long CD_SCHEDULE = 1L;
-    public static final long CD_USER = 1L;
+    public static final long ID_SCHEDULE = 1L;
+    public static final long ID_USER = 1L;
 
     public static final List<ScheduleEvent> EVENTS = new ArrayList<>();
 
@@ -82,8 +82,8 @@ class ScheduleServiceImplTest {
 
         assertNotNull(response);
         assertEquals(scheduleResponseDto, response);
-        assertEquals(CD_SCHEDULE, response.getCdSchedule());
-        assertEquals(CD_USER, response.getCdUser());
+        assertEquals(ID_SCHEDULE, response.getIdSchedule());
+        assertEquals(ID_USER, response.getIdUser());
         assertEquals(EVENTS, response.getEvents());
     }
 
@@ -92,11 +92,11 @@ class ScheduleServiceImplTest {
         when(scheduleRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(scheduleMapper.toScheduleResponseDto(any())).thenReturn(scheduleResponseDto);
 
-        scheduleService.existingSchedule(CD_USER);
+        scheduleService.existingSchedule(ID_USER);
 
-        verify(scheduleRepository, times(1)).findById(CD_USER);
+        verify(scheduleRepository, times(1)).findById(ID_USER);
         verifyNoMoreInteractions(scheduleRepository, scheduleMapper);
-        verify(scheduleRepository, times(1)).findById(CD_USER);
+        verify(scheduleRepository, times(1)).findById(ID_USER);
         verify(scheduleMapper, never()).toScheduleResponseDto(any());
         verifyNoMoreInteractions(scheduleRepository);
         verifyNoMoreInteractions(scheduleMapper);
@@ -108,19 +108,19 @@ class ScheduleServiceImplTest {
         when(scheduleMapper.toScheduleResponseDto(any())).thenReturn(scheduleResponseDto);
         when(scheduleMapper.toSchedule(any())).thenReturn(schedule);
 
-        Schedule result = scheduleService.validateSchedule(CD_SCHEDULE);
+        Schedule result = scheduleService.validateSchedule(ID_SCHEDULE);
 
-        verify(scheduleRepository, times(1)).findById(CD_SCHEDULE);
+        verify(scheduleRepository, times(1)).findById(ID_SCHEDULE);
         verifyNoMoreInteractions(scheduleRepository, scheduleMapper);
         verify(scheduleMapper, never()).toScheduleResponseDto(any());
-        verify(scheduleRepository).findById(CD_SCHEDULE);
+        verify(scheduleRepository).findById(ID_SCHEDULE);
 
         assertNotNull(result);
-        assertEquals(CD_SCHEDULE, result.getCdSchedule());
+        assertEquals(ID_SCHEDULE, result.getIdSchedule());
         assertEquals(user, result.getUser());
         assertEquals(EVENTS, result.getEvents());
-        assertDoesNotThrow(() -> scheduleService.getScheduleByCdSchedule(CD_SCHEDULE));
-        assertDoesNotThrow(() -> scheduleService.validateSchedule(CD_SCHEDULE));
+        assertDoesNotThrow(() -> scheduleService.getScheduleByIdSchedule(ID_SCHEDULE));
+        assertDoesNotThrow(() -> scheduleService.validateSchedule(ID_SCHEDULE));
     }
 
     @Test
@@ -135,13 +135,13 @@ class ScheduleServiceImplTest {
         verifyNoMoreInteractions(scheduleRepository, scheduleMapper);
 
         assertNotNull(response);
-        assertEquals(CD_SCHEDULE, response.get(0).getCdSchedule());
-        assertEquals(CD_USER, response.get(0).getCdUser());
+        assertEquals(ID_SCHEDULE, response.get(0).getIdSchedule());
+        assertEquals(ID_USER, response.get(0).getIdUser());
         assertEquals(EVENTS, response.get(0).getEvents());
     }
 
     @Test
-    void getScheduleByCdSchedule() {
+    void getScheduleByIdSchedule() {
     }
 
     @Test
@@ -149,8 +149,8 @@ class ScheduleServiceImplTest {
     }
 
     private void startSchedule() {
-        schedule = new Schedule(CD_SCHEDULE, user, EVENTS);
-        scheduleResponseDto = new ScheduleResponseDto(CD_SCHEDULE, CD_USER, EVENTS);
-        scheduleOptional = Optional.of(new Schedule(CD_SCHEDULE, user, EVENTS));
+        schedule = new Schedule(ID_SCHEDULE, user, EVENTS);
+        scheduleResponseDto = new ScheduleResponseDto(ID_SCHEDULE, ID_USER, EVENTS);
+        scheduleOptional = Optional.of(new Schedule(ID_SCHEDULE, user, EVENTS));
     }
 }

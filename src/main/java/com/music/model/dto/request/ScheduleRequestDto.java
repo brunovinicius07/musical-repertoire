@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ScheduleRequestDto {
 
-    private long cdUser;
+    private long idUser;
 }
