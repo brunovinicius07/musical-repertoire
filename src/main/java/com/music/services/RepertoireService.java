@@ -9,15 +9,15 @@ import java.util.List;
 public interface RepertoireService {
     RepertoireResponseDto registerRepertoire(RepertoireRequestDto repertoireRequestDto);
 
-    void existingRepertoire(String nmRepertoire, Long cdUser);
+    void existingRepertoire(String nameRepertoire, Long idUser);
 
-    List<RepertoireResponseDto> getAllRepertoireByCdUser(Long cdUser);
+    List<RepertoireResponseDto> getAllRepertoireByIdUser(Long idUser);
 
-    RepertoireResponseDto getRepertoireByCdRepertoire(Long cdRepertoire);
+    RepertoireResponseDto getRepertoireByIdRepertoire(Long idRepertoire);
 
-    Repertoire validateRepertoire(Long cdRepertoire);
+    Repertoire validateRepertoire(Long idRepertoire);
 
-    RepertoireResponseDto updateRepertoire(Long cdRepertoire, RepertoireRequestDto repertoireRequestDto);
+    RepertoireResponseDto updateRepertoire(Long idRepertoire, RepertoireRequestDto repertoireRequestDto);
 
-    Object deleteRepertoire(Long cdRepertoire);
+    String deleteRepertoire(Long idRepertoire);
 }

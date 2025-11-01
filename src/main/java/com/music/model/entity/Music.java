@@ -7,24 +7,22 @@ import lombok.*;
 
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
-@RequiredArgsConstructor
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tb_music")
 public class Music {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long cdMusic;
+        private Long idMusic;
 
         @Size(max = 30)
         @NotBlank
-        private String nmMusic;
+        private String nameMusic;
 
         @Size(max = 30)
         @NotBlank
@@ -33,7 +31,7 @@ public class Music {
         @Size(max = 7500)
         private String letterMusic;
 
-        @ManyToMany(mappedBy = "musics")
+        @ManyToMany(mappedBy = "musics", fetch = FetchType.LAZY)
         @ToString.Exclude
         private List<BlockMusic> blockMusics;
 

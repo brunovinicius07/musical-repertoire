@@ -1,11 +1,17 @@
 package com.music.controllers;
 
 import com.music.model.dto.request.ScheduleRequestDto;
+import com.music.model.dto.response.ScheduleResponseDto;
 import com.music.services.ScheduleService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RequiredArgsConstructor
 
 @RestController()
 @RequestMapping(value = "v1/music/schedule")
@@ -13,22 +19,16 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    public ScheduleController(ScheduleService scheduleService) {
-        this.scheduleService = scheduleService;
-    }
-
     @PostMapping()
-    public ResponseEntity<Object> createSchedule(@RequestBody @Valid ScheduleRequestDto scheduleRequestDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.createSchedule(scheduleRequestDto));
+    public ResponseEntity<ScheduleResponseDto> createSchedule(
+            @RequestBody @Valid ScheduleRequestDto scheduleRequestDto){
+        var scheduleResponse = scheduleService.createSchedule(scheduleRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleResponse);
     }
 
     @GetMapping()
-    public ResponseEntity<Object> getAllEvent(){
-        return ResponseEntity.ok(scheduleService.getAllEvent());
-    }
-
-    @GetMapping("/{cdSchedule}")
-    public ResponseEntity<Object> getScheduleByCdSchedule(@PathVariable Long cdSchedule){
-        return ResponseEntity.ok(scheduleService.getScheduleByCdSchedule(cdSchedule));
+    public ResponseEntity<List<ScheduleResponseDto>> getAllEvent(){
+        var scheduleResponse = scheduleService.getAllEvent();
+        return ResponseEntity.ok(scheduleResponse);
     }
 }

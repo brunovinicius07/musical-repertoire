@@ -9,11 +9,11 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ScheduleMapper {
 
-    @Mapping(source = "cdUser", target = "user.cdUser")
+    @Mapping(source = "idUser", target = "user.idUser")
     Schedule toSchedule(ScheduleRequestDto scheduleRequestDto);
 
 
-    @Mapping(source = "user.cdUser", target = "cdUser")
+    @Mapping(source = "user.idUser", target = "idUser")
     @Mapping(source = "events", target = "events")
     ScheduleResponseDto toScheduleResponseDto(Schedule schedule);
 }

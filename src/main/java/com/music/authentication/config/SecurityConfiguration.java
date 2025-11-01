@@ -26,22 +26,24 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
          httpSecurity
-                 .csrf(csrf -> csrf.ignoringRequestMatchers(antMatcher("/h2-console/**")).disable())
-                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                 .csrf(csrf -> csrf.ignoringRequestMatchers(antMatcher
+                         ("/h2-console/**")).disable())
+                 .sessionManagement(session ->
+                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                  .authorizeHttpRequests(auth -> auth
-                         .requestMatchers(antMatcher("/h2-console/**")).permitAll()
-                         .requestMatchers(antMatcher("/v1/music/auth/register")).permitAll()
-                         .requestMatchers(antMatcher("/v1/music/auth/login")).permitAll()
-                         .requestMatchers(antMatcher("/v1/music/musics/post")).hasRole(ADMIN)
-                         .requestMatchers(antMatcher("/v1/music/musics/put/{cdGender}")).hasRole(ADMIN)
-                         .requestMatchers(antMatcher("/v1/music/musics/delete/{cdGender}")).hasRole(ADMIN)
-                         .requestMatchers(antMatcher("/v1/music/block_music/post")).hasRole(ADMIN)
-                         .requestMatchers(antMatcher("/v1/music/block_music/put/{cdBlockMusic}")).hasRole(ADMIN)
-                         .requestMatchers(antMatcher("/v1/music/block_music/delete/{cdBlockMusic}")).hasRole(ADMIN)
-                         .requestMatchers(antMatcher("/v1/music/repertoire/post")).hasRole(ADMIN)
-                         .requestMatchers(antMatcher("/v1/music/repertoire/put/{cdGender}")).hasRole(ADMIN)
-                         .requestMatchers(antMatcher("/v1/music/repertoire/delete/{cdGender}")).hasRole(ADMIN)
-                        .anyRequest().authenticated())
+                      .requestMatchers(antMatcher("/h2-console/**")).permitAll()
+                      .requestMatchers(antMatcher("/v1/music/auth/register")).permitAll()
+                      .requestMatchers(antMatcher("/v1/music/auth/login")).permitAll()
+                      .requestMatchers(antMatcher("/v1/music/musics/post")).hasRole(ADMIN)
+                      .requestMatchers(antMatcher("/v1/music/musics/put/{idMusic}")).hasRole(ADMIN)
+                      .requestMatchers(antMatcher("/v1/music/musics/delete/{idMusic}")).hasRole(ADMIN)
+                      .requestMatchers(antMatcher("/v1/music/block_music/post")).hasRole(ADMIN)
+                      .requestMatchers(antMatcher("/v1/music/block_music/put/{idBlockMusic}")).hasRole(ADMIN)
+                      .requestMatchers(antMatcher("/v1/music/block_music/delete/{idBlockMusic}")).hasRole(ADMIN)
+                      .requestMatchers(antMatcher("/v1/music/repertoire/post")).hasRole(ADMIN)
+                      .requestMatchers(antMatcher("/v1/music/repertoire/put/{idRepertoire}")).hasRole(ADMIN)
+                      .requestMatchers(antMatcher("/v1/music/repertoire/delete/{idRepertoire}")).hasRole(ADMIN)
+                      .anyRequest().authenticated())
                  .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                  .headers(headers -> headers.frameOptions().disable());
 

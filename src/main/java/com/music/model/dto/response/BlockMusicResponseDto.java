@@ -12,13 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 public class BlockMusicResponseDto {
 
-    private Long cdBlockMusic;
+    private Long idBlockMusic;
 
-    private String nmBlockMusic;
+    private String nameBlockMusic;
 
-    private Long cdRepertoire;
+    private Long idRepertoire;
 
-    private List<Long> cdMusics = new ArrayList<>();
+    private List<Long> idMusics = new ArrayList<>();
 
-    private Long cdUser;
+    private Long idUser;
 }

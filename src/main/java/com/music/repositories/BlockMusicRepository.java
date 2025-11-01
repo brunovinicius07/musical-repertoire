@@ -10,8 +10,9 @@ import java.util.Optional;
 @Repository
 public interface BlockMusicRepository extends JpaRepository<BlockMusic, Long> {
 
-    Optional<BlockMusic> findBlockMusicByNmBlockMusicAndRepertoireCdRepertoire(String nmBlockMusic, Long cdRepertoire);
+    Optional<BlockMusic> findBlockMusicByNameBlockMusicAndRepertoireIdRepertoire(
+            String nameBlockMusic, Long idRepertoire);
 
-    List<BlockMusic> findAllBlockMusicByUserCdUser(Long cdUser);
+    List<BlockMusic> findAllBlockMusicByUserIdUser(Long idUser);
 
 }

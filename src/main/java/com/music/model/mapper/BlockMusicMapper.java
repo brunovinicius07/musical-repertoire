@@ -14,16 +14,16 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface BlockMusicMapper {
 
-    @Mapping(source = "cdUser", target = "user.cdUser")
-    @Mapping(source = "cdRepertoire", target = "repertoire.cdRepertoire")
-    @Mapping(source = "nmBlockMusic", target = "nmBlockMusic")
+    @Mapping(source = "idUser", target = "user.idUser")
+    @Mapping(source = "idRepertoire", target = "repertoire.idRepertoire")
+    @Mapping(source = "nameBlockMusic", target = "nameBlockMusic")
     BlockMusic toBlockMusic(BlockMusicRequestDto blockMusicRequestDto);
 
-    @Mapping(source = "cdBlockMusic", target = "cdBlockMusic")
-    @Mapping(source = "nmBlockMusic", target = "nmBlockMusic")
-    @Mapping(source = "repertoire.cdRepertoire", target = "cdRepertoire")
-    @Mapping(source = "user.cdUser", target = "cdUser")
-    @Mapping(target = "cdMusics", expression = "java(mapMusic(blockMusic.getMusics()))")
+    @Mapping(source = "idBlockMusic", target = "idBlockMusic")
+    @Mapping(source = "nameBlockMusic", target = "nameBlockMusic")
+    @Mapping(source = "repertoire.idRepertoire", target = "idRepertoire")
+    @Mapping(source = "user.idUser", target = "idUser")
+    @Mapping(target = "idMusics", expression = "java(mapMusic(blockMusic.getMusics()))")
     BlockMusicResponseDto toBlockMusicResponseDto(BlockMusic blockMusic);
 
     List<BlockMusicResponseDto> toListBlockMusicResponseDto(List<BlockMusic> blockMusicList);
@@ -34,7 +34,7 @@ public interface BlockMusicMapper {
         }
 
         return musics.stream()
-                .map(Music::getCdMusic)
+                .map(Music::getIdMusic)
                 .collect(Collectors.toList());
     }
 }

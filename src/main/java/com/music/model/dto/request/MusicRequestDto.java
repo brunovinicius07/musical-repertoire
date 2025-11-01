@@ -14,13 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 public class MusicRequestDto {
 
-    private String nmMusic;
+    private String nameMusic;
 
     private String singer;
 
     private String letterMusic;
 
-    private List<Long> cdBlockMusics = new ArrayList<>();
+    private List<Long> idBlockMusics = new ArrayList<>();
 
-    private Long cdUser;
+    private Long idUser;
 }

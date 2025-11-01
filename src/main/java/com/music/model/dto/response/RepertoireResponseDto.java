@@ -12,11 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 public class RepertoireResponseDto {
 
-    private Long cdRepertoire;
+    private Long idRepertoire;
 
-    private String nmRepertoire;
+    private String nameRepertoire;
 
-    private List<Long> cdBlockMusics = new ArrayList<>();
+    private List<Long> idBlockMusics = new ArrayList<>();
 
-    private Long cdUser;
+    private Long idUser;
 }

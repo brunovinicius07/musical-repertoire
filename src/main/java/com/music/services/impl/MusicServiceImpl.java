@@ -29,12 +29,12 @@ public class MusicServiceImpl implements MusicService {
     @Transactional(readOnly = false)
     public MusicResponseDto registerMusic(MusicRequestDto musicRequestDto) {
 
-        existingMusic(musicRequestDto.getNmMusic(), musicRequestDto.getSinger(), musicRequestDto.getCdUser());
+        existingMusic(musicRequestDto.getNameMusic(), musicRequestDto.getSinger(), musicRequestDto.getIdUser());
 
         Music music = musicMapper.toMusic(musicRequestDto);
 
-        if (musicRequestDto.getCdBlockMusics() != null && !musicRequestDto.getCdBlockMusics().isEmpty()) {
-            var blockMusics = musicService.getBlockMusicByCdBlockMusics(musicRequestDto.getCdBlockMusics());
+        if (musicRequestDto.getIdBlockMusics() != null && !musicRequestDto.getIdBlockMusics().isEmpty()) {
+            var blockMusics = musicService.getBlockMusicByIdBlockMusics(musicRequestDto.getIdBlockMusics());
             music.setBlockMusics(blockMusics);
             blockMusics.forEach(blockMusic -> blockMusic.getMusics().add(music));
         }
@@ -44,8 +44,8 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     @Transactional(readOnly = true)
-    public void existingMusic(String nmMusic, String singer, Long cdUser) {
-        musicRepository.findByNmMusicAndSingerAndUserCdUser(nmMusic, singer, cdUser)
+    public void existingMusic(String nameMusic, String singer, Long idUser) {
+        musicRepository.findByNameMusicAndSingerAndUserIdUser(nameMusic, singer, idUser)
                 .ifPresent(music -> {
             throw new MusicIsPresentException();
         });
@@ -53,22 +53,22 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     @Transactional(readOnly = true)
-    public MusicResponseDto getMusicById(Long cdMusic) {
-        Music music = validateMusic(cdMusic);
+    public MusicResponseDto getMusicById(Long idMusic) {
+        Music music = validateMusic(idMusic);
 
         return musicMapper.toMusicResponseDto(music);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Music validateMusic(Long cdMusic) {
-        return musicRepository.findById(cdMusic).orElseThrow(MusicNotFoundException::new);
+    public Music validateMusic(Long idMusic) {
+        return musicRepository.findById(idMusic).orElseThrow(MusicNotFoundException::new);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<MusicResponseDto> getAllMusicByCdUser(Long cdUser) {
-        List<Music> musicList = musicRepository.findAllMusicByUserCdUser(cdUser);
+    public List<MusicResponseDto> getAllMusicByIdUser(Long idUser) {
+        List<Music> musicList = musicRepository.findAllMusicByUserIdUser(idUser);
         if (musicList.isEmpty()) throw new MusicNotFoundException();
 
         return musicMapper.toListMusicResponseDto(musicList);
@@ -76,8 +76,8 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MusicResponseDto> getAllMusicByCdBlockMusic(Long cdBlockMusic) {
-        List<Music> musicList = musicRepository.findAllMusicByBlockMusicsCdBlockMusic(cdBlockMusic);
+    public List<MusicResponseDto> getAllMusicByIdBlockMusic(Long idBlockMusic) {
+        List<Music> musicList = musicRepository.findAllMusicByBlockMusicsIdBlockMusic(idBlockMusic);
         if (musicList.isEmpty()) throw new MusicNotFoundException();
 
         return musicMapper.toListMusicResponseDto(musicList);
@@ -85,9 +85,9 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     @Transactional(readOnly = false)
-    public MusicResponseDto updateMusic(Long cdMusic, MusicRequestDto musicRequestDto) {
-        Music music = validateMusic(cdMusic);
-        music.setNmMusic(musicRequestDto.getNmMusic());
+    public MusicResponseDto updateMusic(Long idMusic, MusicRequestDto musicRequestDto) {
+        Music music = validateMusic(idMusic);
+        music.setNameMusic(musicRequestDto.getNameMusic());
         music.setSinger(musicRequestDto.getSinger());
         music.setLetterMusic(musicRequestDto.getLetterMusic());
 
@@ -96,10 +96,10 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     @Transactional(readOnly = false)
-    public String deleteMusic(Long cdMusic) {
-        Music music = validateMusic(cdMusic);
+    public String deleteMusic(Long idMusic) {
+        Music music = validateMusic(idMusic);
         musicRepository.delete(music);
 
-        return "Música com ID " + cdMusic + " excluída com sucesso!";
+        return "Música com ID " + idMusic + " excluída com sucesso!";
     }
 }

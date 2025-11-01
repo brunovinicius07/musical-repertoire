@@ -28,9 +28,9 @@ public class RepertoireServiceImpl implements RepertoireService {
     @Override
     @Transactional(readOnly = false)
     public RepertoireResponseDto registerRepertoire(RepertoireRequestDto repertoireRequestDto) {
-        existingRepertoire(repertoireRequestDto.getNmRepertoire(), repertoireRequestDto.getCdUser());
+        existingRepertoire(repertoireRequestDto.getNameRepertoire(), repertoireRequestDto.getIdUser());
         Repertoire repertoire = repertoireMapper.toRepertoire(repertoireRequestDto);
-        var user = authenticationService.validateUserById(repertoireRequestDto.getCdUser());
+        var user = authenticationService.validateUserById(repertoireRequestDto.getIdUser());
         repertoire.setUser(user);
 
         return repertoireMapper.toRepertoireResponseDto(repertoireRepository.save(repertoire));
@@ -38,16 +38,16 @@ public class RepertoireServiceImpl implements RepertoireService {
 
     @Override
     @Transactional(readOnly = true)
-    public void existingRepertoire(String nmRepertoire, Long cdUser) {
-        repertoireRepository.findRepertoireByNmRepertoireAndUserCdUser(nmRepertoire, cdUser).ifPresent(repertoire -> {
+    public void existingRepertoire(String nameRepertoire, Long idUser) {
+        repertoireRepository.findRepertoireByNameRepertoireAndUserIdUser(nameRepertoire, idUser).ifPresent(repertoire -> {
             throw new RepertoireIsPresentException();
         });
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<RepertoireResponseDto> getAllRepertoireByCdUser(Long cdUser) {
-        List<Repertoire> repertoireList = repertoireRepository.findAllRepertoireByUserCdUser(cdUser);
+    public List<RepertoireResponseDto> getAllRepertoireByIdUser(Long idUser) {
+        List<Repertoire> repertoireList = repertoireRepository.findAllRepertoireByUserIdUser(idUser);
         if (repertoireList.isEmpty()) throw new RepertoireNotFoundException();
 
         return repertoireMapper.toListRepertoireResponseDto(repertoireList);
@@ -55,37 +55,37 @@ public class RepertoireServiceImpl implements RepertoireService {
 
     @Override
     @Transactional(readOnly = true)
-    public RepertoireResponseDto getRepertoireByCdRepertoire(Long cdRepertoire) {
-        Repertoire repertoire = validateRepertoire(cdRepertoire);
+    public RepertoireResponseDto getRepertoireByIdRepertoire(Long idRepertoire) {
+        Repertoire repertoire = validateRepertoire(idRepertoire);
 
         return repertoireMapper.toRepertoireResponseDto(repertoire);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Repertoire validateRepertoire(Long cdRepertoire) {
-        return repertoireRepository.findById(cdRepertoire).orElseThrow(RepertoireNotFoundException::new);
+    public Repertoire validateRepertoire(Long idRepertoire) {
+        return repertoireRepository.findById(idRepertoire).orElseThrow(RepertoireNotFoundException::new);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public RepertoireResponseDto updateRepertoire(Long cdRepertoire, RepertoireRequestDto repertoireRequestDto) {
-        existingRepertoire(repertoireRequestDto.getNmRepertoire(), repertoireRequestDto.getCdUser());
-        Repertoire repertoire = validateRepertoire(cdRepertoire);
-        repertoire.setNmRepertoire(repertoireRequestDto.getNmRepertoire());
+    public RepertoireResponseDto updateRepertoire(Long idRepertoire, RepertoireRequestDto repertoireRequestDto) {
+        existingRepertoire(repertoireRequestDto.getNameRepertoire(), repertoireRequestDto.getIdUser());
+        Repertoire repertoire = validateRepertoire(idRepertoire);
+        repertoire.setNameRepertoire(repertoireRequestDto.getNameRepertoire());
 
         return repertoireMapper.toRepertoireResponseDto(repertoireRepository.save(repertoire));
     }
 
     @Override
     @Transactional(readOnly = false)
-    public String deleteRepertoire(Long cdRepertoire) {
-        Repertoire repertoire = validateRepertoire(cdRepertoire);
+    public String deleteRepertoire(Long idRepertoire) {
+        Repertoire repertoire = validateRepertoire(idRepertoire);
 
         repertoire.getBlockMusics().forEach(blockMusic -> blockMusic.setRepertoire(null));
 
         repertoireRepository.delete(repertoire);
 
-        return "Repertorio com id " + cdRepertoire + "excluído com sucesso";
+        return "Repertorio com id " + idRepertoire + "excluído com sucesso";
     }
 }

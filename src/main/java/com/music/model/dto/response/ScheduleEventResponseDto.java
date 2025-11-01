@@ -12,9 +12,9 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ScheduleEventResponseDto {
 
-    private long cdScheduleEvent;
+    private long idScheduleEvent;
 
-    private Long cdSchedule;
+    private Long idSchedule;
 
     private LocalDate day;
 
