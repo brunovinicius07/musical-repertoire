@@ -1,4 +1,4 @@
-package com.music.authentication.config;
+package com.music.infra.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

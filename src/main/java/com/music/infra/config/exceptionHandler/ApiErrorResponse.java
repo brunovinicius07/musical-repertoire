@@ -1,4 +1,4 @@
-package com.music.authentication.config.exceptionHandler;
+package com.music.infra.config.exceptionHandler;
 
 import java.time.LocalDateTime;
 

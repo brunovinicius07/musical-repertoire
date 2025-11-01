@@ -1,6 +1,6 @@
 package com.music.services.impl;
 
-import com.music.authentication.auth.AuthenticationService;
+import com.music.infra.auth.AuthenticationService;
 import com.music.model.dto.request.RepertoireRequestDto;
 import com.music.model.dto.response.RepertoireResponseDto;
 import com.music.model.entity.Repertoire;

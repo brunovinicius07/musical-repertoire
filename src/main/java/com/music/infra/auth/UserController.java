@@ -1,4 +1,4 @@
-package com.music.authentication.auth;
+package com.music.infra.auth;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

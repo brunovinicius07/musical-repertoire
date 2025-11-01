@@ -1,4 +1,4 @@
-package com.music.authentication.config;
+package com.music.infra.config;
 
 import com.music.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;

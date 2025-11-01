@@ -1,6 +1,6 @@
 package com.music.model.exceptions.BlockMusic;
 
-import com.music.authentication.config.exceptionHandler.AlertException;
+import com.music.infra.config.exceptionHandler.AlertException;
 import org.springframework.http.HttpStatus;
 
 public class BlockMusicNotFoundException extends AlertException {

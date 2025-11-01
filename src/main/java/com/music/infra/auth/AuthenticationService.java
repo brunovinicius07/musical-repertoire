@@ -1,6 +1,6 @@
-package com.music.authentication.auth;
+package com.music.infra.auth;
 
-import com.music.authentication.config.JwtService;
+import com.music.infra.config.JwtService;
 import com.music.model.entity.User;
 import com.music.model.exceptions.login.VerifyCredential;
 import com.music.model.exceptions.login.EmailPresentException;
@@ -75,8 +75,8 @@ public class AuthenticationService {
     }
 
     @Transactional(readOnly = true)
-    public User validateUserById(Long IdUser) {
-        return userRepository.findById(IdUser).orElseThrow(UserNotFoundException::new);
+    public User validateUserById(Long idUser) {
+        return userRepository.findById(idUser).orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional()

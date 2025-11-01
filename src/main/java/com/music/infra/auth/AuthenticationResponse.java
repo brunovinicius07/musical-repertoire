@@ -1,4 +1,4 @@
-package com.music.authentication.auth;
+package com.music.infra.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

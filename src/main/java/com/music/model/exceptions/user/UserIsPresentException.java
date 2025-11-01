@@ -1,6 +1,6 @@
 package com.music.model.exceptions.user;
 
-import com.music.authentication.config.exceptionHandler.AlertException;
+import com.music.infra.config.exceptionHandler.AlertException;
 import org.springframework.http.HttpStatus;
 
 public class UserIsPresentException extends AlertException {

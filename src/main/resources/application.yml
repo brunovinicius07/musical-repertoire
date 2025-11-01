@@ -36,3 +36,4 @@ spring:
         jwt:
           issuer-uri: https://accounts.google.com
 
+## Secret Key

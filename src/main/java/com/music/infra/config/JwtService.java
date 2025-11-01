@@ -1,4 +1,4 @@
-package com.music.authentication.config;
+package com.music.infra.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -39,10 +39,10 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token) {
-        return extracExpiration(token).before(new Date());
+        return extractExpiration(token).before(new Date());
     }
 
-    private Date extracExpiration(String token) {
+    private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
