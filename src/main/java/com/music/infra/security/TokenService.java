@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,8 +26,8 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secretKey;
 
-    @Value("${api.security.token.expiration-minutes}")
-    private long expirationMinutes;
+    @Value("${api.security.token.timeExpiration}")
+    private long timeExpiration;
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = Map.of(
@@ -52,13 +54,16 @@ public class TokenService {
     }
 
     private String buildToken(Map<String, Object> claims, UserDetails userDetails) {
-        final Date now = new Date();
-        final Date expiration = new Date(now.getTime() + expirationMinutes * 60 * 1000);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expirationTime = now.plusHours(timeExpiration);
+
+        Date issuedAt = Date.from(now.toInstant(ZoneOffset.of("-03:00")));
+        Date expiration = Date.from(expirationTime.toInstant(ZoneOffset.of("-03:00")));
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(now)
+                .setIssuedAt(issuedAt)
                 .setExpiration(expiration)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
