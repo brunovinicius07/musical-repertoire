@@ -1,7 +1,6 @@
 package com.music.services.impl;
 
-import com.music.infra.auth.AuthenticationService;
-import com.music.infra.config.exceptionHandler.AlertException;
+import com.music.model.exceptions.exceptionHandler.AlertException;
 import com.music.model.dto.request.ScheduleRequestDto;
 import com.music.model.dto.response.ScheduleResponseDto;
 import com.music.model.entity.Schedule;
@@ -24,14 +23,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final ScheduleMapper scheduleMapper;
-    private final AuthenticationService authenticationService;
+    private final AuthenticationServiceImpl authenticationServiceImpl;
 
     @Override
     @Transactional(readOnly = false)
     public ScheduleResponseDto createSchedule(ScheduleRequestDto scheduleRequestDto) {
 
         existingSchedule(scheduleRequestDto.getIdUser());
-        User user = authenticationService.validateUserById(scheduleRequestDto.getIdUser());
+        User user = authenticationServiceImpl.validateUserById(scheduleRequestDto.getIdUser());
 
         Schedule schedule = scheduleMapper.toSchedule(scheduleRequestDto);
         schedule.setUser(user);

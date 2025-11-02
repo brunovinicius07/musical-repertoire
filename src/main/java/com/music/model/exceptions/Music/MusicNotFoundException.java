@@ -1,6 +1,6 @@
 package com.music.model.exceptions.Music;
 
-import com.music.infra.config.exceptionHandler.AlertException;
+import com.music.model.exceptions.exceptionHandler.AlertException;
 import org.springframework.http.HttpStatus;
 
 public class MusicNotFoundException extends AlertException {

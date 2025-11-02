@@ -37,3 +37,8 @@ spring:
           issuer-uri: https://accounts.google.com
 
 ## Secret Key
+api:
+  security:
+    token:
+      secret: 645267556B58703273357638792F413F4428472B4B6250655368566D59713374
+      timeExpiration: 2
