@@ -1,4 +1,4 @@
-package com.music.authentication.config.exceptionHandler;
+package com.music.model.exceptions.exceptionHandler;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

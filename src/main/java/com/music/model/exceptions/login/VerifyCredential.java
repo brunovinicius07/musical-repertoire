@@ -1,6 +1,6 @@
 package com.music.model.exceptions.login;
 
-import com.music.authentication.config.exceptionHandler.AlertException;
+import com.music.model.exceptions.exceptionHandler.AlertException;
 import org.springframework.http.HttpStatus;
 
 public class VerifyCredential extends AlertException {

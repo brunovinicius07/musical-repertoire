@@ -1,4 +1,4 @@
-package com.music.authentication.config;
+package com.music.infra.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +14,12 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(jsr250Enabled = true)
-public class SecurityConfiguration {
+public class SecurityConfig {
 
     public static final String ADMIN = "ADMIN";
     private final SecurityFilter securityFilter;
 
-    public SecurityConfiguration(SecurityFilter securityFilter) {
+    public SecurityConfig(SecurityFilter securityFilter) {
         this.securityFilter = securityFilter;
     }
 

@@ -1,6 +1,9 @@
-package com.music.authentication.auth;
+package com.music.services.impl;
 
-import com.music.authentication.config.JwtService;
+import com.music.infra.security.TokenService;
+import com.music.model.dto.request.AuthenticationRequest;
+import com.music.model.dto.request.RegisterRequest;
+import com.music.model.dto.response.AuthenticationResponse;
 import com.music.model.entity.User;
 import com.music.model.exceptions.login.VerifyCredential;
 import com.music.model.exceptions.login.EmailPresentException;
@@ -8,6 +11,7 @@ import com.music.model.exceptions.user.UserNotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
 import com.music.role.UserRole;
+import com.music.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,12 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
     @Transactional()
@@ -38,7 +42,7 @@ public class AuthenticationService {
 
         userRepository.save(user);
 
-        String token = jwtService.generateToken(user);
+        String token = tokenService.generateToken(user);
         AuthenticationResponse authenticationResponse = userMapper.userToAuthenticationResponse(user);
         authenticationResponse.setToken(token);
 
@@ -64,7 +68,7 @@ public class AuthenticationService {
 
             User user = (User) authentication.getPrincipal();
 
-            String token = jwtService.generateToken(user);
+            String token = tokenService.generateToken(user);
             AuthenticationResponse authResponse = userMapper.userToAuthenticationResponse(user);
             authResponse.setToken(token);
 

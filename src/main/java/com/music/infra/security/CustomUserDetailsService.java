@@ -1,4 +1,4 @@
-package com.music.authentication.config;
+package com.music.infra.security;
 
 import com.music.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
@@ -13,11 +13,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-public class AplicationConfig {
+public class CustomUserDetailsService {
 
     private final UserRepository userRepository;
 
-    public AplicationConfig(UserRepository userRepository) {
+    public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -1,4 +1,4 @@
-package com.music.authentication.auth;
+package com.music.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+public class RegisterRequest {
+
+    private String nameUser;
 
     private String email;
 
     private String password;
+
+
 }

@@ -1,6 +1,6 @@
 package com.music.services.impl;
 
-import com.music.authentication.config.exceptionHandler.AlertException;
+import com.music.model.exceptions.exceptionHandler.AlertException;
 import com.music.model.dto.request.ScheduleEventRequestDto;
 import com.music.model.dto.response.ScheduleEventResponseDto;
 import com.music.model.entity.Schedule;

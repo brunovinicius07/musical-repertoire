@@ -1,5 +1,9 @@
-package com.music.authentication.auth;
+package com.music.controllers;
 
+import com.music.services.impl.AuthenticationServiceImpl;
+import com.music.model.dto.request.AuthenticationRequest;
+import com.music.model.dto.request.RegisterRequest;
+import com.music.model.dto.response.AuthenticationResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationService service;
+    private final AuthenticationServiceImpl service;
 
-    private final AuthenticationService authenticationService;
+    private final AuthenticationServiceImpl authenticationServiceImpl;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid RegisterRequest request) {

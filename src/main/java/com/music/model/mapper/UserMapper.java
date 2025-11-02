@@ -1,7 +1,7 @@
 package com.music.model.mapper;
 
-import com.music.authentication.auth.AuthenticationResponse;
-import com.music.authentication.auth.RegisterRequest;
+import com.music.model.dto.response.AuthenticationResponse;
+import com.music.model.dto.request.RegisterRequest;
 import com.music.model.dto.response.UserResponseDto;
 import com.music.model.entity.User;
 import org.mapstruct.Mapper;

@@ -1,4 +1,4 @@
-package com.music.authentication.config;
+package com.music.infra.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,12 +17,12 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
+    private final TokenService tokenService;
 
     private final UserDetailsService userDetailsService;
 
-    public SecurityFilter(JwtService jwtService, UserDetailsService userDetailsService) {
-        this.jwtService = jwtService;
+    public SecurityFilter(TokenService tokenService, UserDetailsService userDetailsService) {
+        this.tokenService = tokenService;
         this.userDetailsService = userDetailsService;
     }
 
@@ -42,12 +42,12 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         token = authHeader.substring(7);
-        userEmail = jwtService.extractUserName(token);
+        userEmail = tokenService.extractUsername(token);
 
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-            if(jwtService.isTokenValid(token, userDetails)) {
+            if(tokenService.isTokenValid(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

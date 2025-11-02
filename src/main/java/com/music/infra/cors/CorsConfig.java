@@ -1,4 +1,4 @@
-package com.music.authentication.config;
+package com.music.infra.cors;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

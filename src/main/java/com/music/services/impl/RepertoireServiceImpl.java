@@ -1,6 +1,5 @@
 package com.music.services.impl;
 
-import com.music.authentication.auth.AuthenticationService;
 import com.music.model.dto.request.RepertoireRequestDto;
 import com.music.model.dto.response.RepertoireResponseDto;
 import com.music.model.entity.Repertoire;
@@ -23,14 +22,14 @@ public class RepertoireServiceImpl implements RepertoireService {
 
     private final RepertoireMapper repertoireMapper;
 
-    private final AuthenticationService authenticationService;
+    private final AuthenticationServiceImpl authenticationServiceImpl;
 
     @Override
     @Transactional(readOnly = false)
     public RepertoireResponseDto registerRepertoire(RepertoireRequestDto repertoireRequestDto) {
         existingRepertoire(repertoireRequestDto.getNameRepertoire(), repertoireRequestDto.getIdUser());
         Repertoire repertoire = repertoireMapper.toRepertoire(repertoireRequestDto);
-        var user = authenticationService.validateUserById(repertoireRequestDto.getIdUser());
+        var user = authenticationServiceImpl.validateUserById(repertoireRequestDto.getIdUser());
         repertoire.setUser(user);
 
         return repertoireMapper.toRepertoireResponseDto(repertoireRepository.save(repertoire));
