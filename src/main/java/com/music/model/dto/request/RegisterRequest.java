@@ -1,5 +1,6 @@
 package com.music.model.dto.request;
 
+import com.music.role.UserRole;
 import lombok.*;
 
 @Getter
@@ -13,6 +14,8 @@ public class RegisterRequest{
     private String email;
 
     private String password;
+
+    private UserRole role;
 
 
 }

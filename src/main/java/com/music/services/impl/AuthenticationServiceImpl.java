@@ -38,7 +38,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = this.userMapper.registerDtoToUser(request);
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        user.setRole(UserRole.ADMIN);
 
         userRepository.save(user);
 
@@ -85,6 +84,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Transactional()
     public void saveEntity(User user) {
+        if (user.getRole() == null) {
+            throw new IllegalArgumentException("Invalid role");
+        }
+
         var role = user.getAuthorities().stream().toList().get(0).toString();
 
         if (role.equals(UserRole.ADMIN.getRoleName())) {

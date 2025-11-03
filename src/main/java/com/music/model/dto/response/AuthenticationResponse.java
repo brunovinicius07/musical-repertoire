@@ -1,5 +1,6 @@
 package com.music.model.dto.response;
 
+import com.music.role.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,6 @@ public class AuthenticationResponse {
     private Long idUser;
 
     private String nameUser;
+
+    private UserRole role;
 }
