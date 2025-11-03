@@ -15,4 +15,6 @@ public interface BlockMusicRepository extends JpaRepository<BlockMusic, Long> {
 
     List<BlockMusic> findAllBlockMusicByUserIdUser(Long idUser);
 
+    List<BlockMusic> findAllBlockMusicByRepertoireIdRepertoire(Long idRepertoire);
+
 }

@@ -52,7 +52,9 @@ public class User implements UserDetails {
                     new SimpleGrantedAuthority("ROLE_USER_FULL"),
                     new SimpleGrantedAuthority("ROLE_USER")
             );
-            case USER_FULL -> List.of(new SimpleGrantedAuthority("ROLE_USER_FULL"));
+            case USER_FULL -> List.of(
+                    new SimpleGrantedAuthority("ROLE_USER_FULL"),
+                    new SimpleGrantedAuthority("ROLE_USER"));
             case USER -> List.of(new SimpleGrantedAuthority("ROLE_USER"));
         };
     }

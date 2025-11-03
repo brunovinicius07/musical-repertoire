@@ -27,6 +27,8 @@ public interface MusicMapper {
 
     List<MusicResponseDto> toListMusicResponseDto(List<Music> musicList);
 
+    List<Music> toListMusics(List<MusicResponseDto> musicResponseDtos);
+
 
     default List<Long> mapBlockMusic(List<BlockMusic> blockMusics) {
         if (blockMusics != null) {

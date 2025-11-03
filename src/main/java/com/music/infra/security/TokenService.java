@@ -54,17 +54,15 @@ public class TokenService {
     }
 
     private String buildToken(Map<String, Object> claims, UserDetails userDetails) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expirationTime = now.plusHours(timeExpiration);
-
-        Date issuedAt = Date.from(now.toInstant(ZoneOffset.of("-03:00")));
-        Date expiration = Date.from(expirationTime.toInstant(ZoneOffset.of("-03:00")));
+        Date expirationTime = Date.from(LocalDateTime.now()
+                .plusHours(timeExpiration)
+                .toInstant(ZoneOffset.of("-03:00")));
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(issuedAt)
-                .setExpiration(expiration)
+                .setIssuedAt(expirationTime)
+                .setExpiration(expirationTime)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
