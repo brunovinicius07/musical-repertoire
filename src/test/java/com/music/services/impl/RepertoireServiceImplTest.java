@@ -50,23 +50,23 @@ class RepertoireServiceImplTest {
 
         user = User.builder()
                 .idUser(1L)
-                .nameUser("Bruno")
-                .email("bruno@email.com")
+                .nameUser("User71")
+                .email("user71@email.com")
                 .password("12345678")
-                .role(UserRole.USER)
+                .role(UserRole.ADMIN)
                 .build();
 
         repertoire = Repertoire.builder()
                 .idRepertoire(1L)
-                .nameRepertoire("Repertório Sertanejo")
+                .nameRepertoire("Repertório Casamento")
                 .user(user)
                 .build();
 
         requestDto = new RepertoireRequestDto();
-        requestDto.setNameRepertoire("Repertório Sertanejo");
+        requestDto.setNameRepertoire("Repertório Casamento");
         requestDto.setIdUser(1L);
 
-        responseDto = new RepertoireResponseDto(1L, "Repertório Sertanejo", List.of(), 1L);
+        responseDto = new RepertoireResponseDto(1L, "Repertório Casamento", List.of(), 1L);
     }
 
     @Test
@@ -81,7 +81,7 @@ class RepertoireServiceImplTest {
         RepertoireResponseDto result = repertoireService.registerRepertoire(requestDto);
 
         assertNotNull(result);
-        assertEquals("Repertório Sertanejo", result.getNameRepertoire());
+        assertEquals("Repertório Casamento", result.getNameRepertoire());
         verify(repertoireRepository).save(repertoire);
     }
 
@@ -104,7 +104,7 @@ class RepertoireServiceImplTest {
         List<RepertoireResponseDto> result = repertoireService.getAllRepertoireByIdUser(1L);
 
         assertEquals(1, result.size());
-        assertEquals("Repertório Sertanejo", result.get(0).getNameRepertoire());
+        assertEquals("Repertório Casamento", result.get(0).getNameRepertoire());
     }
 
     @Test
@@ -124,7 +124,7 @@ class RepertoireServiceImplTest {
         RepertoireResponseDto result = repertoireService.getRepertoireByIdRepertoire(1L);
 
         assertNotNull(result);
-        assertEquals("Repertório Sertanejo", result.getNameRepertoire());
+        assertEquals("Repertório Casamento", result.getNameRepertoire());
     }
 
     @Test
@@ -146,7 +146,7 @@ class RepertoireServiceImplTest {
         RepertoireResponseDto result = repertoireService.updateRepertoire(1L, requestDto);
 
         assertNotNull(result);
-        assertEquals("Repertório Sertanejo", result.getNameRepertoire());
+        assertEquals("Repertório Casamento", result.getNameRepertoire());
     }
 
     @Test
