@@ -2,10 +2,12 @@ package com.music.services.impl;
 
 import com.music.model.dto.request.RepertoireRequestDto;
 import com.music.model.dto.response.RepertoireResponseDto;
+import com.music.model.entity.BlockMusic;
 import com.music.model.entity.Repertoire;
 import com.music.model.exceptions.Repertoire.RepertoireIsPresentException;
 import com.music.model.exceptions.Repertoire.RepertoireNotFoundException;
 import com.music.model.mapper.RepertoireMapper;
+import com.music.repositories.BlockMusicRepository;
 import com.music.repositories.RepertoireRepository;
 import com.music.services.RepertoireService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ public class RepertoireServiceImpl implements RepertoireService {
     private final RepertoireMapper repertoireMapper;
 
     private final AuthenticationServiceImpl authenticationServiceImpl;
+
+    private final BlockMusicRepository blockMusicRepository;
 
     @Override
     @Transactional(readOnly = false)
@@ -81,7 +85,16 @@ public class RepertoireServiceImpl implements RepertoireService {
     public String deleteRepertoire(Long idRepertoire) {
         Repertoire repertoire = validateRepertoire(idRepertoire);
 
-        repertoire.getBlockMusics().forEach(blockMusic -> blockMusic.setRepertoire(null));
+        if(repertoire.getBlockMusics() != null && !repertoire.getBlockMusics().isEmpty()){
+            List<BlockMusic> blockMusicList =  blockMusicRepository.findAllBlockMusicByRepertoireIdRepertoire(idRepertoire);
+            blockMusicList.forEach(blockMusic -> {
+
+                blockMusic.setRepertoire(null);
+                blockMusic.setMusics(null);
+
+                blockMusicRepository.delete(blockMusic);
+            });
+        }
 
         repertoireRepository.delete(repertoire);
 

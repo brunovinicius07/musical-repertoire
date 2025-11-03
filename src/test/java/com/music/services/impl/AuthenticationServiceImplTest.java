@@ -48,12 +48,12 @@ class AuthenticationServiceImplTest {
         MockitoAnnotations.openMocks(this);
 
         registerRequest = new RegisterRequest(
-                "User71", "User71@email.com", "12345678", UserRole.ADMIN);
-        authRequest = new AuthenticationRequest("User71@email.com", "12345678");
+                "User71", "user71@email.com", "12345678", UserRole.ADMIN);
+        authRequest = new AuthenticationRequest("user71@email.com", "12345678");
         user = User.builder()
                 .idUser(1L)
                 .nameUser("User71")
-                .email("User71@email.com")
+                .email("user71@email.com")
                 .password("12345678")
                 .role(UserRole.USER)
                 .build();
@@ -123,32 +123,5 @@ class AuthenticationServiceImplTest {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> authenticationService.validateUserById(99L));
-    }
-
-    @Test
-    void shouldSaveEntityWithCorrectRole_Admin() {
-        user.setRole(UserRole.ADMIN);
-        authenticationService.saveEntity(user);
-        verify(userRepository).save(user);
-    }
-
-    @Test
-    void shouldSaveEntityWithCorrectRole_UserFull() {
-        user.setRole(UserRole.USER_FULL);
-        authenticationService.saveEntity(user);
-        verify(userRepository).save(user);
-    }
-
-    @Test
-    void shouldSaveEntityWithCorrectRole_User() {
-        user.setRole(UserRole.USER);
-        authenticationService.saveEntity(user);
-        verify(userRepository).save(user);
-    }
-
-    @Test
-    void shouldThrowException_WhenRoleIsInvalid() {
-        user.setRole(null);
-        assertThrows(IllegalArgumentException.class, () -> authenticationService.saveEntity(user));
     }
 }

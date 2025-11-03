@@ -82,23 +82,4 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return userRepository.findById(IdUser).orElseThrow(UserNotFoundException::new);
     }
 
-    @Transactional()
-    public void saveEntity(User user) {
-        if (user.getRole() == null) {
-            throw new IllegalArgumentException("Invalid role");
-        }
-
-        var role = user.getAuthorities().stream().toList().get(0).toString();
-
-        if (role.equals(UserRole.ADMIN.getRoleName())) {
-            user.setRole(UserRole.ADMIN);
-            this.userRepository.save(user);
-        } else if (role.equals(UserRole.USER_FULL.getRoleName())) {
-            user.setRole(UserRole.USER_FULL);
-            this.userRepository.save(user);
-        }else {
-            user.setRole(UserRole.USER);
-            this.userRepository.save(user);
-        }
-    }
 }
