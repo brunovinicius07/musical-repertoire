@@ -6,6 +6,7 @@ import com.music.model.entity.Music;
 import com.music.model.exceptions.Music.MusicIsPresentException;
 import com.music.model.exceptions.Music.MusicNotFoundException;
 import com.music.model.mapper.MusicMapper;
+import com.music.repositories.BlockMusicRepository;
 import com.music.repositories.MusicRepository;
 import com.music.services.BlockMusicService;
 import com.music.services.MusicService;
@@ -24,6 +25,8 @@ public class MusicServiceImpl implements MusicService {
     private final MusicRepository musicRepository;
 
     private final BlockMusicService musicService;
+
+    private final BlockMusicRepository blockMusicRepository;
 
     @Override
     @Transactional(readOnly = false)
@@ -98,6 +101,17 @@ public class MusicServiceImpl implements MusicService {
     @Transactional(readOnly = false)
     public String deleteMusic(Long idMusic) {
         Music music = validateMusic(idMusic);
+
+
+        if (music.getBlockMusics() != null && !music.getBlockMusics().isEmpty()) {
+
+            music.getBlockMusics().forEach(blockMusic -> {
+                blockMusic.getMusics().remove(music);
+                blockMusicRepository.save(blockMusic);
+            });
+        }
+
+        music.setBlockMusics(null);
         musicRepository.delete(music);
 
         return "Música com ID " + idMusic + " excluída com sucesso!";
