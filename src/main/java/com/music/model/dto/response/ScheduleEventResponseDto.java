@@ -14,8 +14,6 @@ public class ScheduleEventResponseDto {
 
     private long idScheduleEvent;
 
-    private Long idSchedule;
-
     private LocalDate day;
 
     private LocalTime opening;

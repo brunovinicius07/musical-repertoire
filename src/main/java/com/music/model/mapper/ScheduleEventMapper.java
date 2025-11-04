@@ -9,10 +9,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ScheduleEventMapper {
 
-    @Mapping(source = "idSchedule", target = "schedule.idSchedule")
     @Mapping(source = "idUser", target = "user.idUser")
     ScheduleEvent toScheduleEvent(ScheduleEventRequestDto scheduleEventRequestDto);
 
-    @Mapping(source = "schedule.idSchedule", target = "idSchedule")
     ScheduleEventResponseDto toScheduleEventResponseDto(ScheduleEvent scheduleEvent);
 }

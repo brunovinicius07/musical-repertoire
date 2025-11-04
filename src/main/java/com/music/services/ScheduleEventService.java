@@ -5,7 +5,7 @@ import com.music.model.dto.response.ScheduleEventResponseDto;
 
 public interface ScheduleEventService {
 
-    ScheduleEventResponseDto registerEvent(ScheduleEventRequestDto scheduleEventRequestDto);
+    ScheduleEventResponseDto createEvent(ScheduleEventRequestDto scheduleEventRequestDto);
 
     ScheduleEventResponseDto updateScheduleEvent(Long cdScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto);
 

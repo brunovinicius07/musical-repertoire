@@ -19,7 +19,7 @@ public class ScheduleEventController {
     @PostMapping()
     public ResponseEntity<ScheduleEventResponseDto> registerEvent(
             @RequestBody @Valid ScheduleEventRequestDto scheduleEventRequestDto){
-        var scheduleEventResponse = scheduleEventService.registerEvent(scheduleEventRequestDto);
+        var scheduleEventResponse = scheduleEventService.createEvent(scheduleEventRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleEventResponse);
     }
 

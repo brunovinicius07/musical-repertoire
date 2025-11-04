@@ -30,6 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
+    private final ScheduleServiceImpl scheduleService;
 
     @Transactional()
     public AuthenticationResponse register(RegisterRequest request) {
@@ -44,6 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String token = tokenService.generateToken(user);
         AuthenticationResponse authenticationResponse = userMapper.userToAuthenticationResponse(user);
         authenticationResponse.setToken(token);
+        scheduleService.createSchedule(user.getIdUser());
 
         return authenticationResponse;
     }

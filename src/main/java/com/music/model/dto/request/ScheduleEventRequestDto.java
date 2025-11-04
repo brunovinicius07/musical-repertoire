@@ -13,8 +13,6 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ScheduleEventRequestDto {
 
-    private Long idSchedule;
-
     private Long idUser;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

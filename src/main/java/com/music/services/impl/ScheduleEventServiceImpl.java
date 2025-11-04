@@ -3,7 +3,6 @@ package com.music.services.impl;
 import com.music.model.exceptions.exceptionHandler.AlertException;
 import com.music.model.dto.request.ScheduleEventRequestDto;
 import com.music.model.dto.response.ScheduleEventResponseDto;
-import com.music.model.entity.Schedule;
 import com.music.model.entity.ScheduleEvent;
 import com.music.model.mapper.ScheduleEventMapper;
 import com.music.repositories.ScheduleEventRepository;
@@ -23,20 +22,13 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
 
     private final ScheduleEventRepository scheduleEventRepository;
 
-    private final ScheduleServiceImpl scheduleService;
-
     private final ScheduleEventMapper scheduleEventMapper;
 
     @Override
     @Transactional(readOnly = false)
-    public ScheduleEventResponseDto registerEvent(ScheduleEventRequestDto scheduleEventRequestDto) {
-
+    public ScheduleEventResponseDto createEvent(ScheduleEventRequestDto scheduleEventRequestDto) {
         existingScheduleEvent(scheduleEventRequestDto.getIdUser() ,scheduleEventRequestDto.getDay(), scheduleEventRequestDto.getOpening());
-
-        Schedule schedule = scheduleService.validateSchedule(scheduleEventRequestDto.getIdSchedule());
-
         ScheduleEvent scheduleEvent = scheduleEventMapper.toScheduleEvent(scheduleEventRequestDto);
-        scheduleEvent.setSchedule(schedule);
 
         return scheduleEventMapper.toScheduleEventResponseDto(scheduleEventRepository.save(scheduleEvent));
     }

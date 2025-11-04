@@ -14,7 +14,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = {"schedule", "user"})
+@ToString(exclude = {"user"})
 @Entity
 @Table(name = "tb_schedule_event")
 public class ScheduleEvent {
@@ -23,11 +23,6 @@ public class ScheduleEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private long idScheduleEvent;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idSchedule", nullable = false)
-    @JsonBackReference
-    private Schedule schedule;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idUser", nullable = false)
