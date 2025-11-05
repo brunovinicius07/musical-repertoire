@@ -5,12 +5,11 @@ import com.music.model.dto.request.AuthenticationRequest;
 import com.music.model.dto.request.RegisterRequest;
 import com.music.model.dto.response.AuthenticationResponse;
 import com.music.model.entity.User;
-import com.music.model.exceptions.login.VerifyCredential;
 import com.music.model.exceptions.login.EmailPresentException;
+import com.music.model.exceptions.login.VerifyCredential;
 import com.music.model.exceptions.user.UserNotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
-import com.music.role.UserRole;
 import com.music.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +29,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
-    private final ScheduleServiceImpl scheduleService;
 
     @Transactional()
     public AuthenticationResponse register(RegisterRequest request) {
@@ -45,7 +43,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String token = tokenService.generateToken(user);
         AuthenticationResponse authenticationResponse = userMapper.userToAuthenticationResponse(user);
         authenticationResponse.setToken(token);
-        scheduleService.createSchedule(user.getIdUser());
 
         return authenticationResponse;
     }

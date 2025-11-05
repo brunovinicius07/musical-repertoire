@@ -14,7 +14,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = {"user"})
 @Entity
 @Table(name = "tb_schedule_event")
 public class ScheduleEvent {

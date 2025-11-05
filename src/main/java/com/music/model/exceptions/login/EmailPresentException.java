@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public class EmailPresentException extends AlertException {
 
-    private static final String DEFAULT_MESSAGE = "Email já cadastrado!";
+    private static final String DEFAULT_MESSAGE = "Confira as suas informações!";
 
     public EmailPresentException() {
         super("409", DEFAULT_MESSAGE, HttpStatus.CONFLICT);

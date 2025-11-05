@@ -4,7 +4,7 @@ import com.music.model.exceptions.exceptionHandler.AlertException;
 import org.springframework.http.HttpStatus;
 
 public class UserNotFoundException extends AlertException {
-    private static final String DEFAULT_MESSAGE = "Email ou senha incorretos!";
+    private static final String DEFAULT_MESSAGE = "Usuário não localizado";
     public UserNotFoundException() {
         super("404", DEFAULT_MESSAGE, HttpStatus.NOT_FOUND);
 

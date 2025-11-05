@@ -35,6 +35,7 @@ public class Music {
         @ToString.Exclude
         private List<BlockMusic> blockMusics;
 
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "idUser", nullable = false)
         private User user;
 }

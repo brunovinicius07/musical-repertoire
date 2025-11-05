@@ -7,7 +7,7 @@ import com.music.model.dto.response.AuthenticationResponse;
 import com.music.model.entity.User;
 import com.music.model.exceptions.login.EmailPresentException;
 import com.music.model.exceptions.login.VerifyCredential;
-import com.music.model.exceptions.user.UserNotFoundException;
+import com.music.model.exceptions.authentication.NotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
 import com.music.role.UserRole;
@@ -122,6 +122,6 @@ class AuthenticationServiceImplTest {
     void shouldThrowUserNotFound_WhenUserDoesNotExist() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> authenticationService.validateUserById(99L));
+        assertThrows(NotFoundException.class, () -> authenticationService.validateUserById(99L));
     }
 }
