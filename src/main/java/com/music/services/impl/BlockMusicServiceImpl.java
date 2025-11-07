@@ -70,7 +70,8 @@ public class BlockMusicServiceImpl implements BlockMusicService {
     public BlockMusicResponseDto updateBlockMusic(Long idBlockMusic, BlockMusicRequestDto blockMusicRequestDto) {
         existingBlockMusic(blockMusicRequestDto.getNameBlockMusic(),blockMusicRequestDto.getIdRepertoire());
         BlockMusic blockMusic = validateBlockMusic(idBlockMusic);
-        blockMusic.setNameBlockMusic(blockMusicRequestDto.getNameBlockMusic());
+        blockMusic.setNameBlockMusic(blockMusicRequestDto.getNameBlockMusic() != null
+                ? blockMusicRequestDto.getNameBlockMusic() : blockMusic.getNameBlockMusic());
 
         return blockMusicMapper.toBlockMusicResponseDto(blockMusicRepository.save(blockMusic));
     }

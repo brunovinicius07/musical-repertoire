@@ -7,14 +7,17 @@ import com.music.model.dto.response.AuthenticationResponse;
 import com.music.model.entity.User;
 import com.music.model.exceptions.login.EmailPresentException;
 import com.music.model.exceptions.login.VerifyCredential;
-import com.music.model.exceptions.authentication.NotFoundException;
+import com.music.model.exceptions.user.UserNotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
 import com.music.role.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.springframework.security.authentication.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -122,6 +125,6 @@ class AuthenticationServiceImplTest {
     void shouldThrowUserNotFound_WhenUserDoesNotExist() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> authenticationService.validateUserById(99L));
+        assertThrows(UserNotFoundException.class, () -> authenticationService.validateUserById(99L));
     }
 }

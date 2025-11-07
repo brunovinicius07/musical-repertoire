@@ -47,25 +47,10 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     @Transactional(readOnly = true)
-    public void existingMusic(String nameMusic, String singer, Long idUser) {
-        musicRepository.findByNameMusicAndSingerAndUserIdUser(nameMusic, singer, idUser)
-                .ifPresent(music -> {
-            throw new MusicIsPresentException();
-        });
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public MusicResponseDto getMusicById(Long idMusic) {
         Music music = validateMusic(idMusic);
 
         return musicMapper.toMusicResponseDto(music);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Music validateMusic(Long idMusic) {
-        return musicRepository.findById(idMusic).orElseThrow(MusicNotFoundException::new);
     }
 
     @Override
@@ -90,9 +75,12 @@ public class MusicServiceImpl implements MusicService {
     @Transactional(readOnly = false)
     public MusicResponseDto updateMusic(Long idMusic, MusicRequestDto musicRequestDto) {
         Music music = validateMusic(idMusic);
-        music.setNameMusic(musicRequestDto.getNameMusic());
-        music.setSinger(musicRequestDto.getSinger());
-        music.setLetterMusic(musicRequestDto.getLetterMusic());
+        music.setNameMusic(musicRequestDto.getNameMusic() != null
+                ? musicRequestDto.getNameMusic() : music.getNameMusic());
+        music.setSinger(musicRequestDto.getSinger() != null
+                ? musicRequestDto.getSinger() : music.getSinger());
+        music.setLetterMusic(musicRequestDto.getLetterMusic() != null
+                ? musicRequestDto.getLetterMusic() : music.getLetterMusic());
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
     }
@@ -115,5 +103,20 @@ public class MusicServiceImpl implements MusicService {
         musicRepository.delete(music);
 
         return "Música com ID " + idMusic + " excluída com sucesso!";
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void existingMusic(String nameMusic, String singer, Long idUser) {
+        musicRepository.findByNameMusicAndSingerAndUserIdUser(nameMusic, singer, idUser)
+                .ifPresent(music -> {
+                    throw new MusicIsPresentException();
+                });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Music validateMusic(Long idMusic) {
+        return musicRepository.findById(idMusic).orElseThrow(MusicNotFoundException::new);
     }
 }

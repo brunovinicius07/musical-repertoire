@@ -10,11 +10,7 @@ public interface MusicService {
 
     MusicResponseDto registerMusic(MusicRequestDto musicRequestDto);
 
-    void existingMusic(String nameMusic, String singer, Long idUser);
-
     MusicResponseDto getMusicById(Long idMusic);
-
-    Music validateMusic(Long idMusic);
 
     List<MusicResponseDto> getAllMusicByIdUser(Long idUser);
 
@@ -23,5 +19,9 @@ public interface MusicService {
     MusicResponseDto updateMusic(Long idMusic, MusicRequestDto musicRequestDto);
 
     String deleteMusic(Long idMusic);
+
+    void existingMusic(String nameMusic, String singer, Long idUser);
+
+    Music validateMusic(Long idMusic);
 
 }

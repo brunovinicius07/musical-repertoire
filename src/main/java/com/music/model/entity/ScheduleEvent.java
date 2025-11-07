@@ -1,12 +1,11 @@
 package com.music.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -33,11 +32,11 @@ public class ScheduleEvent {
 
     @NotNull
     @Column(nullable = false)
-    private LocalTime opening;
+    private LocalDateTime opening;
 
     @NotNull
     @Column(nullable = false)
-    private LocalTime closure;
+    private LocalDateTime closure;
 
     @NotNull
     @Column(nullable = false, length = 60)

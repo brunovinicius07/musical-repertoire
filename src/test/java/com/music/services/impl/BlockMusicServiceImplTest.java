@@ -176,6 +176,50 @@ class BlockMusicServiceImplTest {
     }
 
     @Test
+    void shouldUpdateBlockMusic_WhenNameIsNotNull() {
+        BlockMusicRequestDto requestDto = new BlockMusicRequestDto("NewName", 1L, 1L);
+        BlockMusic existingBlock = BlockMusic.builder()
+                .idBlockMusic(1L)
+                .nameBlockMusic("OldName")
+                .build();
+
+        when(blockMusicRepository.findBlockMusicByNameBlockMusicAndRepertoireIdRepertoire(
+                anyString(), anyLong())).thenReturn(Optional.empty());
+        when(blockMusicRepository.findById(1L)).thenReturn(Optional.of(existingBlock));
+        when(blockMusicRepository.save(existingBlock)).thenReturn(existingBlock);
+        when(blockMusicMapper.toBlockMusicResponseDto(existingBlock))
+                .thenReturn(new BlockMusicResponseDto(1L, "NewName", 1L, List.of(), 1L));
+
+        BlockMusicResponseDto response = blockMusicService.updateBlockMusic(1L, requestDto);
+
+        assertNotNull(response);
+        assertEquals("NewName", existingBlock.getNameBlockMusic());
+        verify(blockMusicRepository).save(existingBlock);
+    }
+
+    @Test
+    void shouldUpdateBlockMusic_WhenNameIsNull() {
+        BlockMusicRequestDto requestDto = new BlockMusicRequestDto(null, 1L, 1L);
+        BlockMusic existingBlock = BlockMusic.builder()
+                .idBlockMusic(1L)
+                .nameBlockMusic("OriginalName")
+                .build();
+
+        when(blockMusicRepository.findBlockMusicByNameBlockMusicAndRepertoireIdRepertoire(
+                any(), anyLong())).thenReturn(Optional.empty());
+        when(blockMusicRepository.findById(1L)).thenReturn(Optional.of(existingBlock));
+        when(blockMusicRepository.save(existingBlock)).thenReturn(existingBlock);
+        when(blockMusicMapper.toBlockMusicResponseDto(existingBlock))
+                .thenReturn(new BlockMusicResponseDto(1L, "OriginalName", 1L, List.of(), 1L));
+
+        BlockMusicResponseDto response = blockMusicService.updateBlockMusic(1L, requestDto);
+
+        assertNotNull(response);
+        assertEquals("OriginalName", existingBlock.getNameBlockMusic());
+        verify(blockMusicRepository).save(existingBlock);
+    }
+
+    @Test
     void shouldDeleteBlockMusicSuccessfully() {
         when(blockMusicRepository.findById(1L)).thenReturn(Optional.of(blockMusic));
 

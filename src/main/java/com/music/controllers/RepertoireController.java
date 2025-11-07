@@ -44,7 +44,7 @@ public class RepertoireController {
         return ResponseEntity.ok(repertoireResponse);
     }
 
-    @DeleteMapping("delete/{idRepertoire}")
+    @DeleteMapping("/delete/{idRepertoire}")
     ResponseEntity<String> deleteRepertoire(@PathVariable Long idRepertoire){
         String message = repertoireService.deleteRepertoire(idRepertoire);
         return ResponseEntity.ok(message);

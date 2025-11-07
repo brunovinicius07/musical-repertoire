@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
 
-    @Transactional()
+    @Transactional(readOnly = false)
     public AuthenticationResponse register(RegisterRequest request) {
 
         existingUser(request.getEmail());

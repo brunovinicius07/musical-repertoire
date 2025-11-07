@@ -6,6 +6,8 @@ import com.music.model.entity.ScheduleEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface ScheduleEventMapper {
 
@@ -13,4 +15,6 @@ public interface ScheduleEventMapper {
     ScheduleEvent toScheduleEvent(ScheduleEventRequestDto scheduleEventRequestDto);
 
     ScheduleEventResponseDto toScheduleEventResponseDto(ScheduleEvent scheduleEvent);
+
+    List<ScheduleEventResponseDto> toScheduleEventsResponse(List<ScheduleEvent> scheduleEventList);
 }

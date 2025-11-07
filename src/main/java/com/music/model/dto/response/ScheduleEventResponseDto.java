@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -16,9 +16,9 @@ public class ScheduleEventResponseDto {
 
     private LocalDate day;
 
-    private LocalTime opening;
+    private LocalDateTime opening;
 
-    private LocalTime closure;
+    private LocalDateTime closure;
 
     private String title;
 

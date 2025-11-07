@@ -41,14 +41,6 @@ public class RepertoireServiceImpl implements RepertoireService {
 
     @Override
     @Transactional(readOnly = true)
-    public void existingRepertoire(String nameRepertoire, Long idUser) {
-        repertoireRepository.findRepertoireByNameRepertoireAndUserIdUser(nameRepertoire, idUser).ifPresent(repertoire -> {
-            throw new RepertoireIsPresentException();
-        });
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<RepertoireResponseDto> getAllRepertoireByIdUser(Long idUser) {
         List<Repertoire> repertoireList = repertoireRepository.findAllRepertoireByUserIdUser(idUser);
         if (repertoireList.isEmpty()) throw new RepertoireNotFoundException();
@@ -65,17 +57,12 @@ public class RepertoireServiceImpl implements RepertoireService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Repertoire validateRepertoire(Long idRepertoire) {
-        return repertoireRepository.findById(idRepertoire).orElseThrow(RepertoireNotFoundException::new);
-    }
-
-    @Override
     @Transactional(readOnly = false)
     public RepertoireResponseDto updateRepertoire(Long idRepertoire, RepertoireRequestDto repertoireRequestDto) {
         existingRepertoire(repertoireRequestDto.getNameRepertoire(), repertoireRequestDto.getIdUser());
         Repertoire repertoire = validateRepertoire(idRepertoire);
-        repertoire.setNameRepertoire(repertoireRequestDto.getNameRepertoire());
+        repertoire.setNameRepertoire(repertoireRequestDto.getNameRepertoire() != null
+                ? repertoireRequestDto.getNameRepertoire() : repertoire.getNameRepertoire() );
 
         return repertoireMapper.toRepertoireResponseDto(repertoireRepository.save(repertoire));
     }
@@ -99,5 +86,19 @@ public class RepertoireServiceImpl implements RepertoireService {
         repertoireRepository.delete(repertoire);
 
         return "Repertorio com id " + idRepertoire + "excluído com sucesso";
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void existingRepertoire(String nameRepertoire, Long idUser) {
+        repertoireRepository.findRepertoireByNameRepertoireAndUserIdUser(nameRepertoire, idUser).ifPresent(repertoire -> {
+            throw new RepertoireIsPresentException();
+        });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Repertoire validateRepertoire(Long idRepertoire) {
+        return repertoireRepository.findById(idRepertoire).orElseThrow(RepertoireNotFoundException::new);
     }
 }

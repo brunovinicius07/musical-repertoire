@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -15,14 +15,14 @@ public class ScheduleEventRequestDto {
 
     private Long idUser;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate day;
 
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime opening;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime opening;
 
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime closure;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime closure;
 
     private String title;
 
