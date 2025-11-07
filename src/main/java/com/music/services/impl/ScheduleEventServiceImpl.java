@@ -60,7 +60,10 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
                                                         ScheduleEventRequestDto scheduleEventRequestDto) {
 
         ScheduleEvent scheduleEvent = validateScheduleEvent(idScheduleEvent);
-        ValidateDayAndTimeOfEvent(scheduleEventRequestDto);
+
+        if (scheduleEventRequestDto.getOpening() != null && scheduleEventRequestDto.getClosure() != null) {
+            ValidateDayAndTimeOfEvent(scheduleEventRequestDto);
+        }
 
         scheduleEvent.setDay(scheduleEventRequestDto.getDay() != null
                 ? scheduleEventRequestDto.getDay() : scheduleEvent.getDay());

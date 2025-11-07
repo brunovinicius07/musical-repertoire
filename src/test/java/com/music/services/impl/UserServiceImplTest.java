@@ -1,0 +1,179 @@
+package com.music.services.impl;
+
+import com.music.model.dto.request.UpdateUserRequest;
+import com.music.model.dto.response.UserResponseDto;
+import com.music.model.entity.User;
+import com.music.model.exceptions.updatePassword.CurrentPasswordWrongException;
+import com.music.model.exceptions.updatePassword.NewPasswordNoMatchException;
+import com.music.model.exceptions.user.UserNotFoundException;
+import com.music.model.mapper.UserMapper;
+import com.music.repositories.*;
+import com.music.role.UserRole;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class UserServiceImplTest {
+
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private UserMapper userMapper;
+    @Mock
+    private MusicRepository musicRepository;
+    @Mock
+    private RepertoireRepository repertoireRepository;
+    @Mock
+    private ScheduleEventRepository scheduleEventRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @InjectMocks
+    private UserServiceImpl userService;
+
+    private User user;
+    private UpdateUserRequest request;
+    private UserResponseDto responseDto;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+
+        user = User.builder()
+                .idUser(1L)
+                .nameUser("Bruno Vinícius")
+                .email("bruno@email.com")
+                .password("encodedPass")
+                .role(UserRole.ADMIN)
+                .musics(List.of())
+                .repertoires(List.of())
+                .build();
+
+        request = new UpdateUserRequest(
+                "Novo Nome",
+                "novo@email.com",
+                false, // não muda senha
+                null,
+                null,
+                null
+        );
+
+        responseDto = new UserResponseDto(1L, "Novo Nome", "novo@email.com", UserRole.ADMIN);
+    }
+
+    // ---------- UPDATE USER ----------
+
+    @Test
+    void shouldUpdateUserWithoutChangingPassword() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userMapper.userToResponseDto(any())).thenReturn(responseDto);
+
+        UserResponseDto result = userService.updateUser(1L, request);
+
+        assertNotNull(result);
+        assertEquals("Novo Nome", result.getNameUser());
+        assertEquals("novo@email.com", result.getEmail());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void shouldUpdateUserAndChangePasswordSuccessfully() {
+        UpdateUserRequest passwordRequest = new UpdateUserRequest(
+                "Bruno",
+                "bruno@email.com",
+                true,
+                "oldPass",
+                "newPass",
+                "newPass"
+        );
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("oldPass", "encodedPass")).thenReturn(true);
+        when(passwordEncoder.encode("newPass")).thenReturn("encodedNew");
+        when(userRepository.save(user)).thenReturn(user);
+        when(userMapper.userToResponseDto(any())).thenReturn(responseDto);
+
+        UserResponseDto result = userService.updateUser(1L, passwordRequest);
+
+        assertNotNull(result);
+        verify(passwordEncoder).encode("newPass");
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void shouldThrowException_WhenCurrentPasswordIsWrong() {
+        UpdateUserRequest invalidRequest = new UpdateUserRequest(
+                "Bruno",
+                "bruno@email.com",
+                true,
+                "wrongPass",
+                "newPass",
+                "newPass"
+        );
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrongPass", "encodedPass")).thenReturn(false);
+
+        assertThrows(CurrentPasswordWrongException.class,
+                () -> userService.updateUser(1L, invalidRequest));
+    }
+
+    @Test
+    void shouldThrowException_WhenNewPasswordDoesNotMatch() {
+        UpdateUserRequest invalidRequest = new UpdateUserRequest(
+                "Bruno",
+                "bruno@email.com",
+                true,
+                "oldPass",
+                "newPass",
+                "differentConfirm"
+        );
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("oldPass", "encodedPass")).thenReturn(true);
+
+        assertThrows(NewPasswordNoMatchException.class,
+                () -> userService.updateUser(1L, invalidRequest));
+    }
+
+    // ---------- DELETE USER ----------
+
+    @Test
+    void shouldDeleteUserSuccessfully() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        String result = userService.deleteUser(1L);
+
+        assertTrue(result.contains("apagado com sucesso"));
+        verify(musicRepository).deleteAll(user.getMusics());
+        verify(repertoireRepository).deleteAll(user.getRepertoires());
+        verify(scheduleEventRepository).deleteAll(user.getScheduleEvents());
+        verify(userRepository).delete(user);
+    }
+
+    // ---------- VALIDATE USER ----------
+
+    @Test
+    void shouldReturnUser_WhenExists() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        User found = userService.validateUser(1L);
+
+        assertEquals(user, found);
+    }
+
+    @Test
+    void shouldThrowException_WhenUserNotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.validateUser(99L));
+    }
+}

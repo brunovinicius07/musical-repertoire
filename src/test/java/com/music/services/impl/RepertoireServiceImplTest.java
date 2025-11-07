@@ -66,7 +66,8 @@ class RepertoireServiceImplTest {
         requestDto.setNameRepertoire("Repertório Casamento");
         requestDto.setIdUser(1L);
 
-        responseDto = new RepertoireResponseDto(1L, "Repertório Casamento", List.of(), 1L);
+        responseDto = new RepertoireResponseDto(1L, "Repertório Casamento",
+                List.of(), 1L);
     }
 
     @Test
@@ -165,7 +166,8 @@ class RepertoireServiceImplTest {
         when(repertoireRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(repertoireRepository.save(existing)).thenReturn(existing);
         when(repertoireMapper.toRepertoireResponseDto(existing))
-                .thenReturn(new RepertoireResponseDto(1L, "Novo Repertório", List.of(), 1L));
+                .thenReturn(new RepertoireResponseDto(1L, "Novo Repertório", List.of(),
+                        1L));
 
         // Act
         RepertoireResponseDto result = repertoireService.updateRepertoire(1L, updateDto);
@@ -191,10 +193,10 @@ class RepertoireServiceImplTest {
         when(repertoireRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(repertoireRepository.save(existing)).thenReturn(existing);
         when(repertoireMapper.toRepertoireResponseDto(existing))
-                .thenReturn(new RepertoireResponseDto(1L, "Repertório Original", List.of(), 1L));
+                .thenReturn(new RepertoireResponseDto(1L, "Repertório Original", List.of(),
+                        1L));
 
         RepertoireResponseDto result = repertoireService.updateRepertoire(1L, updateDto);
-        // Assert
         assertNotNull(result);
 
         assertEquals("Repertório Original", existing.getNameRepertoire());

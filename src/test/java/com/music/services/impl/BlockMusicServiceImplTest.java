@@ -119,7 +119,7 @@ class BlockMusicServiceImplTest {
         BlockMusic block3 = BlockMusic.builder().idBlockMusic(3L).build();
 
         when(blockMusicRepository.findById(1L)).thenReturn(Optional.of(block1));
-        when(blockMusicRepository.findById(2L)).thenReturn(Optional.empty()); // simula ID inexistente
+        when(blockMusicRepository.findById(2L)).thenReturn(Optional.empty());
         when(blockMusicRepository.findById(3L)).thenReturn(Optional.of(block3));
 
         List<BlockMusic> result = blockMusicService.getBlockMusicByIdBlockMusics(ids);
@@ -188,7 +188,8 @@ class BlockMusicServiceImplTest {
         when(blockMusicRepository.findById(1L)).thenReturn(Optional.of(existingBlock));
         when(blockMusicRepository.save(existingBlock)).thenReturn(existingBlock);
         when(blockMusicMapper.toBlockMusicResponseDto(existingBlock))
-                .thenReturn(new BlockMusicResponseDto(1L, "NewName", 1L, List.of(), 1L));
+                .thenReturn(new BlockMusicResponseDto(1L, "NewName",
+                        1L, List.of(), 1L));
 
         BlockMusicResponseDto response = blockMusicService.updateBlockMusic(1L, requestDto);
 
@@ -210,7 +211,8 @@ class BlockMusicServiceImplTest {
         when(blockMusicRepository.findById(1L)).thenReturn(Optional.of(existingBlock));
         when(blockMusicRepository.save(existingBlock)).thenReturn(existingBlock);
         when(blockMusicMapper.toBlockMusicResponseDto(existingBlock))
-                .thenReturn(new BlockMusicResponseDto(1L, "OriginalName", 1L, List.of(), 1L));
+                .thenReturn(new BlockMusicResponseDto(1L, "OriginalName", 1L,
+                        List.of(), 1L));
 
         BlockMusicResponseDto response = blockMusicService.updateBlockMusic(1L, requestDto);
 
