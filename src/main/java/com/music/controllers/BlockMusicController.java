@@ -47,12 +47,11 @@ public class BlockMusicController {
         return ResponseEntity.ok(blockMusicResponse);
     }
 
-    @PutMapping("/link-music-to-block/{idBlockMusic}")
-    public ResponseEntity<MusicResponseDto> linkMusicToBLock(@PathVariable Long idBlockMusic,
-                                                             @RequestBody
+    @PutMapping("/link-music-to-block")
+    public ResponseEntity<MusicResponseDto> linkMusicToBLock(@RequestBody
                                                              MusicToBlockRequest musicToBlockRequest){
 
-        var blockMusicResponse = blockMusicService.linkMusicToBLock(idBlockMusic,musicToBlockRequest);
+        var blockMusicResponse = blockMusicService.linkMusicToBLock(musicToBlockRequest);
         return ResponseEntity.ok(blockMusicResponse);
     }
 

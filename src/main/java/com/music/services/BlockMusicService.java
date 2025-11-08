@@ -22,7 +22,7 @@ public interface BlockMusicService {
 
     List<BlockMusic> getBlockMusicsByIdBlockMusics(List<Long> idBlockMusics);
 
-    MusicResponseDto linkMusicToBLock(Long idMusic, MusicToBlockRequest musicToBlockRequest);
+    MusicResponseDto linkMusicToBLock(MusicToBlockRequest musicToBlockRequest);
 
     void existingBlockMusic(String nameBlockMusic, Long idUser);
 

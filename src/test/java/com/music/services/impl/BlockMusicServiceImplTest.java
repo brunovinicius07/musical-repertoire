@@ -50,6 +50,7 @@ class BlockMusicServiceImplTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
+        blockMusicService = Mockito.spy(blockMusicService);
 
         blockMusicRequestDto = new BlockMusicRequestDto("Bloco Sertanejo", 1L, 1L);
 
@@ -241,7 +242,7 @@ class BlockMusicServiceImplTest {
         when(musicRepository.save(music)).thenReturn(music);
         when(musicMapper.toMusicResponseDto(music)).thenReturn(new MusicResponseDto());
 
-        MusicResponseDto response = blockMusicService.linkMusicToBLock(1L, request);
+        MusicResponseDto response = blockMusicService.linkMusicToBLock(request);
 
         assertNotNull(response);
         assertTrue(blockMusic.getMusics().contains(music));
@@ -250,21 +251,31 @@ class BlockMusicServiceImplTest {
 
     @Test
     void shouldNotAddMusicAgainIfAlreadyPresentInBlock() {
-        MusicToBlockRequest request = new MusicToBlockRequest(Collections.emptyList(), 1L);
+        Long musicId = 1L;
+        Long blockId = 10L;
+
+        MusicToBlockRequest request = new MusicToBlockRequest(List.of(blockId), musicId);
+
+        BlockMusic blockMusic = new BlockMusic();
+        blockMusic.setMusics(new ArrayList<>());
+        Music music = new Music();
+        music.setBlockMusics(new ArrayList<>());
 
         blockMusic.getMusics().add(music);
 
-        when(musicRepository.findById(1L)).thenReturn(Optional.of(music));
-        when(blockMusicRepository.findById(1L)).thenReturn(Optional.of(blockMusic));
-        when(blockMusicRepository.save(blockMusic)).thenReturn(blockMusic);
-        when(musicRepository.save(music)).thenReturn(music);
-        when(musicMapper.toMusicResponseDto(music)).thenReturn(new MusicResponseDto());
+        when(musicRepository.findById(musicId)).thenReturn(Optional.of(music));
+        when(blockMusicRepository.save(any())).thenReturn(blockMusic);
+        when(musicRepository.save(any())).thenReturn(music);
+        when(musicMapper.toMusicResponseDto(any())).thenReturn(new MusicResponseDto());
 
-        MusicResponseDto response = blockMusicService.linkMusicToBLock(1L, request);
+        doReturn(List.of(blockMusic)).when(blockMusicService).getBlockMusicsByIdsBlocMusic(List.of(blockId));
 
-        assertNotNull(response);
+        MusicResponseDto result = blockMusicService.linkMusicToBLock(request);
+
+        assertNotNull(result);
         assertEquals(1, blockMusic.getMusics().size());
         verify(blockMusicRepository).save(blockMusic);
+        verify(musicRepository).save(music);
     }
 
     @Test
@@ -272,6 +283,6 @@ class BlockMusicServiceImplTest {
         MusicToBlockRequest request = new MusicToBlockRequest(Collections.emptyList(), 99L);
         when(musicRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(MusicNotFoundException.class, () -> blockMusicService.linkMusicToBLock(1L, request));
+        assertThrows(MusicNotFoundException.class, () -> blockMusicService.linkMusicToBLock(request));
     }
 }

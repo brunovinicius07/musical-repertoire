@@ -39,7 +39,6 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     private User user;
-    private UpdateUserRequest request;
     private UserResponseDto responseDto;
 
     @BeforeEach
@@ -56,20 +55,18 @@ class UserServiceImplTest {
                 .repertoires(List.of())
                 .build();
 
-        request = new UpdateUserRequest(
-                "Novo Nome",
-                "novo@email.com",
-                false, // não muda senha
-                null,
-                null,
-                null
-        );
-
         responseDto = new UserResponseDto(1L, "Novo Nome", "novo@email.com", UserRole.ADMIN);
     }
 
     @Test
     void shouldUpdateUserWithoutChangingPassword() {
+        UpdateUserRequest request = new UpdateUserRequest(
+                "Novo Nome",
+                "novo@email.com",
+                false,
+                null, null, null
+        );
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.userToResponseDto(any())).thenReturn(responseDto);
@@ -77,8 +74,9 @@ class UserServiceImplTest {
         UserResponseDto result = userService.updateUser(1L, request);
 
         assertNotNull(result);
-        assertEquals("Novo Nome", result.getNameUser());
-        assertEquals("novo@email.com", result.getEmail());
+        assertEquals("Novo Nome", user.getNameUser());
+        assertEquals("novo@email.com", user.getEmail());
+        verify(passwordEncoder, never()).matches(any(), any());
         verify(userRepository).save(user);
     }
 
@@ -94,8 +92,7 @@ class UserServiceImplTest {
         );
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("senha atual",
-                "senhaCriptografada")).thenReturn(true);
+        when(passwordEncoder.matches("senha atual", "senhaCriptografada")).thenReturn(true);
         when(passwordEncoder.encode("senha nova")).thenReturn("senha nova criptografada");
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.userToResponseDto(any())).thenReturn(responseDto);
@@ -119,10 +116,12 @@ class UserServiceImplTest {
         );
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("wrongPass", "encodedPass")).thenReturn(false);
+        when(passwordEncoder.matches("senha atual", "senhaCriptografada")).thenReturn(false);
 
         assertThrows(CurrentPasswordWrongException.class,
                 () -> userService.updateUser(1L, invalidRequest));
+
+        verify(passwordEncoder).matches("senha atual", "senhaCriptografada");
     }
 
     @Test
@@ -137,11 +136,12 @@ class UserServiceImplTest {
         );
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("senha atual",
-                "senha criptografada")).thenReturn(true);
+        when(passwordEncoder.matches("senha atual", "senhaCriptografada")).thenReturn(true);
 
-        assertThrows(CurrentPasswordWrongException.class,
+        assertThrows(NewPasswordNoMatchException.class,
                 () -> userService.updateUser(1L, invalidRequest));
+
+        verify(passwordEncoder).matches("senha atual", "senhaCriptografada");
     }
 
     @Test
@@ -170,6 +170,7 @@ class UserServiceImplTest {
     void shouldThrowException_WhenUserNotFound() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.validateUser(99L));
+        assertThrows(UserNotFoundException.class,
+                () -> userService.validateUser(99L));
     }
 }

@@ -98,18 +98,19 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
     @Override
     @Transactional(readOnly = false)
-    public MusicResponseDto linkMusicToBLock(Long idMusic, MusicToBlockRequest musicToBlockRequest) {
+    public MusicResponseDto linkMusicToBLock(MusicToBlockRequest musicToBlockRequest) {
         Music music = musicRepository.findById(musicToBlockRequest.getIdMusic()).orElseThrow(MusicNotFoundException::new);
 
         List<BlockMusic> blockMusicList = getBlockMusicsByIdsBlocMusic(musicToBlockRequest.getIdsBlockMusic());
 
-        BlockMusic blockMusic = validateBlockMusic(idMusic);
+        blockMusicList.forEach(blockMusic -> {
 
-        if (!blockMusic.getMusics().contains(music)) {
-            blockMusic.getMusics().add(music);
-        }
+            if (!blockMusic.getMusics().contains(music)) {
+                blockMusic.getMusics().add(music);
+            }
 
-        blockMusicRepository.save(blockMusic);
+            blockMusicRepository.save(blockMusic);
+        });
 
         music.getBlockMusics().addAll(blockMusicList);
 
