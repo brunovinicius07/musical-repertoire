@@ -1,4 +1,4 @@
-package com.music.model.exceptions.Repertoire;
+package com.music.model.exceptions.repertoire;
 
 import com.music.model.exceptions.exceptionHandler.AlertException;
 import org.springframework.http.HttpStatus;

@@ -4,8 +4,8 @@ import com.music.model.dto.request.RepertoireRequestDto;
 import com.music.model.dto.response.RepertoireResponseDto;
 import com.music.model.entity.BlockMusic;
 import com.music.model.entity.Repertoire;
-import com.music.model.exceptions.Repertoire.RepertoireIsPresentException;
-import com.music.model.exceptions.Repertoire.RepertoireNotFoundException;
+import com.music.model.exceptions.repertoire.RepertoireIsPresentException;
+import com.music.model.exceptions.repertoire.RepertoireNotFoundException;
 import com.music.model.mapper.RepertoireMapper;
 import com.music.repositories.BlockMusicRepository;
 import com.music.repositories.RepertoireRepository;
@@ -30,21 +30,13 @@ public class RepertoireServiceImpl implements RepertoireService {
 
     @Override
     @Transactional(readOnly = false)
-    public RepertoireResponseDto registerRepertoire(RepertoireRequestDto repertoireRequestDto) {
+    public RepertoireResponseDto createRepertoire(RepertoireRequestDto repertoireRequestDto) {
         existingRepertoire(repertoireRequestDto.getNameRepertoire(), repertoireRequestDto.getIdUser());
         Repertoire repertoire = repertoireMapper.toRepertoire(repertoireRequestDto);
         var user = authenticationServiceImpl.validateUserById(repertoireRequestDto.getIdUser());
         repertoire.setUser(user);
 
         return repertoireMapper.toRepertoireResponseDto(repertoireRepository.save(repertoire));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void existingRepertoire(String nameRepertoire, Long idUser) {
-        repertoireRepository.findRepertoireByNameRepertoireAndUserIdUser(nameRepertoire, idUser).ifPresent(repertoire -> {
-            throw new RepertoireIsPresentException();
-        });
     }
 
     @Override
@@ -65,17 +57,12 @@ public class RepertoireServiceImpl implements RepertoireService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Repertoire validateRepertoire(Long idRepertoire) {
-        return repertoireRepository.findById(idRepertoire).orElseThrow(RepertoireNotFoundException::new);
-    }
-
-    @Override
     @Transactional(readOnly = false)
     public RepertoireResponseDto updateRepertoire(Long idRepertoire, RepertoireRequestDto repertoireRequestDto) {
         existingRepertoire(repertoireRequestDto.getNameRepertoire(), repertoireRequestDto.getIdUser());
         Repertoire repertoire = validateRepertoire(idRepertoire);
-        repertoire.setNameRepertoire(repertoireRequestDto.getNameRepertoire());
+        repertoire.setNameRepertoire(repertoireRequestDto.getNameRepertoire() != null
+                ? repertoireRequestDto.getNameRepertoire() : repertoire.getNameRepertoire() );
 
         return repertoireMapper.toRepertoireResponseDto(repertoireRepository.save(repertoire));
     }
@@ -99,5 +86,19 @@ public class RepertoireServiceImpl implements RepertoireService {
         repertoireRepository.delete(repertoire);
 
         return "Repertorio com id " + idRepertoire + "excluído com sucesso";
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void existingRepertoire(String nameRepertoire, Long idUser) {
+        repertoireRepository.findRepertoireByNameRepertoireAndUserIdUser(nameRepertoire, idUser).ifPresent(repertoire -> {
+            throw new RepertoireIsPresentException();
+        });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Repertoire validateRepertoire(Long idRepertoire) {
+        return repertoireRepository.findById(idRepertoire).orElseThrow(RepertoireNotFoundException::new);
     }
 }

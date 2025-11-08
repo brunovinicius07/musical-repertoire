@@ -9,21 +9,23 @@ import com.music.model.entity.BlockMusic;
 import java.util.List;
 
 public interface BlockMusicService {
-    BlockMusicResponseDto registerBlockMusic(BlockMusicRequestDto blockMusicRequestDto);
 
-    void existingBlockMusic(String nameBlockMusic, Long idUser);
+    BlockMusicResponseDto createBlockMusic(BlockMusicRequestDto blockMusicRequestDto);
 
     List<BlockMusicResponseDto> getAllBlockMusic(Long idUser);
 
     BlockMusicResponseDto getBlockMusicByIdBlockMusic(Long idBlockMusic);
 
-    BlockMusic validateBlockMusic(Long idBlockMusic);
-
     BlockMusicResponseDto updateBlockMusic(Long idBlockMusic, BlockMusicRequestDto blockMusicRequestDto);
 
     String deleteBlockMusic(Long idBlockMusic);
 
-    List<BlockMusic> getBlockMusicByIdBlockMusics(List<Long> idBlockMusics);
+    List<BlockMusic> getBlockMusicsByIdBlockMusics(List<Long> idBlockMusics);
 
     MusicResponseDto linkMusicToBLock(Long idMusic, MusicToBlockRequest musicToBlockRequest);
+
+    void existingBlockMusic(String nameBlockMusic, Long idUser);
+
+    BlockMusic validateBlockMusic(Long idBlockMusic);
+
 }

@@ -28,6 +28,6 @@ public class Repertoire {
     private List<BlockMusic> blockMusics;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idUser")
+    @JoinColumn(name = "idUser", nullable = false)
     private User user;
 }

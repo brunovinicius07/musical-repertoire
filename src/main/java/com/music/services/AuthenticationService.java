@@ -9,9 +9,9 @@ public interface AuthenticationService {
 
     AuthenticationResponse register(RegisterRequest request);
 
-    void existingUser(String email);
-
     AuthenticationResponse login(AuthenticationRequest request);
+
+    void existingUser(String email);
 
     User validateUserById(Long IdUser);
 }

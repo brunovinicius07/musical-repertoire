@@ -23,7 +23,7 @@ public class BlockMusicController {
     @PostMapping("/post")
     public ResponseEntity<BlockMusicResponseDto> registerBlockMusic(
             @RequestBody @Valid BlockMusicRequestDto blockMusicRequestDto) {
-        var blockMusicResponse = blockMusicService.registerBlockMusic(blockMusicRequestDto);
+        var blockMusicResponse = blockMusicService.createBlockMusic(blockMusicRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(blockMusicResponse);
     }
 

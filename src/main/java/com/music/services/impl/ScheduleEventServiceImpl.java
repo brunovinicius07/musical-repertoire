@@ -1,21 +1,23 @@
 package com.music.services.impl;
 
-import com.music.model.exceptions.exceptionHandler.AlertException;
 import com.music.model.dto.request.ScheduleEventRequestDto;
 import com.music.model.dto.response.ScheduleEventResponseDto;
-import com.music.model.entity.Schedule;
 import com.music.model.entity.ScheduleEvent;
+import com.music.model.exceptions.DayAndHorException.DayFinishEventException;
+import com.music.model.exceptions.DayAndHorException.DayToStartEventException;
+import com.music.model.exceptions.DayAndHorException.HoursAfterException;
+import com.music.model.exceptions.schedule.ScheduleEventIsPresentException;
+import com.music.model.exceptions.schedule.ScheduleEventNotFoundException;
 import com.music.model.mapper.ScheduleEventMapper;
 import com.music.repositories.ScheduleEventRepository;
 import com.music.services.ScheduleEventService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -23,71 +25,103 @@ public class ScheduleEventServiceImpl implements ScheduleEventService {
 
     private final ScheduleEventRepository scheduleEventRepository;
 
-    private final ScheduleServiceImpl scheduleService;
-
     private final ScheduleEventMapper scheduleEventMapper;
 
     @Override
     @Transactional(readOnly = false)
-    public ScheduleEventResponseDto registerEvent(ScheduleEventRequestDto scheduleEventRequestDto) {
+    public ScheduleEventResponseDto createEvent(ScheduleEventRequestDto scheduleEventRequestDto) {
+        ValidateDayAndTimeOfEvent(scheduleEventRequestDto);
 
-        existingScheduleEvent(scheduleEventRequestDto.getIdUser() ,scheduleEventRequestDto.getDay(), scheduleEventRequestDto.getOpening());
-
-        Schedule schedule = scheduleService.validateSchedule(scheduleEventRequestDto.getIdSchedule());
+        existingScheduleEvent(
+                scheduleEventRequestDto.getIdUser(),
+                scheduleEventRequestDto.getDay(),
+                scheduleEventRequestDto.getOpening());
 
         ScheduleEvent scheduleEvent = scheduleEventMapper.toScheduleEvent(scheduleEventRequestDto);
-        scheduleEvent.setSchedule(schedule);
 
         return scheduleEventMapper.toScheduleEventResponseDto(scheduleEventRepository.save(scheduleEvent));
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public void existingScheduleEvent(Long idUser, LocalDate day, LocalTime opening){
+    public List<ScheduleEventResponseDto> getAllScheduleEventByIdUser(Long idUser) {
 
-        Optional<ScheduleEvent> scheduleEvent = scheduleEventRepository.findByUserIdUserAndDayAndOpening(idUser,day, opening);
-
-        if(scheduleEvent.isPresent()){
-            throw new AlertException(
-                    "warn",
-                    String.format("Já existe um evento para este dia e horaio", opening),
-                    HttpStatus.CONFLICT
-            );
+        List<ScheduleEvent> scheduleEvents = scheduleEventRepository.findScheduleEventsByUserIdUser(idUser);
+        if(scheduleEvents.isEmpty()){
+            throw new ScheduleEventNotFoundException();
         }
+
+        return scheduleEventMapper.toScheduleEventsResponse(scheduleEvents);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public ScheduleEventResponseDto updateScheduleEvent(Long idScheduleEvent, ScheduleEventRequestDto scheduleEventRequestDto) {
+    public ScheduleEventResponseDto updateScheduleEvent(Long idScheduleEvent,
+                                                        ScheduleEventRequestDto scheduleEventRequestDto) {
+
         ScheduleEvent scheduleEvent = validateScheduleEvent(idScheduleEvent);
-        scheduleEvent.setDay(scheduleEventRequestDto.getDay());
-        scheduleEvent.setOpening(scheduleEventRequestDto.getOpening());
-        scheduleEvent.setClosure(scheduleEventRequestDto.getClosure());
-        scheduleEvent.setTitle(scheduleEventRequestDto.getTitle());
+
+        if (scheduleEventRequestDto.getOpening() != null && scheduleEventRequestDto.getClosure() != null) {
+            ValidateDayAndTimeOfEvent(scheduleEventRequestDto);
+        }
+
+        scheduleEvent.setDay(scheduleEventRequestDto.getDay() != null
+                ? scheduleEventRequestDto.getDay() : scheduleEvent.getDay());
+        scheduleEvent.setOpening(scheduleEventRequestDto.getOpening() != null
+                ? scheduleEventRequestDto.getOpening() : scheduleEvent.getOpening());
+        scheduleEvent.setClosure(scheduleEventRequestDto.getClosure() != null
+                ? scheduleEventRequestDto.getClosure() : scheduleEvent.getClosure());
+        scheduleEvent.setTitle(scheduleEventRequestDto.getTitle() != null
+                ? scheduleEventRequestDto.getTitle() : scheduleEvent.getTitle());
         scheduleEvent.setDescription(scheduleEventRequestDto.getDescription());
 
         return scheduleEventMapper.toScheduleEventResponseDto(scheduleEventRepository.save(scheduleEvent));
     }
 
-    @Transactional(readOnly = true)
-    public ScheduleEvent validateScheduleEvent(Long idScheduleEvent) {
-        Optional<ScheduleEvent> scheduleEvent = scheduleEventRepository.findById(idScheduleEvent);
-
-        if (scheduleEvent.isEmpty()) {
-            throw new AlertException(
-                    "warn",
-                    String.format("Evento com id %S não cadastrada!", idScheduleEvent),
-                    HttpStatus.NOT_FOUND
-            );
-        }
-        return scheduleEvent.get();
-    }
-
     @Override
+    @Transactional(readOnly = false)
     public String deleteScheduleEvent(Long idScheduleEvent) {
 
         ScheduleEvent scheduleEvent = validateScheduleEvent(idScheduleEvent);
         scheduleEventRepository.delete(scheduleEvent);
 
         return "Evento com o id " + idScheduleEvent + " apagado com sucesso!";
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void ValidateDayAndTimeOfEvent(ScheduleEventRequestDto scheduleEventRequestDto) {
+        LocalDate selectedDay = scheduleEventRequestDto.getDay();
+        LocalDateTime opening = scheduleEventRequestDto.getOpening();
+        LocalDateTime closure = scheduleEventRequestDto.getClosure();
+
+        if (!opening.toLocalDate().isEqual(selectedDay)) {
+            throw new DayToStartEventException();
+        }
+
+        if (!(closure.toLocalDate().isEqual(selectedDay) || closure.toLocalDate()
+                .isEqual(selectedDay.plusDays(1)))) {
+            throw new DayFinishEventException();
+        }
+
+        if (opening.isAfter(closure) || opening.isEqual(closure)) {
+            throw new HoursAfterException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void existingScheduleEvent(Long idUser, LocalDate day, LocalDateTime opening){
+
+        scheduleEventRepository.findByUserIdUserAndDayAndOpening(idUser,day, opening)
+                .ifPresent(s -> {
+                    throw new ScheduleEventIsPresentException();
+                });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ScheduleEvent validateScheduleEvent(Long idScheduleEvent) {
+        return scheduleEventRepository.findById(idScheduleEvent).orElseThrow(ScheduleEventIsPresentException::new);
     }
 }

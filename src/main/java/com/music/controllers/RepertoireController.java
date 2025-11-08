@@ -21,7 +21,7 @@ public class RepertoireController {
     @PostMapping("/post")
     ResponseEntity<RepertoireResponseDto> registerRepertoire(
             @RequestBody @Valid RepertoireRequestDto repertoireRequestDto){
-        var repertoireResponse = repertoireService.registerRepertoire(repertoireRequestDto);
+        var repertoireResponse = repertoireService.createRepertoire(repertoireRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(repertoireResponse);
     }
 
@@ -44,7 +44,7 @@ public class RepertoireController {
         return ResponseEntity.ok(repertoireResponse);
     }
 
-    @DeleteMapping("delete/{idRepertoire}")
+    @DeleteMapping("/delete/{idRepertoire}")
     ResponseEntity<String> deleteRepertoire(@PathVariable Long idRepertoire){
         String message = repertoireService.deleteRepertoire(idRepertoire);
         return ResponseEntity.ok(message);

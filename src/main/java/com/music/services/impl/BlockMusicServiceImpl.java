@@ -6,9 +6,9 @@ import com.music.model.dto.response.BlockMusicResponseDto;
 import com.music.model.dto.response.MusicResponseDto;
 import com.music.model.entity.BlockMusic;
 import com.music.model.entity.Music;
-import com.music.model.exceptions.BlockMusic.BlockMusicIsPresentException;
-import com.music.model.exceptions.BlockMusic.BlockMusicNotFoundException;
-import com.music.model.exceptions.Music.MusicNotFoundException;
+import com.music.model.exceptions.blockMusic.BlockMusicIsPresentException;
+import com.music.model.exceptions.blockMusic.BlockMusicNotFoundException;
+import com.music.model.exceptions.music.MusicNotFoundException;
 import com.music.model.mapper.BlockMusicMapper;
 import com.music.model.mapper.MusicMapper;
 import com.music.repositories.BlockMusicRepository;
@@ -39,7 +39,7 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
     @Override
     @Transactional(readOnly = false)
-    public BlockMusicResponseDto registerBlockMusic(BlockMusicRequestDto blockMusicRequestDto) {
+    public BlockMusicResponseDto createBlockMusic(BlockMusicRequestDto blockMusicRequestDto) {
         existingBlockMusic(blockMusicRequestDto.getNameBlockMusic(),blockMusicRequestDto.getIdRepertoire());
         BlockMusic blockMusic = blockMusicMapper.toBlockMusic(blockMusicRequestDto);
         var repertoire = repertoireService.validateRepertoire(blockMusicRequestDto.getIdRepertoire());
@@ -70,7 +70,8 @@ public class BlockMusicServiceImpl implements BlockMusicService {
     public BlockMusicResponseDto updateBlockMusic(Long idBlockMusic, BlockMusicRequestDto blockMusicRequestDto) {
         existingBlockMusic(blockMusicRequestDto.getNameBlockMusic(),blockMusicRequestDto.getIdRepertoire());
         BlockMusic blockMusic = validateBlockMusic(idBlockMusic);
-        blockMusic.setNameBlockMusic(blockMusicRequestDto.getNameBlockMusic());
+        blockMusic.setNameBlockMusic(blockMusicRequestDto.getNameBlockMusic() != null
+                ? blockMusicRequestDto.getNameBlockMusic() : blockMusic.getNameBlockMusic());
 
         return blockMusicMapper.toBlockMusicResponseDto(blockMusicRepository.save(blockMusic));
     }
@@ -86,7 +87,7 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BlockMusic> getBlockMusicByIdBlockMusics(List<Long> idBlockMusics) {
+    public List<BlockMusic> getBlockMusicsByIdBlockMusics(List<Long> idBlockMusics) {
         List<BlockMusic> blockMusics = new ArrayList<>();
         for (Long item : idBlockMusics) {
             Optional<BlockMusic> blockMusic = blockMusicRepository.findById(item);

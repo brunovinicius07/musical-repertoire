@@ -5,8 +5,8 @@ import com.music.model.dto.response.RepertoireResponseDto;
 import com.music.model.entity.BlockMusic;
 import com.music.model.entity.Repertoire;
 import com.music.model.entity.User;
-import com.music.model.exceptions.Repertoire.RepertoireIsPresentException;
-import com.music.model.exceptions.Repertoire.RepertoireNotFoundException;
+import com.music.model.exceptions.repertoire.RepertoireIsPresentException;
+import com.music.model.exceptions.repertoire.RepertoireNotFoundException;
 import com.music.model.mapper.RepertoireMapper;
 import com.music.repositories.BlockMusicRepository;
 import com.music.repositories.RepertoireRepository;
@@ -50,27 +50,28 @@ class RepertoireServiceImplTest {
 
         user = User.builder()
                 .idUser(1L)
-                .nameUser("Bruno")
-                .email("bruno@email.com")
+                .nameUser("User71")
+                .email("user71@email.com")
                 .password("12345678")
-                .role(UserRole.USER)
+                .role(UserRole.ADMIN)
                 .build();
 
         repertoire = Repertoire.builder()
                 .idRepertoire(1L)
-                .nameRepertoire("Repertório Sertanejo")
+                .nameRepertoire("Repertório Casamento")
                 .user(user)
                 .build();
 
         requestDto = new RepertoireRequestDto();
-        requestDto.setNameRepertoire("Repertório Sertanejo");
+        requestDto.setNameRepertoire("Repertório Casamento");
         requestDto.setIdUser(1L);
 
-        responseDto = new RepertoireResponseDto(1L, "Repertório Sertanejo", List.of(), 1L);
+        responseDto = new RepertoireResponseDto(1L, "Repertório Casamento",
+                List.of(), 1L);
     }
 
     @Test
-    void shouldRegisterRepertoireSuccessfully() {
+    void shouldCreateRepertoireSuccessfully() {
         when(repertoireRepository.findRepertoireByNameRepertoireAndUserIdUser(anyString(), anyLong()))
                 .thenReturn(Optional.empty());
         when(repertoireMapper.toRepertoire(any())).thenReturn(repertoire);
@@ -78,10 +79,10 @@ class RepertoireServiceImplTest {
         when(repertoireRepository.save(any())).thenReturn(repertoire);
         when(repertoireMapper.toRepertoireResponseDto(any())).thenReturn(responseDto);
 
-        RepertoireResponseDto result = repertoireService.registerRepertoire(requestDto);
+        RepertoireResponseDto result = repertoireService.createRepertoire(requestDto);
 
         assertNotNull(result);
-        assertEquals("Repertório Sertanejo", result.getNameRepertoire());
+        assertEquals("Repertório Casamento", result.getNameRepertoire());
         verify(repertoireRepository).save(repertoire);
     }
 
@@ -91,7 +92,7 @@ class RepertoireServiceImplTest {
                 .thenReturn(Optional.of(repertoire));
 
         assertThrows(RepertoireIsPresentException.class, () ->
-                repertoireService.registerRepertoire(requestDto));
+                repertoireService.createRepertoire(requestDto));
     }
 
     @Test
@@ -104,7 +105,7 @@ class RepertoireServiceImplTest {
         List<RepertoireResponseDto> result = repertoireService.getAllRepertoireByIdUser(1L);
 
         assertEquals(1, result.size());
-        assertEquals("Repertório Sertanejo", result.get(0).getNameRepertoire());
+        assertEquals("Repertório Casamento", result.get(0).getNameRepertoire());
     }
 
     @Test
@@ -124,7 +125,7 @@ class RepertoireServiceImplTest {
         RepertoireResponseDto result = repertoireService.getRepertoireByIdRepertoire(1L);
 
         assertNotNull(result);
-        assertEquals("Repertório Sertanejo", result.getNameRepertoire());
+        assertEquals("Repertório Casamento", result.getNameRepertoire());
     }
 
     @Test
@@ -146,8 +147,62 @@ class RepertoireServiceImplTest {
         RepertoireResponseDto result = repertoireService.updateRepertoire(1L, requestDto);
 
         assertNotNull(result);
-        assertEquals("Repertório Sertanejo", result.getNameRepertoire());
+        assertEquals("Repertório Casamento", result.getNameRepertoire());
     }
+
+    @Test
+    void shouldUpdateRepertoire_WhenNameIsNotNull() {
+        // Arrange
+        RepertoireRequestDto updateDto = new RepertoireRequestDto("Novo Repertório", 1L);
+
+        Repertoire existing = Repertoire.builder()
+                .idRepertoire(1L)
+                .nameRepertoire("Antigo Repertório")
+                .user(user)
+                .build();
+
+        when(repertoireRepository.findRepertoireByNameRepertoireAndUserIdUser(anyString(), anyLong()))
+                .thenReturn(Optional.empty());
+        when(repertoireRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repertoireRepository.save(existing)).thenReturn(existing);
+        when(repertoireMapper.toRepertoireResponseDto(existing))
+                .thenReturn(new RepertoireResponseDto(1L, "Novo Repertório", List.of(),
+                        1L));
+
+        // Act
+        RepertoireResponseDto result = repertoireService.updateRepertoire(1L, updateDto);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Novo Repertório", existing.getNameRepertoire());
+        verify(repertoireRepository).save(existing);
+    }
+
+    @Test
+    void shouldUpdateRepertoire_WhenNameIsNull() {
+        RepertoireRequestDto updateDto = new RepertoireRequestDto(null, 1L);
+
+        Repertoire existing = Repertoire.builder()
+                .idRepertoire(1L)
+                .nameRepertoire("Repertório Original")
+                .user(user)
+                .build();
+
+        when(repertoireRepository.findRepertoireByNameRepertoireAndUserIdUser(any(), anyLong()))
+                .thenReturn(Optional.empty());
+        when(repertoireRepository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repertoireRepository.save(existing)).thenReturn(existing);
+        when(repertoireMapper.toRepertoireResponseDto(existing))
+                .thenReturn(new RepertoireResponseDto(1L, "Repertório Original", List.of(),
+                        1L));
+
+        RepertoireResponseDto result = repertoireService.updateRepertoire(1L, updateDto);
+        assertNotNull(result);
+
+        assertEquals("Repertório Original", existing.getNameRepertoire());
+        verify(repertoireRepository).save(existing);
+    }
+
 
     @Test
     void shouldDeleteRepertoireWithoutBlocks() {
