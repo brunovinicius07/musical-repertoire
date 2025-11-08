@@ -21,7 +21,7 @@ public class RepertoireController {
     @PostMapping("/post")
     ResponseEntity<RepertoireResponseDto> registerRepertoire(
             @RequestBody @Valid RepertoireRequestDto repertoireRequestDto){
-        var repertoireResponse = repertoireService.registerRepertoire(repertoireRequestDto);
+        var repertoireResponse = repertoireService.createRepertoire(repertoireRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(repertoireResponse);
     }
 

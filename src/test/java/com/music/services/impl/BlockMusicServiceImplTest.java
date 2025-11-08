@@ -61,13 +61,13 @@ class BlockMusicServiceImplTest {
 
         music = Music.builder()
                 .idMusic(1L)
-                .nameMusic("Song1")
+                .nameMusic("Música 1")
                 .blockMusics(new ArrayList<>())
                 .build();
     }
 
     @Test
-    void shouldRegisterBlockMusicSuccessfully() {
+    void shouldCreateBlockMusicSuccessfully() {
         when(blockMusicRepository.findBlockMusicByNameBlockMusicAndRepertoireIdRepertoire(
                 blockMusicRequestDto.getNameBlockMusic(), blockMusicRequestDto.getIdRepertoire()))
                 .thenReturn(Optional.empty());
@@ -77,7 +77,7 @@ class BlockMusicServiceImplTest {
         when(blockMusicRepository.save(blockMusic)).thenReturn(blockMusic);
         when(blockMusicMapper.toBlockMusicResponseDto(blockMusic)).thenReturn(new BlockMusicResponseDto());
 
-        BlockMusicResponseDto response = blockMusicService.registerBlockMusic(blockMusicRequestDto);
+        BlockMusicResponseDto response = blockMusicService.createBlockMusic(blockMusicRequestDto);
 
         assertNotNull(response);
         verify(blockMusicRepository).save(blockMusic);
@@ -89,7 +89,7 @@ class BlockMusicServiceImplTest {
                 anyString(), anyLong())).thenReturn(Optional.of(blockMusic));
 
         assertThrows(BlockMusicIsPresentException.class,
-                () -> blockMusicService.registerBlockMusic(blockMusicRequestDto));
+                () -> blockMusicService.createBlockMusic(blockMusicRequestDto));
     }
 
     @Test
@@ -122,7 +122,7 @@ class BlockMusicServiceImplTest {
         when(blockMusicRepository.findById(2L)).thenReturn(Optional.empty());
         when(blockMusicRepository.findById(3L)).thenReturn(Optional.of(block3));
 
-        List<BlockMusic> result = blockMusicService.getBlockMusicByIdBlockMusics(ids);
+        List<BlockMusic> result = blockMusicService.getBlockMusicsByIdBlockMusics(ids);
 
         assertEquals(2, result.size());
         assertTrue(result.contains(block1));
@@ -177,10 +177,10 @@ class BlockMusicServiceImplTest {
 
     @Test
     void shouldUpdateBlockMusic_WhenNameIsNotNull() {
-        BlockMusicRequestDto requestDto = new BlockMusicRequestDto("NewName", 1L, 1L);
+        BlockMusicRequestDto requestDto = new BlockMusicRequestDto("NovoNome", 1L, 1L);
         BlockMusic existingBlock = BlockMusic.builder()
                 .idBlockMusic(1L)
-                .nameBlockMusic("OldName")
+                .nameBlockMusic("Nome Original")
                 .build();
 
         when(blockMusicRepository.findBlockMusicByNameBlockMusicAndRepertoireIdRepertoire(
@@ -188,13 +188,13 @@ class BlockMusicServiceImplTest {
         when(blockMusicRepository.findById(1L)).thenReturn(Optional.of(existingBlock));
         when(blockMusicRepository.save(existingBlock)).thenReturn(existingBlock);
         when(blockMusicMapper.toBlockMusicResponseDto(existingBlock))
-                .thenReturn(new BlockMusicResponseDto(1L, "NewName",
+                .thenReturn(new BlockMusicResponseDto(1L, "NovoNome",
                         1L, List.of(), 1L));
 
         BlockMusicResponseDto response = blockMusicService.updateBlockMusic(1L, requestDto);
 
         assertNotNull(response);
-        assertEquals("NewName", existingBlock.getNameBlockMusic());
+        assertEquals("NovoNome", existingBlock.getNameBlockMusic());
         verify(blockMusicRepository).save(existingBlock);
     }
 
@@ -203,7 +203,7 @@ class BlockMusicServiceImplTest {
         BlockMusicRequestDto requestDto = new BlockMusicRequestDto(null, 1L, 1L);
         BlockMusic existingBlock = BlockMusic.builder()
                 .idBlockMusic(1L)
-                .nameBlockMusic("OriginalName")
+                .nameBlockMusic("Nome Original")
                 .build();
 
         when(blockMusicRepository.findBlockMusicByNameBlockMusicAndRepertoireIdRepertoire(
@@ -211,13 +211,13 @@ class BlockMusicServiceImplTest {
         when(blockMusicRepository.findById(1L)).thenReturn(Optional.of(existingBlock));
         when(blockMusicRepository.save(existingBlock)).thenReturn(existingBlock);
         when(blockMusicMapper.toBlockMusicResponseDto(existingBlock))
-                .thenReturn(new BlockMusicResponseDto(1L, "OriginalName", 1L,
+                .thenReturn(new BlockMusicResponseDto(1L, "Nome Original", 1L,
                         List.of(), 1L));
 
         BlockMusicResponseDto response = blockMusicService.updateBlockMusic(1L, requestDto);
 
         assertNotNull(response);
-        assertEquals("OriginalName", existingBlock.getNameBlockMusic());
+        assertEquals("Nome Original", existingBlock.getNameBlockMusic());
         verify(blockMusicRepository).save(existingBlock);
     }
 

@@ -37,7 +37,7 @@ public class MusicServiceImpl implements MusicService {
         Music music = musicMapper.toMusic(musicRequestDto);
 
         if (musicRequestDto.getIdBlockMusics() != null && !musicRequestDto.getIdBlockMusics().isEmpty()) {
-            var blockMusics = musicService.getBlockMusicByIdBlockMusics(musicRequestDto.getIdBlockMusics());
+            var blockMusics = musicService.getBlockMusicsByIdBlockMusics(musicRequestDto.getIdBlockMusics());
             music.setBlockMusics(blockMusics);
             blockMusics.forEach(blockMusic -> blockMusic.getMusics().add(music));
         }

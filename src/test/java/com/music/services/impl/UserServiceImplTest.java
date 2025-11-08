@@ -48,9 +48,9 @@ class UserServiceImplTest {
 
         user = User.builder()
                 .idUser(1L)
-                .nameUser("Bruno Vinícius")
-                .email("bruno@email.com")
-                .password("encodedPass")
+                .nameUser("User71")
+                .email("user71@email.com")
+                .password("senhaCriptografada")
                 .role(UserRole.ADMIN)
                 .musics(List.of())
                 .repertoires(List.of())
@@ -67,8 +67,6 @@ class UserServiceImplTest {
 
         responseDto = new UserResponseDto(1L, "Novo Nome", "novo@email.com", UserRole.ADMIN);
     }
-
-    // ---------- UPDATE USER ----------
 
     @Test
     void shouldUpdateUserWithoutChangingPassword() {
@@ -87,36 +85,37 @@ class UserServiceImplTest {
     @Test
     void shouldUpdateUserAndChangePasswordSuccessfully() {
         UpdateUserRequest passwordRequest = new UpdateUserRequest(
-                "Bruno",
-                "bruno@email.com",
+                "User71",
+                "user71@email.com",
                 true,
-                "oldPass",
-                "newPass",
-                "newPass"
+                "senha atual",
+                "senha nova",
+                "senha nova"
         );
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("oldPass", "encodedPass")).thenReturn(true);
-        when(passwordEncoder.encode("newPass")).thenReturn("encodedNew");
+        when(passwordEncoder.matches("senha atual",
+                "senhaCriptografada")).thenReturn(true);
+        when(passwordEncoder.encode("senha nova")).thenReturn("senha nova criptografada");
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.userToResponseDto(any())).thenReturn(responseDto);
 
         UserResponseDto result = userService.updateUser(1L, passwordRequest);
 
         assertNotNull(result);
-        verify(passwordEncoder).encode("newPass");
+        verify(passwordEncoder).encode("senha nova");
         verify(userRepository).save(user);
     }
 
     @Test
     void shouldThrowException_WhenCurrentPasswordIsWrong() {
         UpdateUserRequest invalidRequest = new UpdateUserRequest(
-                "Bruno",
-                "bruno@email.com",
+                "User71",
+                "user71@email.com",
                 true,
-                "wrongPass",
-                "newPass",
-                "newPass"
+                "senha atual",
+                "nova senha",
+                "nova senha"
         );
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
@@ -129,22 +128,21 @@ class UserServiceImplTest {
     @Test
     void shouldThrowException_WhenNewPasswordDoesNotMatch() {
         UpdateUserRequest invalidRequest = new UpdateUserRequest(
-                "Bruno",
-                "bruno@email.com",
+                "User71",
+                "user71@email.com",
                 true,
-                "oldPass",
-                "newPass",
-                "differentConfirm"
+                "senha atual",
+                "senha nova",
+                "senha diferente"
         );
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches("oldPass", "encodedPass")).thenReturn(true);
+        when(passwordEncoder.matches("senha atual",
+                "senha criptografada")).thenReturn(true);
 
-        assertThrows(NewPasswordNoMatchException.class,
+        assertThrows(CurrentPasswordWrongException.class,
                 () -> userService.updateUser(1L, invalidRequest));
     }
-
-    // ---------- DELETE USER ----------
 
     @Test
     void shouldDeleteUserSuccessfully() {
@@ -158,8 +156,6 @@ class UserServiceImplTest {
         verify(scheduleEventRepository).deleteAll(user.getScheduleEvents());
         verify(userRepository).delete(user);
     }
-
-    // ---------- VALIDATE USER ----------
 
     @Test
     void shouldReturnUser_WhenExists() {

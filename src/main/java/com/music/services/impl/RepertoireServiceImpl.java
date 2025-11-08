@@ -30,7 +30,7 @@ public class RepertoireServiceImpl implements RepertoireService {
 
     @Override
     @Transactional(readOnly = false)
-    public RepertoireResponseDto registerRepertoire(RepertoireRequestDto repertoireRequestDto) {
+    public RepertoireResponseDto createRepertoire(RepertoireRequestDto repertoireRequestDto) {
         existingRepertoire(repertoireRequestDto.getNameRepertoire(), repertoireRequestDto.getIdUser());
         Repertoire repertoire = repertoireMapper.toRepertoire(repertoireRequestDto);
         var user = authenticationServiceImpl.validateUserById(repertoireRequestDto.getIdUser());

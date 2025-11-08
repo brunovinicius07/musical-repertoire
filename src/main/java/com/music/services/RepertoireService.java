@@ -7,7 +7,7 @@ import com.music.model.entity.Repertoire;
 import java.util.List;
 
 public interface RepertoireService {
-    RepertoireResponseDto registerRepertoire(RepertoireRequestDto repertoireRequestDto);
+    RepertoireResponseDto createRepertoire(RepertoireRequestDto repertoireRequestDto);
 
     List<RepertoireResponseDto> getAllRepertoireByIdUser(Long idUser);
 

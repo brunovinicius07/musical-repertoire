@@ -85,7 +85,7 @@ class MusicServiceImplTest {
 
         List<BlockMusic> blocks = List.of(block1, block2);
 
-        when(blockMusicService.getBlockMusicByIdBlockMusics(blockIds)).thenReturn(blocks);
+        when(blockMusicService.getBlockMusicsByIdBlockMusics(blockIds)).thenReturn(blocks);
         when(musicMapper.toMusic(requestDto)).thenReturn(music);
         when(musicRepository.save(music)).thenReturn(music);
         when(musicMapper.toMusicResponseDto(music)).thenReturn(responseDto);
@@ -94,7 +94,7 @@ class MusicServiceImplTest {
 
         assertNotNull(result);
         verify(musicRepository).save(music);
-        verify(blockMusicService).getBlockMusicByIdBlockMusics(blockIds);
+        verify(blockMusicService).getBlockMusicsByIdBlockMusics(blockIds);
 
         assertTrue(block1.getMusics().contains(music));
         assertTrue(block2.getMusics().contains(music));
@@ -111,7 +111,7 @@ class MusicServiceImplTest {
 
         assertNotNull(result);
         verify(musicRepository).save(any());
-        verify(blockMusicService, never()).getBlockMusicByIdBlockMusics(any());
+        verify(blockMusicService, never()).getBlockMusicsByIdBlockMusics(any());
     }
 
     @Test
@@ -125,7 +125,7 @@ class MusicServiceImplTest {
 
         assertNotNull(result);
         verify(musicRepository).save(any());
-        verify(blockMusicService, never()).getBlockMusicByIdBlockMusics(any());
+        verify(blockMusicService, never()).getBlockMusicsByIdBlockMusics(any());
     }
 
     @Test
@@ -201,14 +201,14 @@ class MusicServiceImplTest {
     void shouldUpdateMusic_WhenAllFieldsAreNotNull() {
         Music existingMusic = new Music();
         existingMusic.setIdMusic(1L);
-        existingMusic.setNameMusic("Old Name");
-        existingMusic.setSinger("Old Singer");
-        existingMusic.setLetterMusic("Old Letter");
+        existingMusic.setNameMusic("Nome Original");
+        existingMusic.setSinger("Cantor Original");
+        existingMusic.setLetterMusic("Letra Original");
 
         MusicRequestDto requestDto = new MusicRequestDto(
-                "New Name",
-                "New Singer",
-                "New Letter",
+                "Novo Nome",
+                "Novo Cantor",
+                "Nova Letra",
                 new ArrayList<>(),
                 1L
         );
@@ -220,9 +220,9 @@ class MusicServiceImplTest {
         MusicResponseDto response = musicService.updateMusic(1L, requestDto);
 
         assertNotNull(response);
-        assertEquals("New Name", existingMusic.getNameMusic());
-        assertEquals("New Singer", existingMusic.getSinger());
-        assertEquals("New Letter", existingMusic.getLetterMusic());
+        assertEquals("Novo Nome", existingMusic.getNameMusic());
+        assertEquals("Novo Cantor", existingMusic.getSinger());
+        assertEquals("Nova Letra", existingMusic.getLetterMusic());
         verify(musicRepository).save(existingMusic);
     }
 
@@ -230,9 +230,9 @@ class MusicServiceImplTest {
     void shouldUpdateMusic_WhenAllFieldsAreNull() {
         Music existingMusic = new Music();
         existingMusic.setIdMusic(1L);
-        existingMusic.setNameMusic("Original Name");
-        existingMusic.setSinger("Original Singer");
-        existingMusic.setLetterMusic("Original Letter");
+        existingMusic.setNameMusic("Novo Nome");
+        existingMusic.setSinger("Novo Cantor");
+        existingMusic.setLetterMusic("Nova Letra");
 
         MusicRequestDto requestDto = new MusicRequestDto(
                 null,
@@ -249,9 +249,9 @@ class MusicServiceImplTest {
         MusicResponseDto response = musicService.updateMusic(1L, requestDto);
 
         assertNotNull(response);
-        assertEquals("Original Name", existingMusic.getNameMusic());
-        assertEquals("Original Singer", existingMusic.getSinger());
-        assertEquals("Original Letter", existingMusic.getLetterMusic());
+        assertEquals("Novo Nome", existingMusic.getNameMusic());
+        assertEquals("Novo Cantor", existingMusic.getSinger());
+        assertEquals("Nova Letra", existingMusic.getLetterMusic());
         verify(musicRepository).save(existingMusic);
     }
 

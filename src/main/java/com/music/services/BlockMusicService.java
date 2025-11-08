@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface BlockMusicService {
 
-    BlockMusicResponseDto registerBlockMusic(BlockMusicRequestDto blockMusicRequestDto);
+    BlockMusicResponseDto createBlockMusic(BlockMusicRequestDto blockMusicRequestDto);
 
     List<BlockMusicResponseDto> getAllBlockMusic(Long idUser);
 
@@ -20,7 +20,7 @@ public interface BlockMusicService {
 
     String deleteBlockMusic(Long idBlockMusic);
 
-    List<BlockMusic> getBlockMusicByIdBlockMusics(List<Long> idBlockMusics);
+    List<BlockMusic> getBlockMusicsByIdBlockMusics(List<Long> idBlockMusics);
 
     MusicResponseDto linkMusicToBLock(Long idMusic, MusicToBlockRequest musicToBlockRequest);
 

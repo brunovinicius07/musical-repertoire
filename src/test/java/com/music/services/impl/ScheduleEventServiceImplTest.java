@@ -281,7 +281,7 @@ class ScheduleEventServiceImplTest {
                 LocalDate.of(2025, 11, 7),
                 null,
                 LocalDateTime.of(2025, 11, 7, 12, 0),
-                "Título Parcial",
+                "Título",
                 "Descrição"
         );
 
@@ -302,7 +302,7 @@ class ScheduleEventServiceImplTest {
                 LocalDate.of(2025, 11, 7),
                 LocalDateTime.of(2025, 11, 7, 9, 0),
                 null,
-                "Título Parcial",
+                "Título",
                 "Descrição"
         );
 

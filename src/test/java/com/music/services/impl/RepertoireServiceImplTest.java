@@ -71,7 +71,7 @@ class RepertoireServiceImplTest {
     }
 
     @Test
-    void shouldRegisterRepertoireSuccessfully() {
+    void shouldCreateRepertoireSuccessfully() {
         when(repertoireRepository.findRepertoireByNameRepertoireAndUserIdUser(anyString(), anyLong()))
                 .thenReturn(Optional.empty());
         when(repertoireMapper.toRepertoire(any())).thenReturn(repertoire);
@@ -79,7 +79,7 @@ class RepertoireServiceImplTest {
         when(repertoireRepository.save(any())).thenReturn(repertoire);
         when(repertoireMapper.toRepertoireResponseDto(any())).thenReturn(responseDto);
 
-        RepertoireResponseDto result = repertoireService.registerRepertoire(requestDto);
+        RepertoireResponseDto result = repertoireService.createRepertoire(requestDto);
 
         assertNotNull(result);
         assertEquals("Repertório Casamento", result.getNameRepertoire());
@@ -92,7 +92,7 @@ class RepertoireServiceImplTest {
                 .thenReturn(Optional.of(repertoire));
 
         assertThrows(RepertoireIsPresentException.class, () ->
-                repertoireService.registerRepertoire(requestDto));
+                repertoireService.createRepertoire(requestDto));
     }
 
     @Test

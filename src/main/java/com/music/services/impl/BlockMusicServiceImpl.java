@@ -39,7 +39,7 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
     @Override
     @Transactional(readOnly = false)
-    public BlockMusicResponseDto registerBlockMusic(BlockMusicRequestDto blockMusicRequestDto) {
+    public BlockMusicResponseDto createBlockMusic(BlockMusicRequestDto blockMusicRequestDto) {
         existingBlockMusic(blockMusicRequestDto.getNameBlockMusic(),blockMusicRequestDto.getIdRepertoire());
         BlockMusic blockMusic = blockMusicMapper.toBlockMusic(blockMusicRequestDto);
         var repertoire = repertoireService.validateRepertoire(blockMusicRequestDto.getIdRepertoire());
@@ -87,7 +87,7 @@ public class BlockMusicServiceImpl implements BlockMusicService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BlockMusic> getBlockMusicByIdBlockMusics(List<Long> idBlockMusics) {
+    public List<BlockMusic> getBlockMusicsByIdBlockMusics(List<Long> idBlockMusics) {
         List<BlockMusic> blockMusics = new ArrayList<>();
         for (Long item : idBlockMusics) {
             Optional<BlockMusic> blockMusic = blockMusicRepository.findById(item);
