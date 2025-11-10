@@ -3,8 +3,8 @@ package com.music.services.impl;
 import com.music.model.dto.request.UpdateUserRequest;
 import com.music.model.dto.response.UserResponseDto;
 import com.music.model.entity.User;
-import com.music.model.exceptions.updatePassword.CurrentPasswordWrongException;
-import com.music.model.exceptions.updatePassword.NewPasswordNoMatchException;
+import com.music.model.exceptions.password.CurrentPasswordWrongException;
+import com.music.model.exceptions.password.NewPasswordNoMatchException;
 import com.music.model.exceptions.user.UserNotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.MusicRepository;
@@ -22,15 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final UserMapper userMapper;
-
     private final MusicRepository musicRepository;
-
     private final RepertoireRepository repertoireRepository;
-
     private final ScheduleEventRepository scheduleEventRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -48,8 +43,7 @@ public class UserServiceImpl implements UserService {
                     user.getPassword()
             );
 
-            boolean isNewPassWordMatches = updateUserRequest
-                    .getNewPassword()
+            boolean isNewPassWordMatches = updateUserRequest.getNewPassword()
                     .equals(updateUserRequest.getConfirmNewPassword());
 
             if(isCurrentPasswordMatches && isNewPassWordMatches){

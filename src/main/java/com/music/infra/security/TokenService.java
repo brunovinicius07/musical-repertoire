@@ -1,5 +1,6 @@
 package com.music.infra.security;
 
+import com.music.model.entity.User;
 import com.music.model.exceptions.exceptionHandler.AlertException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -27,7 +28,7 @@ public class TokenService {
     private String secretKey;
 
     @Value("${api.security.token.timeExpiration}")
-    private long timeExpiration;
+    private long timeExpirationToken;
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = Map.of(
@@ -37,6 +38,29 @@ public class TokenService {
                         .collect(Collectors.toList())
         );
         return buildToken(claims, userDetails);
+    }
+
+    public String generateTokenToChangePassword(User user, long timeExpirationToChangePassword) {
+        Date expirationTime = Date.from(LocalDateTime.now()
+                .plusMinutes(timeExpirationToChangePassword)
+                .toInstant(ZoneOffset.of("-03:00")));
+
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim("role", user.getRole().getRoleName())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(expirationTime)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public boolean isSimpleTokenValid(String token) {
+        try {
+            parseToken(token);
+            return true;
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -55,7 +79,7 @@ public class TokenService {
 
     private String buildToken(Map<String, Object> claims, UserDetails userDetails) {
         Date expirationTime = Date.from(LocalDateTime.now()
-                .plusHours(timeExpiration)
+                .plusHours(timeExpirationToken)
                 .toInstant(ZoneOffset.of("-03:00")));
 
         return Jwts.builder()

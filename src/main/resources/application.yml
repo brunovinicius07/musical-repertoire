@@ -1,3 +1,4 @@
+## Port
 server:
   port: 80
 
@@ -9,26 +10,31 @@ spring:
     username: sa
     password:
 
-## H2 Client
+## Kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    properties:
+      spring.json.add.type.headers: false
+
+  ## H2 Client
   h2:
     console:
       enabled: true
       path: /h2-console
+
   jpa:
     hibernate:
       ddl-auto: update
     open-in-view: false
-    datasource:
-      url:
 
 ## Oauth2
   security:
     oauth2:
       client:
         registration:
-
-          ##Google
-
           google:
             clientId: ${GOOGLE_CLI}
             clientSecret: ${GOOGLE_SEC}
@@ -41,4 +47,5 @@ api:
   security:
     token:
       secret: 645267556B58703273357638792F413F4428472B4B6250655368566D59713374
-      timeExpiration: 2
+      timeExpiration: 2 #horas para expirar o token.
+      timeExpirationToChangePassword : 2 #minutos para expirar o token da troca de senha.

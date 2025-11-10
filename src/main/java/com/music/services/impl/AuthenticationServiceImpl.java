@@ -1,17 +1,25 @@
 package com.music.services.impl;
 
+import com.music.infra.kafka.KafkaProducerService;
 import com.music.infra.security.TokenService;
 import com.music.model.dto.request.AuthenticationRequest;
+import com.music.model.dto.request.ForgotPasswordRequest;
 import com.music.model.dto.request.RegisterRequest;
+import com.music.model.dto.request.ResetPasswordRequest;
 import com.music.model.dto.response.AuthenticationResponse;
 import com.music.model.entity.User;
+import com.music.model.event.ForgotPasswordEvent;
 import com.music.model.exceptions.login.EmailPresentException;
 import com.music.model.exceptions.login.VerifyCredential;
+import com.music.model.exceptions.password.NewPasswordNoMatchException;
+import com.music.model.exceptions.token.TokenNotFoundOrExpiredException;
+import com.music.model.exceptions.user.EmailNotFoundException;
 import com.music.model.exceptions.user.UserNotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
 import com.music.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +37,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
+    private final KafkaProducerService producer;
+
+    @Value("${api.security.token.timeExpirationToChangePassword}")
+    private long timeExpirationToChangePassword;
 
     @Transactional(readOnly = false)
     public AuthenticationResponse register(RegisterRequest request) {
@@ -45,13 +57,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationResponse.setToken(token);
 
         return authenticationResponse;
-    }
-
-    @Transactional(readOnly = true)
-    public void existingUser(String email){
-        userRepository.findByEmail(email).ifPresent(verify -> {
-            throw new EmailPresentException();
-        });
     }
 
     @Transactional(readOnly = true)
@@ -74,6 +79,49 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }catch (BadCredentialsException e){
             throw new VerifyCredential();
         }
+    }
+
+    @Transactional
+    public String forgotPassword(ForgotPasswordRequest request) {
+        String message = "Se o e-mail: " + request.getEmail()
+                + " estiver cadastrado, enviaremos instruções para redefinir sua senha.";
+
+        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+            String token = tokenService.generateTokenToChangePassword(user, timeExpirationToChangePassword);
+
+            ForgotPasswordEvent event = new ForgotPasswordEvent(
+                    user.getEmail(),
+                    user.getNameUser(),
+                    token
+            );
+            producer.sendForgotPasswordEvent(event);
+        });
+
+        return message;
+    }
+
+    @Transactional
+    public String resetPassword(ResetPasswordRequest request) {
+        if (!tokenService.isSimpleTokenValid(request.getToken())) {
+            throw new TokenNotFoundOrExpiredException();
+        }
+
+        String email = tokenService.extractUsername(request.getToken());
+        User user = userRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
+
+        if(request.getNewPassword().equals(request.getConfirmNewPassword())){
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            userRepository.save(user);
+        } else throw new NewPasswordNoMatchException();
+
+        return "Senha redefinida com sucesso, faça login!";
+    }
+
+    @Transactional(readOnly = true)
+    public void existingUser(String email){
+        userRepository.findByEmail(email).ifPresent(verify -> {
+            throw new EmailPresentException();
+        });
     }
 
     @Transactional(readOnly = true)

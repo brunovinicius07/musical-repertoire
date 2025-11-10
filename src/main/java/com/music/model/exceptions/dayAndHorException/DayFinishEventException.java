@@ -1,4 +1,4 @@
-package com.music.model.exceptions.DayAndHorException;
+package com.music.model.exceptions.dayAndHorException;
 
 import com.music.model.exceptions.exceptionHandler.AlertException;
 import org.springframework.http.HttpStatus;
