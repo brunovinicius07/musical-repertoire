@@ -17,6 +17,7 @@ import com.music.model.exceptions.user.EmailNotFoundException;
 import com.music.model.exceptions.user.UserNotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
+import com.music.role.UserRole;
 import com.music.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = this.userMapper.registerDtoToUser(request);
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        user.setRole(UserRole.ADMIN);
 
         userRepository.save(user);
 
