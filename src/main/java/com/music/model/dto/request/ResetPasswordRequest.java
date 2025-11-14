@@ -11,8 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ResetPasswordRequest {
 
-    long idUser;
-
     private String token;
 
     String newPassword;

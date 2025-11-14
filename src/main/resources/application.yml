@@ -1,36 +1,29 @@
-## Port
 server:
-  port: 80
+  port: 8081
 
-## H2 Connection
 spring:
   datasource:
-    url: jdbc:h2:file:C:\temp\music;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://mysql:3306/playitdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-## Kafka
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     properties:
       spring.json.add.type.headers: false
 
-  ## H2 Client
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-
-## Oauth2
   security:
     oauth2:
       client:
@@ -42,10 +35,9 @@ spring:
         jwt:
           issuer-uri: https://accounts.google.com
 
-## Secret Key
 api:
   security:
     token:
       secret: 645267556B58703273357638792F413F4428472B4B6250655368566D59713374
-      timeExpiration: 2 #horas para expirar o token.
-      timeExpirationToChangePassword : 2 #minutos para expirar o token da troca de senha.
+      timeExpiration: 2
+      timeExpirationToChangePassword: 5
