@@ -11,4 +11,5 @@ public interface UserService {
     String deleteUser(Long idUser);
 
     User validateUser(Long idUser);
+
 }

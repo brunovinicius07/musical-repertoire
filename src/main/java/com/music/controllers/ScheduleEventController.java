@@ -25,7 +25,7 @@ public class ScheduleEventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleEventResponse);
     }
 
-    @PostMapping("/{idUser}")
+    @GetMapping("get/{idUser}")
     public ResponseEntity<List<ScheduleEventResponseDto>> getAllScheduleEventByIdUser(@PathVariable Long idUser){
         var scheduleResponse = scheduleEventService.getAllScheduleEventByIdUser(idUser);
         return ResponseEntity.ok(scheduleResponse);

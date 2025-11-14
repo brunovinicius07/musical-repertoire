@@ -1,4 +1,4 @@
-package com.music.model.exceptions.updatePassword;
+package com.music.model.exceptions.password;
 
 import com.music.model.exceptions.exceptionHandler.AlertException;
 import org.springframework.http.HttpStatus;

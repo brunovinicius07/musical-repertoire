@@ -31,18 +31,30 @@ public class SecurityConfig {
                  .sessionManagement(session ->
                          session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                  .authorizeHttpRequests(auth -> auth
-                      .requestMatchers(antMatcher("/h2-console/**")).permitAll()
-                      .requestMatchers(antMatcher("/v1/music/auth/register")).permitAll()
-                      .requestMatchers(antMatcher("/v1/music/auth/login")).permitAll()
-                      .requestMatchers(antMatcher("/v1/music/musics/post")).hasRole(ADMIN)
-                      .requestMatchers(antMatcher("/v1/music/musics/put/{idMusic}")).hasRole(ADMIN)
-                      .requestMatchers(antMatcher("/v1/music/musics/delete/{idMusic}")).hasRole(ADMIN)
-                      .requestMatchers(antMatcher("/v1/music/block_music/post")).hasRole(ADMIN)
-                      .requestMatchers(antMatcher("/v1/music/block_music/put/{idBlockMusic}")).hasRole(ADMIN)
-                      .requestMatchers(antMatcher("/v1/music/block_music/delete/{idBlockMusic}")).hasRole(ADMIN)
-                      .requestMatchers(antMatcher("/v1/music/repertoire/post")).hasRole(ADMIN)
-                      .requestMatchers(antMatcher("/v1/music/repertoire/put/{idRepertoire}")).hasRole(ADMIN)
-                      .requestMatchers(antMatcher("/v1/music/repertoire/delete/{idRepertoire}")).hasRole(ADMIN)
+                         .requestMatchers(
+                                 antMatcher("/h2-console/**"),
+                                 antMatcher("/v1/music/auth/register"),
+                                 antMatcher("/v1/music/auth/login"),
+                                 antMatcher("/v1/music/auth/forgotPassword"),
+                                 antMatcher("/v1/music/auth/resetPassword")
+                         ).permitAll()
+
+                         .requestMatchers(
+                                 antMatcher("/v1/music/musics/post/**"),
+                                 antMatcher("/v1/music/musics/put/**"),
+                                 antMatcher("/v1/music/musics/delete/**"),
+                                 antMatcher("/v1/music/block_music/post/**"),
+                                 antMatcher("/v1/music/block_music/put/**"),
+                                 antMatcher("/v1/music/block_music/delete/**"),
+                                 antMatcher("/v1/music/repertoire/post/**"),
+                                 antMatcher("/v1/music/repertoire/put/**"),
+                                 antMatcher("/v1/music/repertoire/delete/**"),
+                                 antMatcher("/v1/music/event/post/**"),
+                                 antMatcher("/v1/music/event/get/**"),
+                                 antMatcher("/v1/music/event/put/**"),
+                                 antMatcher("/v1/music/event/delete/**")
+                         ).hasRole(ADMIN)
+
                       .anyRequest().authenticated())
                  .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                  .headers(headers -> headers.frameOptions().disable());

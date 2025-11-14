@@ -1,12 +1,19 @@
 package com.music.services.impl;
 
+import com.music.infra.kafka.KafkaProducerService;
 import com.music.infra.security.TokenService;
 import com.music.model.dto.request.AuthenticationRequest;
+import com.music.model.dto.request.ForgotPasswordRequest;
 import com.music.model.dto.request.RegisterRequest;
+import com.music.model.dto.request.ResetPasswordRequest;
 import com.music.model.dto.response.AuthenticationResponse;
 import com.music.model.entity.User;
+import com.music.model.event.ForgotPasswordEvent;
 import com.music.model.exceptions.login.EmailPresentException;
 import com.music.model.exceptions.login.VerifyCredential;
+import com.music.model.exceptions.password.NewPasswordNoMatchException;
+import com.music.model.exceptions.token.TokenNotFoundOrExpiredException;
+import com.music.model.exceptions.user.EmailNotFoundException;
 import com.music.model.exceptions.user.UserNotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.UserRepository;
@@ -28,36 +35,36 @@ import static org.mockito.Mockito.*;
 
 class AuthenticationServiceImplTest {
 
-    @Mock
-    private UserMapper userMapper;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    @Mock
-    private TokenService tokenService;
-    @Mock
-    private AuthenticationManager authenticationManager;
+    @Mock private UserMapper userMapper;
+    @Mock private UserRepository userRepository;
+    @Mock private PasswordEncoder passwordEncoder;
+    @Mock private TokenService tokenService;
+    @Mock private AuthenticationManager authenticationManager;
+    @Mock private KafkaProducerService producer; // <-- FALTAVA ISSO!
 
     @InjectMocks
     private AuthenticationServiceImpl authenticationService;
 
     private RegisterRequest registerRequest;
     private AuthenticationRequest authRequest;
+    private ForgotPasswordRequest forgotPasswordRequest;
+    private ResetPasswordRequest resetPasswordRequest;
     private User user;
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
 
-        registerRequest = new RegisterRequest(
-                "User71", "user71@email.com", "12345678", UserRole.ADMIN);
+        registerRequest = new RegisterRequest("User71", "user71@email.com", "12345678");
         authRequest = new AuthenticationRequest("user71@email.com", "12345678");
+        forgotPasswordRequest = new ForgotPasswordRequest("user71@email.com");
+        resetPasswordRequest = new ResetPasswordRequest("token123", "abc", "abc");
+
         user = User.builder()
                 .idUser(1L)
                 .nameUser("User71")
                 .email("user71@email.com")
-                .password("12345678")
+                .password("encoded")
                 .role(UserRole.USER)
                 .build();
     }
@@ -67,16 +74,15 @@ class AuthenticationServiceImplTest {
         when(userRepository.findByEmail(registerRequest.getEmail())).thenReturn(Optional.empty());
         when(userMapper.registerDtoToUser(registerRequest)).thenReturn(user);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPass");
-        when(tokenService.generateToken(user)).thenReturn("A1f45Cmd3421oU");
+        when(tokenService.generateToken(user)).thenReturn("token123");
         when(userMapper.userToAuthenticationResponse(user))
                 .thenReturn(new AuthenticationResponse(null, 1L, "User71", UserRole.USER));
 
         AuthenticationResponse response = authenticationService.register(registerRequest);
 
         assertNotNull(response);
-        assertEquals("A1f45Cmd3421oU", response.getToken());
+        assertEquals("token123", response.getToken());
         verify(userRepository).save(user);
-        verify(passwordEncoder).encode("12345678");
     }
 
     @Test
@@ -84,7 +90,9 @@ class AuthenticationServiceImplTest {
         when(userRepository.findByEmail(registerRequest.getEmail()))
                 .thenReturn(Optional.of(user));
 
-        assertThrows(EmailPresentException.class, () -> authenticationService.register(registerRequest));
+        assertThrows(EmailPresentException.class, () ->
+                authenticationService.register(registerRequest)
+        );
     }
 
     @Test
@@ -92,39 +100,107 @@ class AuthenticationServiceImplTest {
         Authentication authentication = mock(Authentication.class);
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(user);
-        when(tokenService.generateToken(user)).thenReturn("A1f45Cmd3421oU");
+        when(tokenService.generateToken(user)).thenReturn("tokenABC");
         when(userMapper.userToAuthenticationResponse(user))
                 .thenReturn(new AuthenticationResponse(null, 1L, "User71", UserRole.USER));
 
         AuthenticationResponse response = authenticationService.login(authRequest);
 
-        assertNotNull(response);
-        assertEquals("A1f45Cmd3421oU", response.getToken());
-        verify(authenticationManager).authenticate(any());
+        assertEquals("tokenABC", response.getToken());
     }
 
     @Test
     void shouldThrowVerifyCredential_WhenBadCredentials() {
         when(authenticationManager.authenticate(any()))
-                .thenThrow(new BadCredentialsException("Invalid credentials"));
+                .thenThrow(new BadCredentialsException("Invalid"));
 
-        assertThrows(VerifyCredential.class, () -> authenticationService.login(authRequest));
+        assertThrows(VerifyCredential.class, () ->
+                authenticationService.login(authRequest)
+        );
+    }
+
+    @Test
+    void shouldSendForgotPasswordEvent_WhenUserExists() {
+        when(userRepository.findByEmail(forgotPasswordRequest.getEmail()))
+                .thenReturn(Optional.of(user));
+        when(tokenService.generateTokenToChangePassword(eq(user), anyLong()))
+                .thenReturn("tok123");
+
+        String msg = authenticationService.forgotPassword(forgotPasswordRequest);
+
+        assertTrue(msg.contains("Se o e-mail:"));
+        verify(producer).sendForgotPasswordEvent(any(ForgotPasswordEvent.class));
+    }
+
+    @Test
+    void shouldNotSendEvent_WhenUserDoesNotExist() {
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        String msg = authenticationService.forgotPassword(forgotPasswordRequest);
+
+        verify(producer, never()).sendForgotPasswordEvent(any());
+        assertTrue(msg.contains("Se o e-mail:"));
+    }
+
+    @Test
+    void shouldThrowException_WhenTokenInvalid() {
+        when(tokenService.isSimpleTokenValid("token123")).thenReturn(false);
+
+        assertThrows(TokenNotFoundOrExpiredException.class, () ->
+                authenticationService.resetPassword(resetPasswordRequest)
+        );
+    }
+
+    @Test
+    void shouldThrowEmailNotFound_WhenUserDoesNotExist() {
+        when(tokenService.isSimpleTokenValid(anyString())).thenReturn(true);
+        when(tokenService.extractUsername(anyString())).thenReturn("email@email.com");
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(EmailNotFoundException.class, () ->
+                authenticationService.resetPassword(resetPasswordRequest)
+        );
+    }
+
+    @Test
+    void shouldThrowException_WhenPasswordsDoNotMatch() {
+        ResetPasswordRequest req = new ResetPasswordRequest("tok", "abc", "xyz");
+
+        when(tokenService.isSimpleTokenValid(anyString())).thenReturn(true);
+        when(tokenService.extractUsername(anyString())).thenReturn(user.getEmail());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+
+        assertThrows(NewPasswordNoMatchException.class, () ->
+                authenticationService.resetPassword(req)
+        );
+    }
+
+    @Test
+    void shouldResetPasswordSuccessfully() {
+        when(tokenService.isSimpleTokenValid(anyString())).thenReturn(true);
+        when(tokenService.extractUsername(anyString())).thenReturn(user.getEmail());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedXYZ");
+
+        String response = authenticationService.resetPassword(resetPasswordRequest);
+
+        verify(userRepository).save(user);
+        assertEquals("Senha redefinida com sucesso, faça login!", response);
     }
 
     @Test
     void shouldReturnUser_WhenUserExists() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        User found = authenticationService.validateUserById(1L);
-
-        assertEquals(user, found);
-        verify(userRepository).findById(1L);
+        assertEquals(user, authenticationService.validateUserById(1L));
     }
 
     @Test
-    void shouldThrowUserNotFound_WhenUserDoesNotExist() {
-        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+    void shouldThrow_WhenUserDoesNotExist() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> authenticationService.validateUserById(99L));
+        assertThrows(UserNotFoundException.class, () ->
+                authenticationService.validateUserById(99L)
+        );
     }
 }

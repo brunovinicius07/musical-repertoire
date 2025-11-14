@@ -27,13 +27,13 @@ public class BlockMusicController {
         return ResponseEntity.status(HttpStatus.CREATED).body(blockMusicResponse);
     }
 
-    @PostMapping("/{idUser}")
+    @GetMapping("getAll/{idUser}")
     public ResponseEntity<List<BlockMusicResponseDto>> getAllBlockMusic(@PathVariable Long idUser) {
         var blockMusicResponse = blockMusicService.getAllBlockMusic(idUser);
         return ResponseEntity.ok(blockMusicResponse);
     }
 
-    @GetMapping("/{idBlockMusic}")
+    @GetMapping("getById/{idBlockMusic}")
     public ResponseEntity<BlockMusicResponseDto> getBlockMusicByIdBlockMusic(@PathVariable Long idBlockMusic) {
         var blockMusicResponse = blockMusicService.getBlockMusicByIdBlockMusic(idBlockMusic);
         return ResponseEntity.ok(blockMusicResponse);
