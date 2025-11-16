@@ -12,6 +12,7 @@ import com.music.model.event.ForgotPasswordEvent;
 import com.music.model.exceptions.login.EmailPresentException;
 import com.music.model.exceptions.login.VerifyCredential;
 import com.music.model.exceptions.password.NewPasswordNoMatchException;
+import com.music.model.exceptions.password.PasswordNoMatchException;
 import com.music.model.exceptions.token.TokenNotFoundOrExpiredException;
 import com.music.model.exceptions.user.EmailNotFoundException;
 import com.music.model.exceptions.user.UserNotFoundException;
@@ -40,7 +41,7 @@ class AuthenticationServiceImplTest {
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private TokenService tokenService;
     @Mock private AuthenticationManager authenticationManager;
-    @Mock private KafkaProducerService producer; // <-- FALTAVA ISSO!
+    @Mock private KafkaProducerService producer;
 
     @InjectMocks
     private AuthenticationServiceImpl authenticationService;
@@ -55,7 +56,13 @@ class AuthenticationServiceImplTest {
     void setup() {
         MockitoAnnotations.openMocks(this);
 
-        registerRequest = new RegisterRequest("User71", "user71@email.com", "12345678");
+        registerRequest = new RegisterRequest(
+                "User71",
+                "user71@email.com",
+                "12345678",
+                "12345678"
+        );
+
         authRequest = new AuthenticationRequest("user71@email.com", "12345678");
         forgotPasswordRequest = new ForgotPasswordRequest("user71@email.com");
         resetPasswordRequest = new ResetPasswordRequest("token123", "abc", "abc");
@@ -65,7 +72,7 @@ class AuthenticationServiceImplTest {
                 .nameUser("User71")
                 .email("user71@email.com")
                 .password("encoded")
-                .role(UserRole.USER)
+                .role(UserRole.ADMIN)
                 .build();
     }
 
@@ -75,13 +82,15 @@ class AuthenticationServiceImplTest {
         when(userMapper.registerDtoToUser(registerRequest)).thenReturn(user);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPass");
         when(tokenService.generateToken(user)).thenReturn("token123");
+
         when(userMapper.userToAuthenticationResponse(user))
-                .thenReturn(new AuthenticationResponse(null, 1L, "User71", UserRole.USER));
+                .thenReturn(new AuthenticationResponse(null, 1L, "User71", UserRole.ADMIN));
 
         AuthenticationResponse response = authenticationService.register(registerRequest);
 
         assertNotNull(response);
         assertEquals("token123", response.getToken());
+        assertEquals(UserRole.ADMIN, response.getRole());
         verify(userRepository).save(user);
     }
 
@@ -93,7 +102,41 @@ class AuthenticationServiceImplTest {
         assertThrows(EmailPresentException.class, () ->
                 authenticationService.register(registerRequest)
         );
+
+        verify(userRepository, never()).save(any());
     }
+
+    @Test
+    void shouldThrowPasswordNoMatchException_WhenPasswordsDoNotMatchOnRegister() {
+        RegisterRequest req = new RegisterRequest(
+                "User71",
+                "user71@email.com",
+                "abc",
+                "xyz"
+        );
+
+        assertThrows(PasswordNoMatchException.class, () ->
+                authenticationService.register(req)
+        );
+    }
+
+    @Test
+    void shouldThrowEmailPresentException_WhenBadCredentialsExceptionThrownInsideRegister() {
+        RegisterRequest req = new RegisterRequest(
+                "TestUser",
+                "test@email.com",
+                "123456",
+                "123456"
+        );
+
+        doThrow(new BadCredentialsException("bad"))
+                .when(userRepository).findByEmail(req.getEmail());
+
+        assertThrows(EmailPresentException.class, () ->
+                authenticationService.register(req)
+        );
+    }
+
 
     @Test
     void shouldLoginSuccessfully() {
@@ -101,8 +144,9 @@ class AuthenticationServiceImplTest {
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(user);
         when(tokenService.generateToken(user)).thenReturn("tokenABC");
+
         when(userMapper.userToAuthenticationResponse(user))
-                .thenReturn(new AuthenticationResponse(null, 1L, "User71", UserRole.USER));
+                .thenReturn(new AuthenticationResponse(null, 1L, "User71", UserRole.ADMIN));
 
         AuthenticationResponse response = authenticationService.login(authRequest);
 

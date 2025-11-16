@@ -13,7 +13,7 @@ public class ResetPasswordRequest {
 
     private String token;
 
-    String newPassword;
+    private String newPassword;
 
-    String confirmNewPassword;
+    private String confirmNewPassword;
 }

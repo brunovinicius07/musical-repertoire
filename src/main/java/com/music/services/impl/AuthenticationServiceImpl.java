@@ -12,6 +12,7 @@ import com.music.model.event.ForgotPasswordEvent;
 import com.music.model.exceptions.login.EmailPresentException;
 import com.music.model.exceptions.login.VerifyCredential;
 import com.music.model.exceptions.password.NewPasswordNoMatchException;
+import com.music.model.exceptions.password.PasswordNoMatchException;
 import com.music.model.exceptions.token.TokenNotFoundOrExpiredException;
 import com.music.model.exceptions.user.EmailNotFoundException;
 import com.music.model.exceptions.user.UserNotFoundException;
@@ -43,24 +44,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${api.security.token.timeExpirationToChangePassword}")
     private long timeExpirationToChangePassword;
 
+    @Override
     @Transactional(readOnly = false)
     public AuthenticationResponse register(RegisterRequest request) {
+        try {
+            if (request.getPassword().equals(request.getConfirmNewPassword())){
+                existingUser(request.getEmail());
 
-        existingUser(request.getEmail());
+                User user = this.userMapper.registerDtoToUser(request);
+                user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+                user.setRole(UserRole.ADMIN);
 
-        User user = this.userMapper.registerDtoToUser(request);
-        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        user.setRole(UserRole.ADMIN);
+                userRepository.save(user);
 
-        userRepository.save(user);
+                String token = tokenService.generateToken(user);
+                AuthenticationResponse authenticationResponse = userMapper.userToAuthenticationResponse(user);
+                authenticationResponse.setToken(token);
 
-        String token = tokenService.generateToken(user);
-        AuthenticationResponse authenticationResponse = userMapper.userToAuthenticationResponse(user);
-        authenticationResponse.setToken(token);
-
-        return authenticationResponse;
+                return authenticationResponse;
+            }else throw new PasswordNoMatchException();
+        }catch (BadCredentialsException e){
+            throw new EmailPresentException();
+        }
     }
 
+    @Override
     @Transactional(readOnly = true)
     public AuthenticationResponse login(AuthenticationRequest request) {
         try {
@@ -83,7 +91,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    @Transactional
+    @Override
+    @Transactional(readOnly = true)
     public String forgotPassword(ForgotPasswordRequest request) {
         String message = "Se o e-mail: " + request.getEmail()
                 + " estiver cadastrado, enviaremos instruções para redefinir sua senha.";
@@ -102,7 +111,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return message;
     }
 
-    @Transactional
+    @Override
+    @Transactional(readOnly = false)
     public String resetPassword(ResetPasswordRequest request) {
         if (!tokenService.isSimpleTokenValid(request.getToken())) {
             throw new TokenNotFoundOrExpiredException();
@@ -119,6 +129,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return "Senha redefinida com sucesso, faça login!";
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void existingUser(String email){
         userRepository.findByEmail(email).ifPresent(verify -> {
@@ -126,6 +137,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         });
     }
 
+    @Override
     @Transactional(readOnly = true)
     public User validateUserById(Long IdUser) {
         return userRepository.findById(IdUser).orElseThrow(UserNotFoundException::new);

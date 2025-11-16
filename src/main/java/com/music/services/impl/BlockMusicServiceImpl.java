@@ -99,9 +99,10 @@ public class BlockMusicServiceImpl implements BlockMusicService {
     @Override
     @Transactional(readOnly = false)
     public MusicResponseDto linkMusicToBLock(MusicToBlockRequest musicToBlockRequest) {
-        Music music = musicRepository.findById(musicToBlockRequest.getIdMusic()).orElseThrow(MusicNotFoundException::new);
+        Music music = musicRepository.findById(musicToBlockRequest.getIdMusic())
+                .orElseThrow(MusicNotFoundException::new);
 
-        List<BlockMusic> blockMusicList = getBlockMusicsByIdsBlocMusic(musicToBlockRequest.getIdsBlockMusic());
+        List<BlockMusic> blockMusicList = getBlockMusicsByIdBlockMusics(musicToBlockRequest.getIdsBlockMusic());
 
         blockMusicList.forEach(blockMusic -> {
 
@@ -115,16 +116,6 @@ public class BlockMusicServiceImpl implements BlockMusicService {
         music.getBlockMusics().addAll(blockMusicList);
 
         return musicMapper.toMusicResponseDto(musicRepository.save(music));
-    }
-
-    @Transactional(readOnly = true)
-    public List<BlockMusic> getBlockMusicsByIdsBlocMusic(List<Long> idsBlocMusic) {
-        List<BlockMusic> blockMusicList = new ArrayList<>();
-        for (Long item : idsBlocMusic) {
-            Optional<BlockMusic> blockMusic = blockMusicRepository.findById(item);
-            blockMusic.ifPresent(blockMusicList::add);
-        }
-        return blockMusicList;
     }
 
     @Override

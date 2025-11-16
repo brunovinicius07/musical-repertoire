@@ -14,11 +14,11 @@ public interface AuthenticationService {
 
     AuthenticationResponse login(AuthenticationRequest request);
 
-    void existingUser(String email);
-
     String forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
 
     String resetPassword(@Valid ResetPasswordRequest request);
+
+    void existingUser(String email);
 
     User validateUserById(Long IdUser);
 }
