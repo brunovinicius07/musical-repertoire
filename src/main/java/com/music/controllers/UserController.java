@@ -15,6 +15,12 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("get/{idUser}")
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long idUser){
+        var userResponse = userService.getUserById(idUser);
+        return ResponseEntity.ok(userResponse);
+    }
+
     @PutMapping("put/{idUser}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long idUser, @RequestBody @Valid UpdateUserRequest updateUserRequest){
         var userResponse = userService.updateUser(idUser, updateUserRequest);

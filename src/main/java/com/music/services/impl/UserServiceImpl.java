@@ -29,6 +29,12 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional(readOnly = true)
+    public UserResponseDto getUserById(Long idUser) {
+        return userMapper.userToResponseDto(validateUser(idUser));
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public UserResponseDto updateUser(Long idUser, UpdateUserRequest updateUserRequest) {
 
@@ -70,10 +76,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public User validateUser(Long idUser) {
         return userRepository.findById(idUser).orElseThrow(UserNotFoundException::new);
     }
-
 
 }

@@ -268,7 +268,7 @@ class BlockMusicServiceImplTest {
         when(musicRepository.save(any())).thenReturn(music);
         when(musicMapper.toMusicResponseDto(any())).thenReturn(new MusicResponseDto());
 
-        doReturn(List.of(blockMusic)).when(blockMusicService).getBlockMusicsByIdsBlocMusic(List.of(blockId));
+        doReturn(List.of(blockMusic)).when(blockMusicService).getBlockMusicsByIdBlockMusics(List.of(blockId));
 
         MusicResponseDto result = blockMusicService.linkMusicToBLock(request);
 
