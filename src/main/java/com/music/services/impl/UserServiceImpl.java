@@ -9,7 +9,6 @@ import com.music.model.exceptions.user.UserNotFoundException;
 import com.music.model.mapper.UserMapper;
 import com.music.repositories.MusicRepository;
 import com.music.repositories.RepertoireRepository;
-import com.music.repositories.ScheduleEventRepository;
 import com.music.repositories.UserRepository;
 import com.music.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MusicRepository musicRepository;
     private final RepertoireRepository repertoireRepository;
-    private final ScheduleEventRepository scheduleEventRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -69,7 +67,6 @@ public class UserServiceImpl implements UserService {
 
         musicRepository.deleteAll(user.getMusics());
         repertoireRepository.deleteAll(user.getRepertoires());
-        scheduleEventRepository.deleteAll(user.getScheduleEvents());
 
         userRepository.delete(user);
         return "Usuário com o id " + idUser + " apagado com sucesso!";

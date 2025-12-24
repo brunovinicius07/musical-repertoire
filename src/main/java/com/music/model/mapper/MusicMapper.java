@@ -15,28 +15,19 @@ import java.util.stream.Collectors;
 public interface MusicMapper {
 
     @Mapping(target = "user.idUser", source = "idUser")
-    Music toMusic(MusicRequestDto musicRequestDto);
+    Music toMusic(MusicRequestDto dto);
 
-    @Mapping(target = "letterMusic", source = "letterMusic")
-    @Mapping(target = "nameMusic", source = "nameMusic")
-    @Mapping(target = "singer", source = "singer")
-    @Mapping(target = "idMusic", source = "idMusic")
-    @Mapping(target = "idBlockMusics", expression = "java(mapBlockMusic(music.getBlockMusics()))")
     @Mapping(target = "idUser", source = "user.idUser")
+    @Mapping(target = "idBlockMusics", expression = "java(mapBlockMusic(music.getBlockMusics()))")
     MusicResponseDto toMusicResponseDto(Music music);
 
     List<MusicResponseDto> toListMusicResponseDto(List<Music> musicList);
 
-    List<Music> toListMusics(List<MusicResponseDto> musicResponseDtos);
-
-
     default List<Long> mapBlockMusic(List<BlockMusic> blockMusics) {
-        if (blockMusics != null) {
-            return blockMusics.stream()
-                    .map(BlockMusic::getIdBlockMusic)
-                    .collect(Collectors.toList());
-        } else {
-            return new ArrayList<>();
-        }
+        if (blockMusics == null) return new ArrayList<>();
+        return blockMusics.stream()
+                .map(BlockMusic::getIdBlockMusic)
+                .collect(Collectors.toList());
     }
 }
+

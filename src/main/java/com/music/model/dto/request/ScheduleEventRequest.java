@@ -11,20 +11,13 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScheduleEventRequestDto {
+public class ScheduleEventRequest {
 
-    private Long idUser;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private Long userId;
     private LocalDate day;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime opening;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime closure;
-
     private String title;
-
     private String description;
 }
+

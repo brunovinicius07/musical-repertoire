@@ -50,7 +50,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             if(tokenService.isTokenValid(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
-                        null,
+                        token,
                         userDetails.getAuthorities()
                 );
                 authToken.setDetails(

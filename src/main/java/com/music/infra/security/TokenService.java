@@ -85,7 +85,7 @@ public class TokenService {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(expirationTime)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(expirationTime)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();

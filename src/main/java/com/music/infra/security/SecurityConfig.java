@@ -37,7 +37,6 @@ public class SecurityConfig {
                          .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                          .requestMatchers(
-                                 antMatcher("/h2-console/**"),
                                  antMatcher("/v1/music/auth/register"),
                                  antMatcher("/v1/music/auth/login"),
                                  antMatcher("/v1/music/auth/forgotPassword"),

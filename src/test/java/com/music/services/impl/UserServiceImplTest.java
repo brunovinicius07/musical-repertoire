@@ -31,8 +31,6 @@ class UserServiceImplTest {
     @Mock
     private RepertoireRepository repertoireRepository;
     @Mock
-    private ScheduleEventRepository scheduleEventRepository;
-    @Mock
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
@@ -153,7 +151,6 @@ class UserServiceImplTest {
         assertTrue(result.contains("apagado com sucesso"));
         verify(musicRepository).deleteAll(user.getMusics());
         verify(repertoireRepository).deleteAll(user.getRepertoires());
-        verify(scheduleEventRepository).deleteAll(user.getScheduleEvents());
         verify(userRepository).delete(user);
     }
 
