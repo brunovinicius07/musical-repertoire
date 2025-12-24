@@ -2,11 +2,13 @@ package com.music.controllers;
 
 import com.music.model.dto.request.RepertoireRequestDto;
 import com.music.model.dto.response.RepertoireResponseDto;
+import com.music.model.entity.User;
 import com.music.services.RepertoireService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +29,8 @@ public class RepertoireController {
 
     @PostMapping("/{idUser}")
     ResponseEntity<List<RepertoireResponseDto>> getAllRepertoireByIdUser(@PathVariable Long idUser){
-        var repertoireResponse = repertoireService.getAllRepertoireByIdUser(idUser);
+        var user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var repertoireResponse = repertoireService.getAllRepertoireByIdUser(user.getIdUser());
         return ResponseEntity.ok(repertoireResponse);
     }
 

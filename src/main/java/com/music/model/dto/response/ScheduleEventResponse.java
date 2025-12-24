@@ -2,6 +2,7 @@ package com.music.model.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,20 +12,15 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScheduleEventResponseDto {
+@Builder
+public class ScheduleEventResponse {
 
-    private long idScheduleEvent;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private String id;
+    private Long userId;
     private LocalDate day;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd/MM/yyyy")
     private LocalDateTime opening;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm dd/MM/yyyy")
     private LocalDateTime closure;
-
     private String title;
-
     private String description;
 }
+

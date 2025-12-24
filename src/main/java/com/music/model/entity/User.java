@@ -42,9 +42,6 @@ public class User implements UserDetails {
     private UserRole role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<ScheduleEvent> ScheduleEvents = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Music> musics = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

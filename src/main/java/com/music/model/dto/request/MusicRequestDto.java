@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class MusicRequestDto {

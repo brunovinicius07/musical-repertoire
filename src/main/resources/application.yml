@@ -35,6 +35,16 @@ spring:
         jwt:
           issuer-uri: https://accounts.google.com
 
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+schedule-event-service:
+  url: ${SCHEDULE_EVENT_SERVICE_URL}
+
 api:
   security:
     token:

@@ -20,7 +20,7 @@ public class MusicResponseDto {
 
     private String letterMusic;
 
-    private List<Long> idBlockMusics = new ArrayList<>();
+    private List<Long> idBlockMusics;
 
     private Long idUser;
 }
